@@ -16,7 +16,14 @@ import Transition from "../../../reusables/languagesModal";
 import AppSidebar from "../../../Layout/AppSidebar/";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import {exportContent, getAllContentType , getAllLanguages ,getContentLanguageById,importContent} from "../../../redux/Actions";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import {
+  exportContent,
+  getAllContentType,
+  getAllLanguages,
+  getContentLanguageById,
+  importContent,
+} from "../../../redux/Actions";
 import { Route, useHistory } from "react-router-dom";
 // import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
@@ -45,21 +52,20 @@ import {
 import SearchIcon from "@material-ui/icons/Search";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import DialogTransition from "../../../reusables/deleteDialog";
-import Modal from "../../../reusables/htmlDialog"
+import Modal from "../../../reusables/htmlDialog";
 
 // getAllContentTypeByIdReducer   getAllContentType
-
 
 const typeIdList = [{ ContentBlock: 1 }, { EasyHelp: 2 }, { Phrases: 3 }];
 export default function ContentManagement() {
   const dispatch = useDispatch();
-  const history=useHistory();
+  const history = useHistory();
   const [typeId, setTypeId] = React.useState(1);
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [rowId, setRowId] = useState({});
-  const [fileData,setFileData] =useState();
+  const [fileData, setFileData] = useState();
   const [open1, setOpen1] = useState(false);
   const handleClickOpen1 = () => setOpen1(true);
   const handleClose1 = () => setOpen1(false);
@@ -75,7 +81,7 @@ export default function ContentManagement() {
     setRowId({});
   };
   const languageData = useSelector((state) => state.LanguagesReducer);
-  const [data,setData]=React.useState({
+  const [data, setData] = React.useState({
     // id: 4,
     name: "",
     text: "",
@@ -84,20 +90,20 @@ export default function ContentManagement() {
     translation: null,
     toolTip: "",
     typeId: null,
-  })
+  });
   const setSubmit = (e) => {
     e.preventDefault();
     setPage(1);
     setSize(10);
     dispatch(getAllContentType(page, size, search));
   };
-  useEffect(()=>{
-    if(search===""){
+  useEffect(() => {
+    if (search === "") {
       setPage(1);
       setSize(10);
       dispatch(getAllContentType(page, size, search));
     }
-  },[search])
+  }, [search]);
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
@@ -105,36 +111,31 @@ export default function ContentManagement() {
   useEffect(() => {
     dispatch(getAllContentType(page, size));
   }, [page]);
- 
+
   const tableData = useSelector((state) => state.getAllContentTypeByIdReducer);
 
   useEffect(() => {
     dispatch(getAllContentType(page, size, search));
-    dispatch(getAllLanguages())
+    dispatch(getAllLanguages());
   }, []);
 
   return (
     <Fragment>
       <ThemeOptions />
-      {/* <AppHeader /> */}
+      <AppHeader />
       <div className="app-main">
         <AppSidebar />
-        <div className="app-main__outer" >
+        <div className="app-main__outer">
           <div className="app-main__inner">
-            <div className=" row mx-4"></div>
-            <div role="presentation" className="bread_crumbs">
+            {/* <div className=" row mx-4"></div> */}
+            {/* <div role="presentation" className="bread_crumbs">
               <Breadcrumbs aria-label="breadcrumb">
-                <p
-                   underline="hover"
-                   color="#000000"
-                  
-                  
-                >
-      Content Block
+                <p underline="hover" color="#000000">
+                  Content Block
                 </p>
               </Breadcrumbs>
-            </div>
-            <div className=" row m-1 card p-3 box_style">
+            </div> */}
+            {/* <div className=" row m-1 card p-3 box_style">
               <form
                 className="row"
                 onSubmit={(e) => {
@@ -172,129 +173,373 @@ export default function ContentManagement() {
                   </Button>
                 </div>
               </form>
+            </div> */}
+            <div className="row">
+              <div className="col-12">
+                <div className="d-flex align-items-center justify-content-end px-lg-5 px-md-4 px-sm-3 px-3 my-3">
+                  <Link
+                    className="textPurpal text-decoration-none fs-6 fw-medium"
+                    to="/"
+                  >
+                    Stock Details{" "}
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M16.1716 10.9999H4V12.9999H16.1716L10.8076 18.3638L12.2218 19.778L20 11.9999L12.2218 4.22168L10.8076 5.63589L16.1716 10.9999Z"
+                        fill="#5570F1"
+                      />
+                    </svg>
+                  </Link>
+                </div>
+              </div>
+              <div className="col-lg-3 col-md-3 col-12">
+                <Card className="cardDesign">
+                  <CardContent className="cardContent">
+                    <h6 className="fs-6 mb-3">Account Information</h6>
+                    <ul className="twopartContent">
+                      <li>
+                        Live Account Values
+                        <span className="digit">1,056,250</span>
+                      </li>
+                      <li>
+                        Cash Buying Power
+                        <span className="digit">35,0000</span>
+                      </li>
+                      <li>
+                        Margin Buying Power
+                        <span className="digit">1,750.25</span>
+                      </li>
+                      <li>
+                        Day Trading buying Power
+                        <span className="digit">3.150,251</span>
+                      </li>
+                      <li>
+                        Day Trade Excess
+                        <span className="digit">521,245</span>
+                      </li>
+                      <li>
+                        Today’s Trading G/L
+                        <span className="digit text-success">3,535</span>
+                      </li>
+                      <li>
+                        YTD Trading Gain
+                        <span className="digit text-success">25,625</span>
+                      </li>
+                    </ul>
+                  </CardContent>
+                </Card>
+                <Card className="cardDesign">
+                  <CardContent className="cardContent">
+                    <h6 className="fs-6 mb-3">Screen Triggered</h6>
+                    <table className="table w-100 simpleTable table-borderless">
+                      <thead>
+                        <tr>
+                          <th> </th>
+                          <th>Time</th>
+                          <th>Symbol</th>
+                          <th>Screen Trig</th>
+                          <th>Delete</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <input
+                              type="radio"
+                              name="radio"
+                              className="form-check-input"
+                              id="radio1"
+                            />
+                          </td>
+                          <td>10:55</td>
+                          <td>AAPL</td>
+                          <td>PUBackinUptrnd</td>
+                          <td className="text-center">
+                            <Button className="btn btn-secondary rounded-circle px-2 deleteBtn">
+                              {" "}
+                              <DeleteOutlinedIcon fontSize="12px" />
+                            </Button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <input
+                              type="radio"
+                              name="radio"
+                              className="form-check-input"
+                              id="radio2"
+                            />
+                          </td>
+                          <td>10:55</td>
+                          <td>AAPL</td>
+                          <td>PUBackinUptrnd</td>
+                          <td className="text-center">
+                            <Button className="btn btn-secondary rounded-circle px-2 deleteBtn">
+                              {" "}
+                              <DeleteOutlinedIcon fontSize="12px" />
+                            </Button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <input
+                              type="radio"
+                              name="radio"
+                              className="form-check-input"
+                              id="radio3"
+                            />
+                          </td>
+                          <td>10:55</td>
+                          <td>AAPL</td>
+                          <td>PUBackinUptrnd</td>
+                          <td className="text-center">
+                            <Button className="btn btn-secondary rounded-circle px-2 deleteBtn">
+                              {" "}
+                              <DeleteOutlinedIcon fontSize="12px" />
+                            </Button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </CardContent>
+                </Card>
+              </div>
+              <div className="col-lg-9 col-md-9 col-12">
+                <Card className="cardDesign">
+                  <div className="cardHeader mb-lg-5 mb-md-4 mb-sm-3 mb-3">
+                    <h6 className="fs-6 mb-3">Order Ticket- Stock</h6>
+                    <h6 className="fs-6 mb-3">10-May-24 - 11:50:25 AM</h6>
+                  </div>
+                  <CardContent className="cardContent">
+                    <div className="row">
+                      <div className="col-md-3 col-12">
+                        <div className="stockInfo">
+                          <ul class="list-group mb-2">
+                            <li className="list-group-item">Stock System</li>
+                            <li className="list-group-item">AAPL</li>
+                          </ul>
+                          <p>Apple Computer Inc</p>
+                        </div>
+                        <div className="StockAction">
+                          <ul class="list-group mb-2">
+                            <li className="list-group-item border-0">
+                              <div class="form-check p-0 d-flex align-items-center justify-content-between">
+                                <label
+                                  class="form-check-label  flex-grow-1"
+                                  for="flexRadioDefault1"
+                                >
+                                  Buy
+                                </label>
+                                <input
+                                  class="form-check-input m-0"
+                                  type="radio"
+                                  name="flexRadioDefault"
+                                  id="flexRadioDefault1"
+                                />
+                              </div>
+                            </li>
+                            <li className="list-group-item border-0">
+                              <div class="form-check p-0 d-flex align-items-center justify-content-between">
+                                <label
+                                  class="form-check-label flex-grow-1"
+                                  for="flexRadioDefault2"
+                                >
+                                  Sell Short
+                                </label>
+                                <input
+                                  class="form-check-input m-0"
+                                  type="radio"
+                                  name="flexRadioDefault"
+                                  id="flexRadioDefault2"
+                                  checked
+                                />
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+                        <div className="StockActionClose">
+                          <ul class="list-group mb-2">
+                            <li className="list-group-item border-0">
+                              <div class="form-check p-0 d-flex align-items-center justify-content-between">
+                                <label
+                                  class="form-check-label flex-grow-1"
+                                  for="cancleTrade"
+                                >
+                                  Close
+                                </label>
+                                <input
+                                  class="form-check-input m-0"
+                                  type="radio"
+                                  name="cancleTrade"
+                                  id="cancleTrade"
+                                />
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div className="col-md-9 col-12">
+                        <div className="row">
+                          <div className="col-md-6 col-12">
+                            <Card className="cardDesign grayBg">
+                              <CardContent className="cardContent">
+                                <div className="cardHeader mb-3">
+                                  <h6 className="fs-6">Current prices</h6>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
             <div className=" row m-1  card p-3" style={{ overflowX: "auto" }}>
               <div className="col-12 d-flex">
                 <table class="table table-hover table-striped">
                   <Paper>
                     <TableContainer sx={{}}>
-                      <Table sx={{ minWidth: 650 }} class="table table-hover table-striped">
+                      <Table
+                        sx={{ minWidth: 650 }}
+                        class="table table-hover table-striped"
+                      >
                         <TableHead>
                           <TableRow className="tableRow1">
                             <TableCell
-                             align="left"
-                              className='table_head tableRow1'
+                              align="left"
+                              className="table_head tableRow1"
                             >
                               Name
                             </TableCell>
-                           
 
-                            <TableCell 
-                             align="left"
-                              className='table_head tableRow1'
+                            <TableCell
+                              align="left"
+                              className="table_head tableRow1"
                             >
                               Translations
                             </TableCell>
 
                             <TableCell
                               align="right"
-                              className='table_head tableRow1'
+                              className="table_head tableRow1"
                             >
                               Action
                             </TableCell>
-                            
-                          </TableRow >
+                          </TableRow>
                         </TableHead>
-                         {tableData?.contentData && tableData?.contentData?.records?.length ? (
-                        <TableBody>
-                          {
-                          tableData?.contentData?.records.map((row) => (
-                            <TableRow
-                            align="left"
-                            className="tableRow1"
-                              key={row.name}
-                              sx={{
-                                "&:last-child td, &:last-child th": {
-                                  border: 0,
-                                },
-                              }}
-                            >
-                              <TableCell className="table_content tableRow1"
-                                
-                              
-                               
-                              >
-                                {row.name}
-                              </TableCell>
-
-                             
-                              <TableCell
-                             align="left"
-                              className="table_content tableRow1"
-                              // onClick={() => getLangById(row.id)}
-                            >
-                              <span
-                                className="addSubpage "
-                                onClick={() => {
-                                  setOpen2(true);
-                                  setDropDownData(row?.id);
-                                  dispatch(
-                                    getContentLanguageById(row?.id, (item) =>
-                                      setRowId(item)
-                                    )
-                                  );
+                        {tableData?.contentData &&
+                        tableData?.contentData?.records?.length ? (
+                          <TableBody>
+                            {tableData?.contentData?.records.map((row) => (
+                              <TableRow
+                                align="left"
+                                className="tableRow1"
+                                key={row.name}
+                                sx={{
+                                  "&:last-child td, &:last-child th": {
+                                    border: 0,
+                                  },
                                 }}
                               >
-                                Select Languages
-                              </span>
-                            </TableCell>
-                              <TableCell className="table_content tableRow1" align="right">
-                                {row.action}
-                                <div className="actionRow">
-                                    <EditIcon style={{ color: "green" , fontSize:'20px' }}
+                                <TableCell className="table_content tableRow1">
+                                  {row.name}
+                                </TableCell>
+
+                                <TableCell
+                                  align="left"
+                                  className="table_content tableRow1"
+                                  // onClick={() => getLangById(row.id)}
+                                >
+                                  <span
+                                    className="addSubpage "
                                     onClick={() => {
-                                      history.push(
-                                        `/content_edits/${row.id}`
+                                      setOpen2(true);
+                                      setDropDownData(row?.id);
+                                      dispatch(
+                                        getContentLanguageById(
+                                          row?.id,
+                                          (item) => setRowId(item)
+                                        )
                                       );
-                                    }}/>
-                              
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                        ) : <div className="notDataDiv">No Data Available</div>} 
+                                    }}
+                                  >
+                                    Select Languages
+                                  </span>
+                                </TableCell>
+                                <TableCell
+                                  className="table_content tableRow1"
+                                  align="right"
+                                >
+                                  {row.action}
+                                  <div className="actionRow">
+                                    <EditIcon
+                                      style={{
+                                        color: "green",
+                                        fontSize: "20px",
+                                      }}
+                                      onClick={() => {
+                                        history.push(
+                                          `/content_edits/${row.id}`
+                                        );
+                                      }}
+                                    />
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        ) : (
+                          <div className="notDataDiv">No Data Available</div>
+                        )}
                       </Table>
                     </TableContainer>
                   </Paper>
                 </table>
               </div>
               {tableData?.contentData?.totalPages > 1 ? (
-            <Stack spacing={2}>
-            <Pagination
-             variant="outlined"
-             shape="rounded"
-             color="primary"
-                  count={tableData?.contentData?.totalPages}
-                  onChange={(e, value) => setPage(value)}
-                />
-            </Stack>
-             ) : (
-              ""
-            )}
+                <Stack spacing={2}>
+                  <Pagination
+                    variant="outlined"
+                    shape="rounded"
+                    color="primary"
+                    count={tableData?.contentData?.totalPages}
+                    onChange={(e, value) => setPage(value)}
+                  />
+                </Stack>
+              ) : (
+                ""
+              )}
             </div>
-              <div className="col-12 mb-4 mt-2" >
-                <Button  size="small"className="btn-cstm mx-1 mb-4" style={{ float: "right",marginLeft:'5px', }} onClick={()=>{
-                   setOpen1(true)
-                }}>
-                  Import 
-                </Button>
-               
-                <Button  size="small"className="btn-cstm  mb-4" style={{ float: "right" ,marginLeft:'5px'}} onClick={()=>{dispatch(exportContent())}}>
-                  Export 
-                </Button>
-              </div>
-             
+            <div className="col-12 mb-4 mt-2">
+              <Button
+                size="small"
+                className="btn-cstm mx-1 mb-4"
+                style={{ float: "right", marginLeft: "5px" }}
+                onClick={() => {
+                  setOpen1(true);
+                }}
+              >
+                Import
+              </Button>
+
+              <Button
+                size="small"
+                className="btn-cstm  mb-4"
+                style={{ float: "right", marginLeft: "5px" }}
+                onClick={() => {
+                  dispatch(exportContent());
+                }}
+              >
+                Export
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -308,10 +553,10 @@ export default function ContentManagement() {
         // getAllApi={getAllPages}
       />
 
-<Transition
+      <Transition
         open={open2}
         rowId={rowId}
-        redirectFunc={(langId,i) => {
+        redirectFunc={(langId, i) => {
           history.push(`/content_language/${langId}/${i?.id}`);
         }}
         langId={dropDownData}
@@ -320,21 +565,19 @@ export default function ContentManagement() {
         handleClose={handleClose2}
       />
 
-
       <Modal
-       open={open1}
-       // deleteItems={deleteItems}
-       fileData={fileData}
-       setFileData={setFileData}
-       dispatch={dispatch}
-       setOpen={setOpen1}
-       handleClickOpen={handleClickOpen1}
-       handleClose={handleClose1}
-       Heading="Import Content Block Data"
-       apiCall={(formData)=>{
-    dispatch(importContent(formData))
-       }}
-      
+        open={open1}
+        // deleteItems={deleteItems}
+        fileData={fileData}
+        setFileData={setFileData}
+        dispatch={dispatch}
+        setOpen={setOpen1}
+        handleClickOpen={handleClickOpen1}
+        handleClose={handleClose1}
+        Heading="Import Content Block Data"
+        apiCall={(formData) => {
+          dispatch(importContent(formData));
+        }}
       />
     </Fragment>
   );
