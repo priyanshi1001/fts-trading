@@ -23,24 +23,9 @@ export const SET_HEADER_BACKGROUND_COLOR = 'THEME_OPTIONS/SET_HEADER_BACKGROUND_
 
 export const LOADING= "loading";
  export const SIGN_UP= "signUp";
- export const US_TIN_TYPE="US_TIN_TYPE";
- export const COUNTRIES="COUNTRIES";
- export const LANGUAGES="LANGUAGE";
+
  
-  //Page API's
-  export const GET_ALL_PAGES= "GET_ALL_PAGES";
- export const DELETE_PAGE="DELETE_PAGE";
- export const CREATE_PAGE="CREATE_PAGE";
- export const PARENT_DROPDOWN="PARENT_DROPDOWN";
- export const GET_ALL_CONTENT="GET_ALL_CONTENT";
- export const GET_PAGE_BY_ID="GET_PAGE_BY_ID";
- export const UPDATE_PAGE="UPDATE_PAGE";
-  // AGENTS API's
- export const GET_ALL_AGENTS="GET_ALL_AGENTS";
- export const CREATE_AGENT="CREATE_AGENT";
- export const DELETE_AGENT="DELETE_AGENT";
- export const GET_AGENT_BY_ID="GET_AGENT_BY_ID";
- export const UPDATE_AGENT="UPDATE_AGENT";
+
 
  //Content API's
  export const  GET_CONTENT_BY_ID="GET_CONTENT_BY_ID";
