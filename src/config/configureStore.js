@@ -9,7 +9,7 @@ import {
   
   getAllContentReducer,
  
-
+  getAllContentTypeByIdReducer
   
 
 } from "../redux/Reducers";
@@ -20,7 +20,7 @@ export default function configureStore() {
       ...reducers,
 
       getAllContentReducer,
-  
+      getAllContentTypeByIdReducer
 
   
     }),
