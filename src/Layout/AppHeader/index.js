@@ -8,7 +8,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group'
 // import { useEffectOnce } from "../.././Translator/UseEffectOne.jsx";
 
 import HeaderLogo from '../AppLogo'
-
+import PageHeader from './header'
 // import SearchBox from "./Components/SearchBox";
 import MegaMenu from './Components/MegaMenu'
 import UserBox from './Components/UserBox'
@@ -23,72 +23,8 @@ class Header extends React.Component {
     }
   }
 
-  //   componentDidMount() {
-  //   var addScript = document.createElement("script");
-  //   addScript.setAttribute(
-  //     "src",
-  //     "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
-  //   );
-  //   document.body.appendChild(addScript);
-  //   window.googleTranslateElementInit = this.googleTranslateElementInit;
-  // }
-
-  // googleTranslateElementInit = () => {
-  //   new window.google.translate.TranslateElement(
-  //     {
-  //       pageLanguage: "en",
-  //       autoDisplay: false
-  //     },
-  //     "google_translate_element"
-  //   );
-  // };
-
-  // googleTranslateElementInit = () => {
-  //   new window.google.translate.TranslateElement(
-  //     {
-  //       pageLanguage: "en",
-  //       autoDisplay: false,
-  //     },
-  //     "google_translate_element"
-  //   );
-  // };
-
-  //  translator = () =>
-  // new Promise((resolve, reject) => {
-  //   var addScript = document.createElement('script');
-  //   addScript.setAttribute(
-  //     'src',
-  //     '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'
-  //   );
-  //   document.body.appendChild(addScript);
-  //   window.googleTranslateElementInit = this.googleTranslateElementInit;
-
-  //     //   addScript.setAttribute(
-  //     //  "src",
-  //     //  "translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
-  //     //  );
-  //     //  document.body.appendChild(addScript);
-  //     //  window.googleTranslateElementInit = this.googleTranslateElementInit;
-  // })
-
-  // translator = () => {
-  //   var addScript = document.createElement("script");
-  //   // var addScript =document.getElementById("script")
-  //   addScript.setAttribute(
-  //     "src",
-  //     "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
-  //     );
-  //     document.body.appendChild(addScript);
-  //     window.googleTranslateElementInit = this.googleTranslateElementInit;
-  //   };
-
-  // componentDidMount() {
-  //   const { translate } = this.state;
-  //   this.translator();
-  //   if (!translate) {
-  //     this.setState({ translate: true });
-  //   }
-  // }
+ 
+ 
 
   render () {
     let { headerBackgroundColor, enableMobileMenuSmall, enableHeaderShadow } =
@@ -106,29 +42,20 @@ class Header extends React.Component {
             enter={false}
             exit={false}
           >
-            <div>
+           <div>
+           <div>
               <HeaderLogo />
-              <div
-                className={cx('app-header__content', {
-                  'header-mobile-open': enableMobileMenuSmall
-                })}
-              >
-                <div className='app-header-left'>
-                  {/* <SearchBox />
-                   */}
-                    {/* <MegaMenu /> */}
-                   
-                </div>
-                <div className='app-header-right'>
-
-                  {/* <div id='google_translate_element'></div> */}
-                  <UserBox/>
-                  {/* <Button id="google_translate_element"></Button>
-                  <div id="script"></div> */}
-                  {/* <GoogleTranslate/> */}
-                </div>
+              </div>
+              <div>
+               
+                <div className='app-header-right mx-3'>
+<PageHeader/>
+                                  {/* <UserBox/> */}
+                
+              
               </div>
             </div>
+           </div>
           </CSSTransition>
         </TransitionGroup>
       </Fragment>
