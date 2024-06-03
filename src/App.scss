@@ -1,5 +1,141 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+h1, h2, h3, h4, h5, h6, p, a, ul, li, span, div, label, input, select, button, table, th, td, body {
+  font-family: "Inter", sans-serif !important;
+}
+h1, h2, h3, h4, h5, h6{
+  color: rgba(0, 0, 0, 1) !important;
+  text-transform: capitalize !important;
+}
+*{
+  box-sizing: border-box;
+}
 .fw-500{
     font-weight: 500 !important;
+}
+.textPurpal{
+  color:rgba(85, 112, 241, 1) !important;
+}
+.fs-6{
+  font-size: 1rem !important;
+  font-weight:500 !important;
+}
+.fs-7{
+  font-size: 0.8rem !important;
+  font-weight:500 !important;
+}
+.fw-medium{
+  font-weight: 500 !important;
+}
+.cardDesign{
+  border-radius: 12px !important;
+  -moz-border-radius: 12px !important;
+  -webkit-border-radius: 12px !important;
+  padding: 20px !important;
+  box-sizing: border-box;
+  box-shadow: none !important;
+  margin-bottom: 20px !important;
+  .cardHeader{
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+    gap: 10px;
+  }
+  .cardContent{
+    padding:0px !important;
+    .twopartContent{
+      display: flex;
+      flex-flow: column;
+      gap: 10px;
+      padding-left: 10px;
+      li{
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between !important;
+        gap:10px; 
+        color: rgba(104, 104, 104, 1);
+        font-size: 12px;
+        font-weight: 400;
+        padding-left: 10px;
+        &::before{
+          content: "";
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          background-color: rgba(85, 112, 241, 1);
+          position: absolute;
+          top:50%;
+          left: -10px;
+          transform: translate(0, -50%);
+        }
+        .digit{
+          color: #000;
+        }
+      }
+       
+    }
+  }
+}
+.grayBg{
+  background: rgba(244, 244, 244, 1) !important;
+}
+.list-group{
+  .list-group-item{ 
+    color: rgba(69, 70, 78, 1);
+    font-size: 14px !important;
+    font-weight: 500; 
+    border: none;
+  }
+}
+.stockInfo {
+  margin-bottom: 30px;
+  @media screen and (max-width: 992px) {
+    margin-bottom: 22px;
+  }
+  @media screen and (max-width: 768px) {
+    margin-bottom: 15px;
+  }
+  .list-group {
+    .list-group-item {
+      background: rgba(235, 238, 255, 1); 
+      padding: 10px 14px;
+      &:last-child{
+        background: rgba(191, 202, 255, 1);
+        color: rgba(85, 112, 241, 1);
+      }
+    }
+  }
+  p{
+    color: rgba(69, 70, 78, 1);
+    font-size: 14px;
+    font-weight: 400; 
+  }
+}
+
+.StockAction {
+  .list-group{
+    .list-group-item{
+      background: rgba(244, 244, 244, 1);  
+      padding: 10px 14px 8px;
+    }
+  }
+}   
+
+.StockActionClose{
+  .list-group{
+    .list-group-item{
+      background: rgba(235, 238, 255, 1);  
+      padding: 11px;
+    }
+  }
+  .form-check-input{
+    background-color: rgb(255, 255, 255) !important;
+    border-color: rgba(71, 167, 133, 1)!important;
+    &:checked{
+      background-color: rgba(71, 167, 133, 1)!important;
+      border-color: rgba(71, 167, 133, 1)!important;
+    }
+  }
 }
 .btn-cstm{
     background-color:#16639e !important;
@@ -17,6 +153,52 @@ table{
             }
         }
     }
+}
+.simpleTable{
+  thead{
+    tr{
+        th{
+            color: #000  !important;
+            font-size: 13px;
+            font-weight: 500 !important;
+            background-color: #fff !important;
+            padding: 1px 5px !important;
+            border-right: 2px solid #dadada;
+            text-align: center;
+            &:first-child, &:last-child{
+                border-right: none !important;
+            }
+        }
+        
+    }
+}
+tbody{
+    tr{
+        td{
+            font-size: 11px;
+            font-weight: 400 !important;
+            color: rgba(37, 37, 37, 1) !important;
+            padding: 3px !important;
+            text-align: center;
+        }
+    }
+}
+}
+.deleteBtn{
+  min-height: 20px;
+  min-width: 20px !important;
+  height: 26px;
+  width: 26px;
+  display: inline-block;
+  svg{
+    fill:rgb(85, 112, 241) !important ;
+  }
+  &:hover{
+    background-color: rgb(85, 112, 241) !important;
+    svg{
+      fill:rgb(255, 255, 255) !important ;
+    }
+  }
 }
 
 .logo-src{
@@ -150,10 +332,10 @@ font-family: "Roboto","Helvetica","Arial",sans-serif !important;
   
 }
 .app-main__outer{
-  background-color: #e4f3ff !important;
+  background-color: #f4f5fa !important;
 }
 .app-theme-white.app-container{
-  background-color: #e4f3ff !important;
+  background-color: #f4f5fa !important;
 }
 
 .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
@@ -318,3 +500,4 @@ display: none !important;
   color: red !important;
   font-size: 12px !important;
 }
+
