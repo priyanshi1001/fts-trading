@@ -50,7 +50,7 @@ class Header extends React.Component {
                
                 <div className='app-header-right mx-3'>
 <PageHeader/>
-                                  {/* <UserBox/> */}
+                                  <UserBox/>
                 
               
               </div>

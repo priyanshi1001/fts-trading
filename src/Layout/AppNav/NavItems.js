@@ -3,120 +3,44 @@ export const MainNav = [
   {
     icon: "pe-7s-note",
     label: "Dashboard",
-    to: "#/content",
+    to: "#/Dashboard",
   },
   {
     icon: "pe-7s-users",
     label: "Accounts",
-    to: "#/agent",
+    to: "#/Accounts",
   },
   {
     icon: "pe-7s-browser",
     label: "Stock Details",
-    to: "#/easy",
+    to: "#/Stocks_Details",
   },
   {
     icon: "pe-7s-notebook",
     label: "Pre-Build Screens",
-    to: "#/pages",
-    id: "page001"
+    to: "#/Screens",
+  
   }, 
  
   {
     icon: "pe-7s-note2",
     label: "Report",
-    to: "#/form_type",
+    to: "#/Report",
   }, 
 
   {
     icon: "pe-7s-global",
     label: "Watch List",
-    to: "#/languages",
+    to: "#/WatchList",
   },
    {
     icon: "pe-7s-news-paper",
     label: "Other Functions",
-    to: "#/lob",
+    to: "#/OtherFunctions",
 
   }, 
   
-  // {
-  //   icon: "pe-7s-copy-file",
-  //   label: "Documentation",
-  //   to: "#/documentation",
-  // },
-  // {
-  //   icon: "pe-7s-browser",
-  //   label: "Completed Forms",
-  //   to: "#/completed_Forms",
-  // },
-  // {
-  //   icon: "pe-7s-id",
-  //   label:"Form Instructions",
-  //   to: "#/form_instruction",
-  // },
-  // {
-  //   icon: "pe-7s-info",
-  //   label: "Rules",
-  //   to: "#/rules",
-  // },
-//   {
-//     icon: "pe-7s-box1",
-//     label: "Capacities",
-//     to: "#/capacities",
-//   },
-//   {
-//     icon: "pe-7s-bookmarks",
-//     label: "CDFs",
-//     to: "#/cdfs",
-//   },
-//   {
-//     icon: "pe-7s-tools",
-//     label: "Settings",
-//     to: "#/settings",
-//   },
-//   {
-//     icon: "pe-7s-repeat",
-//     label: "Token Sent",
-//     to: "#/tokens",
-//   },
  
-//   {
-//     icon: "pe-7s-safe",
-//     label: "Countries",
-//     to: "#/countries",
-//   },
-//   {
-//     icon: "pe-7s-add-user",
-//     label: "Administrators",
-//     to: "#/administrators",
-//   },
-//   {
-//     icon: "pe-7s-plugin",
-//     label: "EForms-Users",
-//     to:   "#/eForms_Users",
-//   },
-//   {
-//     icon: "pe-7s-network",
-//     label: "Audit Report",
-//     to: "#/reports",
-//   },
-// {
-//   icon:"pe-7s-keypad",
-//   label: "Service Audit Report",
-//   to: "#/audit_report"
-// },
-// {
-//   icon:"pe-7s-repeat",
-//   label: "Security Keys",
-//   to: "#/security_keys"
-// },
-// {
-//   icon:"pe-7s-help1",
-//   label: "Help Video",
-//   to: "#/help"
-// },
-
 
 ];
 export const ComponentsNav = [
