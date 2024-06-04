@@ -55,7 +55,7 @@ const Login = () => {
     if(data.email.trim()!=="" && data.password.trim()!=="")
    { dispatch(
       loginAction(data, () => {
-        history.push("/content");
+        history.push("/Dashboard");
         window.location.reload();
       })
     );}
