@@ -15,16 +15,30 @@ h1, h2, h3, h4, h5, h6{
 .textPurpal{
   color:rgba(85, 112, 241, 1) !important;
 }
+.semiGray{
+  color: rgba(69, 70, 78, 1) !important;
+}
+.lightGreenBg{
+  background: rgba(42, 163, 31, 0.34) !important;
+}
+ 
 .fs-6{
   font-size: 1rem !important;
   font-weight:500 !important;
 }
 .fs-7{
-  font-size: 0.8rem !important;
-  font-weight:500 !important;
+  font-size: 14px !important; 
 }
 .fw-medium{
   font-weight: 500 !important;
+}
+.borderd-purple{
+  border:1px solid rgba(85, 112, 241, 0.6);
+}
+.apperance-none{
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
 }
 .cardDesign{
   border-radius: 12px !important;
@@ -135,6 +149,34 @@ h1, h2, h3, h4, h5, h6{
       background-color: rgba(71, 167, 133, 1)!important;
       border-color: rgba(71, 167, 133, 1)!important;
     }
+  }
+}
+.bitTable{
+  thead{
+    tr{
+        th{ 
+          font-weight: 500 !important; 
+          font-size: 14px; 
+          padding-block: 4px; 
+          border-bottom: .5px solid rgba(207, 207, 207, 1) !important;
+          &:nth-child(even){
+            border-bottom-color: rgba(233, 218, 83, 1) !important;
+          }
+        }
+        }
+    }
+    tbody{
+        tr{
+            td{
+                font-size: 14px;
+                font-weight: 400 !important;
+            }
+        }
+    }
+}
+.totalShare{
+  input{
+    max-width: 80px;
   }
 }
 .btn-cstm{

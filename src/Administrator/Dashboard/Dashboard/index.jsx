@@ -18,7 +18,7 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import {
-  exportContent,
+  // exportContent,
   getAllContentType,
   getAllLanguages,
   getContentLanguageById,
@@ -116,7 +116,7 @@ export default function ContentManagement() {
 
   useEffect(() => {
     dispatch(getAllContentType(page, size, search));
-    dispatch(getAllLanguages());
+    // dispatch(getAllLanguages());
   }, []);
 
   return (
@@ -389,7 +389,59 @@ export default function ContentManagement() {
                             <Card className="cardDesign grayBg">
                               <CardContent className="cardContent">
                                 <div className="cardHeader mb-3">
-                                  <h6 className="fs-6">Current prices</h6>
+                                  <h6 className="fs-7 fw-500 semiGray">
+                                    Current prices
+                                  </h6>
+                                </div>
+                                <div className="bitTable">
+                                  <table className="table table-striped-columns table-borderless">
+                                    <thead>
+                                      <tr>
+                                        <th
+                                          scope="col"
+                                          className="semiGray bg-white"
+                                        >
+                                          Bid
+                                        </th>
+                                        <th
+                                          scope="col"
+                                          className="semiGray lightGreenBg"
+                                        >
+                                          Mid
+                                        </th>
+                                        <th
+                                          scope="col"
+                                          className="semiGray bg-white"
+                                        >
+                                          Ask
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td className=" bg-white">
+                                          <p className=" ">10:55</p>
+                                        </td>
+                                        <td className="  lightGreenBg">
+                                          <p className=" ">10:55</p>
+                                        </td>
+                                        <td className=" bg-white">
+                                          <p className=" ">10:55</p>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                                <div className="totalShare d-flex align-items-center justify-content-between">
+                                  <h5 className="fw-bold fs-7"># of Shares</h5>
+                                  <input
+                                    type="number"
+                                    className="form-control borderd-purple shadow-sm apperance-none"
+                                    min={"1"}
+                                    minLength={"1"}
+                                    max={"1000"}
+                                    maxLength={"1000"}
+                                  />
                                 </div>
                               </CardContent>
                             </Card>
@@ -534,7 +586,7 @@ export default function ContentManagement() {
                 className="btn-cstm  mb-4"
                 style={{ float: "right", marginLeft: "5px" }}
                 onClick={() => {
-                  dispatch(exportContent());
+                  // dispatch(exportContent());
                 }}
               >
                 Export
