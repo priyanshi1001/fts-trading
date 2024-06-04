@@ -19,7 +19,14 @@ export const getContentLanguageReducer = (state = initialState, action) => {
       return state;
   }
 };
-
+export const getAllContentTypeByIdReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case GET_ALL_CONTENT:
+      return { ...state, ...action.payload };
+    default:
+      return state;
+  }
+};
 export const getContentTranslationReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_CONTENT_TRANSLATION:
