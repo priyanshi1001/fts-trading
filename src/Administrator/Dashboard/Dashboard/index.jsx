@@ -234,79 +234,84 @@ export default function ContentManagement() {
                     </ul>
                   </CardContent>
                 </Card>
-                <Card className="cardDesign">
+                <Card
+                  className="cardDesign"
+                  sx={{ padding: "15px !important" }}
+                >
                   <CardContent className="cardContent">
                     <h6 className="fs-6 mb-3">Screen Triggered</h6>
-                    <table className="table w-100 simpleTable table-borderless">
-                      <thead>
-                        <tr>
-                          <th> </th>
-                          <th>Time</th>
-                          <th>Symbol</th>
-                          <th>Screen Trig</th>
-                          <th>Delete</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>
-                            <input
-                              type="radio"
-                              name="radio"
-                              className="form-check-input"
-                              id="radio1"
-                            />
-                          </td>
-                          <td>10:55</td>
-                          <td>AAPL</td>
-                          <td>PUBackinUptrnd</td>
-                          <td className="text-center">
-                            <Button className="btn btn-secondary rounded-circle px-2 deleteBtn">
-                              {" "}
-                              <DeleteOutlinedIcon fontSize="12px" />
-                            </Button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <input
-                              type="radio"
-                              name="radio"
-                              className="form-check-input"
-                              id="radio2"
-                            />
-                          </td>
-                          <td>10:55</td>
-                          <td>AAPL</td>
-                          <td>PUBackinUptrnd</td>
-                          <td className="text-center">
-                            <Button className="btn btn-secondary rounded-circle px-2 deleteBtn">
-                              {" "}
-                              <DeleteOutlinedIcon fontSize="12px" />
-                            </Button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <input
-                              type="radio"
-                              name="radio"
-                              className="form-check-input"
-                              id="radio3"
-                            />
-                          </td>
-                          <td>10:55</td>
-                          <td>AAPL</td>
-                          <td>PUBackinUptrnd</td>
-                          <td className="text-center">
-                            <Button className="btn btn-secondary rounded-circle px-2 deleteBtn">
-                              {" "}
-                              <DeleteOutlinedIcon fontSize="12px" />
-                            </Button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                    <div className="table-responsive">
+                      <table className="table w-100 simpleTable table-borderless">
+                        <thead>
+                          <tr>
+                            <th> </th>
+                            <th>Time</th>
+                            <th>Symbol</th>
+                            <th>Screen Trig</th>
+                            <th>Delete</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>
+                              <input
+                                type="radio"
+                                name="radio"
+                                className="form-check-input"
+                                id="radio1"
+                              />
+                            </td>
+                            <td>10:55</td>
+                            <td>AAPL</td>
+                            <td>PUBackinUptrnd</td>
+                            <td className="text-center">
+                              <Button className="btn btn-secondary rounded-circle px-2 deleteBtn">
+                                {" "}
+                                <DeleteOutlinedIcon fontSize="12px" />
+                              </Button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <input
+                                type="radio"
+                                name="radio"
+                                className="form-check-input"
+                                id="radio2"
+                              />
+                            </td>
+                            <td>10:55</td>
+                            <td>AAPL</td>
+                            <td>PUBackinUptrnd</td>
+                            <td className="text-center">
+                              <Button className="btn btn-secondary rounded-circle px-2 deleteBtn">
+                                {" "}
+                                <DeleteOutlinedIcon fontSize="12px" />
+                              </Button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <input
+                                type="radio"
+                                name="radio"
+                                className="form-check-input"
+                                id="radio3"
+                              />
+                            </td>
+                            <td>10:55</td>
+                            <td>AAPL</td>
+                            <td>PUBackinUptrnd</td>
+                            <td className="text-center">
+                              <Button className="btn btn-secondary rounded-circle px-2 deleteBtn">
+                                {" "}
+                                <DeleteOutlinedIcon fontSize="12px" />
+                              </Button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </CardContent>
                 </Card>
               </div>
@@ -605,7 +610,12 @@ export default function ContentManagement() {
                           </div>
                           <div className="col-12 mt-2">
                             <div className="btn-box d-flex align-items-center justify-content-end">
-                              <button className="btn btn-lg rounded-3 btn-purple">
+                              <button
+                                className="btn btn-lg rounded-3 btn-purple"
+                                onClick={() => {
+                                  setOpen1(true);
+                                }}
+                              >
                                 submit
                               </button>
                             </div>
@@ -618,171 +628,304 @@ export default function ContentManagement() {
               </div>
             </div>
             <div className=" row">
-              <div className="col-12">
-                <table class="table table-hover table-striped">
-                  <Card className="cardDesign">
-                    <Box className="tableHeader">
-                      <Grid container spacing={1} p={"0 !important"}>
-                        <Grid
-                          item
-                          xs={"auto"}
-                          sx={{ flexGrow: " 1 !important" }}
-                        >
-                          <Typography variant="h6" className="tableHeading">
-                            Existing Position{" "}
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={"auto"}>
-                          <Box className="btn-box d-flex align-items-center justify-content-end gap-3">
-                            <button className="btn btn-sm btn-outline-lightBlue">
-                              Today’s UR NetGn/Ls - 900
-                            </button>
-                            <button className="btn btn-sm btn-outline-orange">
-                              Today’s UR Gn/Ls - 2164
-                            </button>
-                            <button className="btn btn-sm btn-outline-lightYellow">
-                              System exit Yes/No-0
-                            </button>
-                            <button className="btn btn-sm btn-blue">
-                              Preview
-                              <svg
-                                width="12"
-                                height="17"
-                                viewBox="0 0 12 17"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                                style={{ marginInlineStart: "10px" }}
-                              >
-                                <path
-                                  d="M11.376 8.9161L0.77735 15.9818C0.54759 16.135 0.23715 16.0729 0.0839701 15.8432C0.0292201 15.761 0 15.6645 0 15.5658V1.43433C0 1.15818 0.22386 0.934326 0.5 0.934326C0.59871 0.934326 0.69522 0.963546 0.77735 1.0183L11.376 8.084C11.6057 8.2372 11.6678 8.5477 11.5146 8.7774C11.478 8.8323 11.4309 8.8795 11.376 8.9161Z"
-                                  fill="white"
-                                />
-                              </svg>
-                            </button>
-                          </Box>
-                        </Grid>
+              <div className="col-12 mb-1">
+                <Card className="cardDesign">
+                  <Box className="tableHeader">
+                    <Grid container spacing={1} p={"0 !important"}>
+                      <Grid item xs={"auto"} sx={{ flexGrow: " 1 !important" }}>
+                        <Typography variant="h6" className="tableHeading">
+                          Existing Position{" "}
+                        </Typography>
                       </Grid>
-                    </Box>
-                    <TableContainer className="tableDesignFrame">
-                      <Table
-                        sx={{ minWidth: 650 }}
-                        class="table table-hover table-striped tableDesign"
-                      >
-                        <TableHead>
-                          <TableRow className="tableRow1">
-                            <TableCell
-                              align="left"
-                              className="table_head tableRow1"
+                      <Grid item xs={"auto"}>
+                        <Box className="btn-box d-flex align-items-center justify-content-end gap-3">
+                          <button className="btn btn-sm btn-outline-lightBlue">
+                            Today’s UR NetGn/Ls - 900
+                          </button>
+                          <button className="btn btn-sm btn-outline-orange">
+                            Today’s UR Gn/Ls - 2164
+                          </button>
+                          <button className="btn btn-sm btn-outline-lightYellow">
+                            System exit Yes/No-0
+                          </button>
+                          <button className="btn btn-sm btn-blue">
+                            Preview
+                            <svg
+                              width="12"
+                              height="17"
+                              viewBox="0 0 12 17"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                              style={{ marginInlineStart: "10px" }}
                             >
-                              Name
-                            </TableCell>
+                              <path
+                                d="M11.376 8.9161L0.77735 15.9818C0.54759 16.135 0.23715 16.0729 0.0839701 15.8432C0.0292201 15.761 0 15.6645 0 15.5658V1.43433C0 1.15818 0.22386 0.934326 0.5 0.934326C0.59871 0.934326 0.69522 0.963546 0.77735 1.0183L11.376 8.084C11.6057 8.2372 11.6678 8.5477 11.5146 8.7774C11.478 8.8323 11.4309 8.8795 11.376 8.9161Z"
+                                fill="white"
+                              />
+                            </svg>
+                          </button>
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                  <TableContainer className="tableDesignFrame">
+                    <Table
+                      sx={{ minWidth: 650 }}
+                      class="table table-hover table-striped tableDesign"
+                    >
+                      <TableHead>
+                        <TableRow className="tableRow1">
+                          <TableCell
+                            align="left"
+                            className="table_head tableRow1"
+                          >
+                            Name
+                          </TableCell>
 
-                            <TableCell
-                              align="left"
-                              className="table_head tableRow1"
-                            >
-                              Translations
-                            </TableCell>
+                          <TableCell
+                            align="left"
+                            className="table_head tableRow1"
+                          >
+                            Translations
+                          </TableCell>
 
-                            <TableCell
-                              align="right"
-                              className="table_head tableRow1"
+                          <TableCell
+                            align="right"
+                            className="table_head tableRow1"
+                          >
+                            Action
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      {tableData?.contentData &&
+                      tableData?.contentData?.records?.length ? (
+                        <TableBody>
+                          {tableData?.contentData?.records.map((row) => (
+                            <TableRow
+                              align="left"
+                              className="tableRow1"
+                              key={row.name}
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  border: 0,
+                                },
+                              }}
                             >
-                              Action
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        {tableData?.contentData &&
-                        tableData?.contentData?.records?.length ? (
-                          <TableBody>
-                            {tableData?.contentData?.records.map((row) => (
-                              <TableRow
+                              <TableCell className="table_content tableRow1">
+                                {row.name}
+                              </TableCell>
+
+                              <TableCell
                                 align="left"
-                                className="tableRow1"
-                                key={row.name}
-                                sx={{
-                                  "&:last-child td, &:last-child th": {
-                                    border: 0,
-                                  },
-                                }}
+                                className="table_content tableRow1"
+                                // onClick={() => getLangById(row.id)}
                               >
-                                <TableCell className="table_content tableRow1">
-                                  {row.name}
-                                </TableCell>
-
-                                <TableCell
-                                  align="left"
-                                  className="table_content tableRow1"
-                                  // onClick={() => getLangById(row.id)}
+                                <span
+                                  className="addSubpage "
+                                  onClick={() => {
+                                    setOpen2(true);
+                                    setDropDownData(row?.id);
+                                    dispatch(
+                                      getContentLanguageById(row?.id, (item) =>
+                                        setRowId(item)
+                                      )
+                                    );
+                                  }}
                                 >
-                                  <span
-                                    className="addSubpage "
-                                    onClick={() => {
-                                      setOpen2(true);
-                                      setDropDownData(row?.id);
-                                      dispatch(
-                                        getContentLanguageById(
-                                          row?.id,
-                                          (item) => setRowId(item)
-                                        )
-                                      );
+                                  Select Languages
+                                </span>
+                              </TableCell>
+                              <TableCell
+                                className="table_content tableRow1"
+                                align="right"
+                              >
+                                {row.action}
+                                <div className="actionRow">
+                                  <EditIcon
+                                    style={{
+                                      color: "green",
+                                      fontSize: "20px",
                                     }}
-                                  >
-                                    Select Languages
-                                  </span>
-                                </TableCell>
-                                <TableCell
-                                  className="table_content tableRow1"
-                                  align="right"
-                                >
-                                  {row.action}
-                                  <div className="actionRow">
-                                    <EditIcon
-                                      style={{
-                                        color: "green",
-                                        fontSize: "20px",
-                                      }}
-                                      onClick={() => {
-                                        history.push(
-                                          `/content_edits/${row.id}`
-                                        );
-                                      }}
-                                    />
-                                  </div>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        ) : (
-                          <div className="notDataDiv">No Data Available</div>
-                        )}
-                      </Table>
-                    </TableContainer>
-                  </Card>
-                </table>
+                                    onClick={() => {
+                                      history.push(`/content_edits/${row.id}`);
+                                    }}
+                                  />
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      ) : (
+                        <div className="notDataDiv">No Data Available</div>
+                      )}
+                    </Table>
+                  </TableContainer>
+                  <Box className="tableFooter">
+                    {tableData?.contentData?.totalPages > 1 ? (
+                      <Stack spacing={2}>
+                        <Pagination
+                          className="d-flex justify-content-end"
+                          variant="outlined"
+                          shape="rounded"
+                          color="primary"
+                          count={tableData?.contentData?.totalPages}
+                          onChange={(e, value) => setPage(value)}
+                        />
+                      </Stack>
+                    ) : (
+                      ""
+                    )}
+                  </Box>
+                </Card>
               </div>
-              {tableData?.contentData?.totalPages > 1 ? (
-                <Stack spacing={2}>
-                  <Pagination
-                    variant="outlined"
-                    shape="rounded"
-                    color="primary"
-                    count={tableData?.contentData?.totalPages}
-                    onChange={(e, value) => setPage(value)}
-                  />
-                </Stack>
-              ) : (
-                ""
-              )}
+              <div className="col-12 mb-3">
+                <Card className="cardDesign">
+                  <Box className="tableHeader">
+                    <Grid container spacing={1} p={"0 !important"}>
+                      <Grid item xs={"auto"} sx={{ flexGrow: " 1 !important" }}>
+                        <Typography variant="h6" className="tableHeading">
+                          Open Order
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={"auto"}>
+                        <Box className="btn-box d-flex align-items-center justify-content-end gap-3">
+                          <button className="btn btn-sm btn-blue">
+                            Preview
+                            <svg
+                              width="12"
+                              height="17"
+                              viewBox="0 0 12 17"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                              style={{ marginInlineStart: "10px" }}
+                            >
+                              <path
+                                d="M11.376 8.9161L0.77735 15.9818C0.54759 16.135 0.23715 16.0729 0.0839701 15.8432C0.0292201 15.761 0 15.6645 0 15.5658V1.43433C0 1.15818 0.22386 0.934326 0.5 0.934326C0.59871 0.934326 0.69522 0.963546 0.77735 1.0183L11.376 8.084C11.6057 8.2372 11.6678 8.5477 11.5146 8.7774C11.478 8.8323 11.4309 8.8795 11.376 8.9161Z"
+                                fill="white"
+                              />
+                            </svg>
+                          </button>
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                  <TableContainer className="tableDesignFrame">
+                    <Table
+                      sx={{ minWidth: 650 }}
+                      class="table table-hover table-striped tableDesign"
+                    >
+                      <TableHead>
+                        <TableRow className="tableRow1">
+                          <TableCell
+                            align="left"
+                            className="table_head tableRow1"
+                          >
+                            Name
+                          </TableCell>
+
+                          <TableCell
+                            align="left"
+                            className="table_head tableRow1"
+                          >
+                            Translations
+                          </TableCell>
+
+                          <TableCell
+                            align="right"
+                            className="table_head tableRow1"
+                          >
+                            Action
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      {tableData?.contentData &&
+                      tableData?.contentData?.records?.length ? (
+                        <TableBody>
+                          {tableData?.contentData?.records.map((row) => (
+                            <TableRow
+                              align="left"
+                              className="tableRow1"
+                              key={row.name}
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  border: 0,
+                                },
+                              }}
+                            >
+                              <TableCell className="table_content tableRow1">
+                                {row.name}
+                              </TableCell>
+
+                              <TableCell
+                                align="left"
+                                className="table_content tableRow1"
+                                // onClick={() => getLangById(row.id)}
+                              >
+                                <span
+                                  className="addSubpage "
+                                  onClick={() => {
+                                    setOpen2(true);
+                                    setDropDownData(row?.id);
+                                    dispatch(
+                                      getContentLanguageById(row?.id, (item) =>
+                                        setRowId(item)
+                                      )
+                                    );
+                                  }}
+                                >
+                                  Select Languages
+                                </span>
+                              </TableCell>
+                              <TableCell
+                                className="table_content tableRow1"
+                                align="right"
+                              >
+                                {row.action}
+                                <div className="actionRow">
+                                  <EditIcon
+                                    style={{
+                                      color: "green",
+                                      fontSize: "20px",
+                                    }}
+                                    onClick={() => {
+                                      history.push(`/content_edits/${row.id}`);
+                                    }}
+                                  />
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      ) : (
+                        <div className="notDataDiv">No Data Available</div>
+                      )}
+                    </Table>
+                  </TableContainer>
+                  <Box className="tableFooter">
+                    {tableData?.contentData?.totalPages > 1 ? (
+                      <Stack spacing={2}>
+                        <Pagination
+                          className="d-flex justify-content-end"
+                          variant="outlined"
+                          shape="rounded"
+                          color="primary"
+                          count={tableData?.contentData?.totalPages}
+                          onChange={(e, value) => setPage(value)}
+                        />
+                      </Stack>
+                    ) : (
+                      ""
+                    )}
+                  </Box>
+                </Card>
+              </div>
             </div>
-            <div className="col-12 mb-4 mt-2">
+            {/* <div className="col-12 mb-4 mt-2">
               <Button
                 size="small"
                 className="btn-cstm mx-1 mb-4"
                 style={{ float: "right", marginLeft: "5px" }}
-                onClick={() => {
-                  setOpen1(true);
-                }}
+                
               >
                 Import
               </Button>
@@ -797,7 +940,7 @@ export default function ContentManagement() {
               >
                 Export
               </Button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -832,7 +975,7 @@ export default function ContentManagement() {
         setOpen={setOpen1}
         handleClickOpen={handleClickOpen1}
         handleClose={handleClose1}
-        Heading="Import Content Block Data"
+        Heading="Confirm Order "
         apiCall={(formData) => {
           dispatch(importContent(formData));
         }}

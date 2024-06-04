@@ -32,6 +32,15 @@ h1, h2, h3, h4, h5, h6{
     background-color: rgb(71, 96, 218);
   }
 }
+.btn-outline-purple{
+  background: rgba(255, 255, 255, 1);
+  border: 2px solid rgba(85, 112, 241, 1);
+  color: rgba(85, 112, 241, 1);
+  &:hover{
+    background: rgba(85, 112, 241, 1);
+    color: #fff;
+  }
+}
 .btn-outline-lightBlue{
   background: rgba(127, 170, 255, 0.3);
   border: 1px solid rgba(12, 105, 192, 1);
@@ -63,6 +72,12 @@ h1, h2, h3, h4, h5, h6{
 .textPurpal{
   color:rgba(85, 112, 241, 1) !important;
 }
+.text-gray{
+color: rgba(104, 104, 104, 1) !important;
+}
+.text-dark-gray{
+  color: rgba(69, 70, 78, 1) !important;
+}
 .semiGray{
   color: rgba(69, 70, 78, 1) !important;
 }
@@ -88,6 +103,19 @@ h1, h2, h3, h4, h5, h6{
   -moz-appearance: none;
   -webkit-appearance: none;
 }
+
+// modal design
+.modal-header{
+  font-size: 27px !important;
+  font-weight: 600 !important;
+  color: rgba(69, 70, 78, 1) !important;
+  text-align: center !important;
+  justify-content: center;
+  background: #fff !important;
+  margin-bottom: 40px !important;
+}
+
+// card design
 .cardDesign{
   border-radius: 12px !important;
   -moz-border-radius: 12px !important;
@@ -202,6 +230,11 @@ h1, h2, h3, h4, h5, h6{
 .tableHeader {
   margin-bottom:22px ;
 }
+.tableHeading {
+  font-size: 16px !important;
+  font-weight: 500;
+  color: rgba(69, 70, 78, 1) !important;
+}
 .tableDesignFrame{
   width: 100%;
   overflow-x: auto;
@@ -219,6 +252,34 @@ h1, h2, h3, h4, h5, h6{
     text-align: left !important;
     background: #fff !important;
   }
+ }
+ tbody{
+  tr{
+    font-size: 14px;
+      font-weight: 400;
+      color: rgba(110, 112, 121, 1);
+      --bs-table-accent-bg: rgb(255, 255, 255);
+      &:hover{
+        --bs-table-accent-bg: rgb(220, 220, 220);
+      }
+    td{
+      padding: 15px 20px 16px !important;
+      font-size: 14px !important;
+      font-weight: 400 !important;
+      color:rgba(110, 112, 121, 1) !important ;
+      .addSubpage{
+        color: rgba(85, 112, 241, 1) !important;
+        font-weight: 500 !important;
+        text-decoration: none !important;
+      }
+    }
+  }
+  tr:nth-of-type(odd) {
+      --bs-table-accent-bg:rgba(248, 248, 248, 1) ; 
+      &:hover {
+          --bs-table-accent-bg: rgb(220, 220, 220);
+        }
+    }
  }
 }
 
@@ -669,8 +730,15 @@ display: none !important;
   font-size: 12px !important;
 }
 
-.actionRow svg:hover{
-  cursor: pointer !important;
+.actionRow{
+  text-align: center;
+  svg{
+    display: inline-block;
+    color: #333 !important;
+    &:hover {
+        cursor: pointer !important;
+      }
+  }
 }
 .Login-Heading{
   

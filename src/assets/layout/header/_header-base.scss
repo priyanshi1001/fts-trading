@@ -4,12 +4,13 @@
   height: $app-header-height;
   display: flex;
   width: 99%;
-  align-items: center;
-  align-content: center;
+  align-items: center; 
+  justify-content: space-between;
   position: relative;
   z-index: 10;
   transition: all .2s;
-
+  background-color: #fff !important;
+  box-shadow: $box-shadow-default;
   // &.header-shadow {
   //   // box-shadow: $box-shadow-default;
   // }
