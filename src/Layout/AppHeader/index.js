@@ -33,6 +33,7 @@ class Header extends React.Component {
       <Fragment>
         <TransitionGroup>
           <CSSTransition
+            style={{justifyContent:"space-between"}}
             component='div'
             className={cx('app-header', headerBackgroundColor, {
               'header-shadow': enableHeaderShadow
@@ -53,6 +54,8 @@ class Header extends React.Component {
                 <div className='app-header-right'>
 {/* <MegaMenu/> */}
                                   <UserBox/>
+                                 
+
                 
               
               </div>
