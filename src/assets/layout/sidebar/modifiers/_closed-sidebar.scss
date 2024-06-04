@@ -29,7 +29,7 @@
 
       .metismenu-link {
         text-indent: -99rem;
-        padding: 0;
+        padding: 16px  !important;
       }
 
       .metismenu-icon {
@@ -68,12 +68,12 @@
 
         .metismenu-link {
           text-indent: initial;
-          padding: 0 $layout-spacer-x 0 45px;
+          padding:16px 16px 16px 55px !important;
         }
 
         .metismenu-icon {
           text-indent: initial;
-          left: 5px;
+          left: 15px;
           margin-left: 0;
         }
 
