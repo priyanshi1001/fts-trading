@@ -42,14 +42,16 @@ class Header extends React.Component {
             enter={false}
             exit={false}
           >
-           <div>
+           <div  className={cx('app-header__content', {
+                  'header-mobile-open': enableMobileMenuSmall
+                })}>
            <div>
               <HeaderLogo />
               </div>
               <div>
                
-                <div className='app-header-right mx-3'>
-<PageHeader/>
+                <div className='app-header-right'>
+{/* <MegaMenu/> */}
                                   <UserBox/>
                 
               
