@@ -1,4 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+*{
+  box-sizing: border-box;
+}
 h1, h2, h3, h4, h5, h6, p, a, ul, li, span, div, label, input, select, button, table, th, td, body {
   font-family: "Inter", sans-serif !important;
 }
@@ -6,8 +9,23 @@ h1, h2, h3, h4, h5, h6{
   color: rgba(0, 0, 0, 1) !important;
   text-transform: capitalize !important;
 }
-*{
-  box-sizing: border-box;
+// button design
+.btn{
+  text-transform: capitalize;
+  text-align: center;
+}
+.btn-purple{
+  background-color: rgba(85, 112, 241, 1);
+  color: #fff;
+  &:hover{
+    color: #fff;
+    background-color: rgb(71, 96, 218);
+  }
+}
+.btn-lg{
+  font-size: 16px;
+  width: 100%;
+  max-width: 160px;
 }
 .fw-500{
     font-weight: 500 !important;
@@ -247,7 +265,56 @@ h1, h2, h3, h4, h5, h6{
   -moz-appearance: none;
   -webkit-appearance: none;
 }
-
+.existingPosition{
+  .list-group{
+    .list-group-item{
+      display: flex;
+      align-items: center;
+      justify-content: space-between !important;
+      padding: 3px 0 !important;
+      background-color: transparent !important;
+      font-size: 13px !important;
+      color: rgba(69, 70, 78, 1) !important;
+      font-weight: 400 !important;
+      .value{
+        font-size: 14px !important;
+        font-weight: 500;
+        color: #000;
+      }
+    }
+  }
+}
+.positionList{
+  ul{
+  display: flex;
+  flex-flow: row nowrap;
+  background: #fff;
+  li{
+    width: 25%;
+    padding: 5px 10px;
+    text-align: center;
+    background: rgba(245, 126, 119, 0.16);
+    color: rgba(0, 0, 0, 1);
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .recomended{
+    background: rgba(85, 112, 241, 1);
+    color: #fff;
+  }
+  }
+}
+.totalPosition, .totalPosition ul{
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  gap:30px;
+}
+.totalPosition ul li{
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(37, 123, 92, 1);
+}
 table{
     thead{
         tr{
@@ -312,7 +379,7 @@ tbody{
 }
 
 .app-sidebar__heading , .metismenu-link{
-    color: #0b0c0c !important;
+    color: #0b0c0c ;
 }
 .rdw-editor-wrapper{
     border: 1px solid;
@@ -426,8 +493,8 @@ font-family: "Roboto","Helvetica","Arial",sans-serif !important;
  
 }
 .metismenu-item a{
-  line-height: 3rem !important;
-  height: 3rem !important;
+  // line-height: 3rem !important;
+  // height: 3rem !important;
 
 }
 .metismenu-item .active i{

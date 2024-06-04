@@ -197,7 +197,7 @@ export default function ContentManagement() {
                   </Link>
                 </div>
               </div>
-              <div className="col-lg-3 col-md-3 col-12">
+              <div className="col-lg-3 col-md-12 col-12">
                 <Card className="cardDesign">
                   <CardContent className="cardContent">
                     <h6 className="fs-6 mb-3">Account Information</h6>
@@ -309,7 +309,7 @@ export default function ContentManagement() {
                   </CardContent>
                 </Card>
               </div>
-              <div className="col-lg-9 col-md-9 col-12">
+              <div className="col-lg-9 col-md-12 col-12">
                 <Card className="cardDesign">
                   <div className="cardHeader mb-lg-5 mb-md-4 mb-sm-3 mb-3">
                     <h6 className="fs-6 mb-3">Order Ticket- Stock</h6>
@@ -386,7 +386,10 @@ export default function ContentManagement() {
                       <div className="col-md-9 col-12">
                         <div className="row">
                           <div className="col-md-6 col-12">
-                            <Card className="cardDesign grayBg">
+                            <Card
+                              className="cardDesign grayBg"
+                              style={{ height: "calc(100% - 20px)" }}
+                            >
                               <CardContent className="cardContent">
                                 <div className="cardHeader mb-3">
                                   <h6 className="fs-7 fw-500 semiGray">
@@ -496,10 +499,115 @@ export default function ContentManagement() {
                                       </div>
                                     </Card>
                                   </div>
-                                  <div className="col-6"></div>
+                                  <div className="col-6">
+                                    <Card className="orderCard shadow-none rounded-1">
+                                      <div className="card-header h-auto p-2">
+                                        <h6 className="fs-7 fw-500 mb-0">
+                                          Max- Y
+                                        </h6>
+                                      </div>
+                                      <div className="card-body p-0">
+                                        <ul className="list-group ">
+                                          <li className="list-group-item">
+                                            Market Order
+                                          </li>
+                                          <li className="list-group-item ">
+                                            &nbsp;
+                                          </li>
+                                          <li className="list-group-item">
+                                            Stop Loss
+                                          </li>
+                                        </ul>
+                                        <div className="priceWithProfit">
+                                          <label htmlFor="addMoney"> $ </label>
+                                          <input
+                                            type="number"
+                                            id="addMoney"
+                                            className="apperance-none"
+                                          />
+                                          <select name="" id="" class="">
+                                            <optgroup>
+                                              <option value="">0%</option>
+                                              <option value="">1%</option>
+                                              <option value="">2%</option>
+                                              <option value="">3%</option>
+                                              <option value="">4%</option>
+                                              <option value="">5%</option>
+                                              <option value="">6%</option>
+                                              <option value="">7%</option>
+                                              <option value="">8%</option>
+                                            </optgroup>
+                                          </select>
+                                        </div>
+                                      </div>
+                                    </Card>
+                                  </div>
                                 </div>
                               </CardContent>
                             </Card>
+                          </div>
+                          <div className="col-md-6 col-12">
+                            <Card
+                              className="cardDesign grayBg "
+                              style={{ height: "calc(100% - 20px)" }}
+                            >
+                              <CardContent className="cardContent">
+                                <div className="cardHeader mb-0">
+                                  <h6 className="fs-7 fw-500 semiGray">
+                                    Existing Position
+                                  </h6>
+                                </div>
+                                <div className="card-body p-0">
+                                  <div className="existingPosition">
+                                    <ul className="list-group">
+                                      <li className="list-group-item">
+                                        Existing Value of AAPL
+                                        <span className="value">$11,000</span>
+                                      </li>
+                                      <li className="list-group-item">
+                                        % of Live Account Value
+                                        <span className="value"> 11%</span>
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </div>
+                          <div className="col-md-6 col-12">
+                            <Card className="cardDesign grayBg ">
+                              <CardContent className="cardContent">
+                                <div className="cardHeader mb-0">
+                                  <h6 className="fs-7 fw-500 semiGray">
+                                    Add to Position
+                                  </h6>
+                                </div>
+                                <div className="card-body p-0">
+                                  <div className="positionList">
+                                    <ul className="list-unstyled">
+                                      <li>5% </li>
+                                      <li className="recomended">10% </li>
+                                      <li>15% </li>
+                                    </ul>
+                                  </div>
+                                </div>
+                                <div className="card-footer bg-transparent border-0 px-0 pb-0 mt-5">
+                                  <div className="totalPosition">
+                                    <ul className="list-unstyled mb-0">
+                                      <li>$ 298,739</li>
+                                      <li>28%</li>
+                                    </ul>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </div>
+                          <div className="col-12 mt-2">
+                            <div className="btn-box d-flex align-items-center justify-content-end">
+                              <button className="btn btn-lg rounded-3 btn-purple">
+                                submit
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
