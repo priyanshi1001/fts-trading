@@ -1,4 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+*{
+  box-sizing: border-box;
+}
 h1, h2, h3, h4, h5, h6, p, a, ul, li, span, div, label, input, select, button, table, th, td, body {
   font-family: "Inter", sans-serif !important;
 }
@@ -6,8 +9,23 @@ h1, h2, h3, h4, h5, h6{
   color: rgba(0, 0, 0, 1) !important;
   text-transform: capitalize !important;
 }
-*{
-  box-sizing: border-box;
+// button design
+.btn{
+  text-transform: capitalize;
+  text-align: center;
+}
+.btn-purple{
+  background-color: rgba(85, 112, 241, 1);
+  color: #fff;
+  &:hover{
+    color: #fff;
+    background-color: rgb(71, 96, 218);
+  }
+}
+.btn-lg{
+  font-size: 16px;
+  width: 100%;
+  max-width: 160px;
 }
 .fw-500{
     font-weight: 500 !important;
@@ -15,16 +33,30 @@ h1, h2, h3, h4, h5, h6{
 .textPurpal{
   color:rgba(85, 112, 241, 1) !important;
 }
+.semiGray{
+  color: rgba(69, 70, 78, 1) !important;
+}
+.lightGreenBg{
+  background: rgba(42, 163, 31, 0.34) !important;
+}
+ 
 .fs-6{
   font-size: 1rem !important;
   font-weight:500 !important;
 }
 .fs-7{
-  font-size: 0.8rem !important;
-  font-weight:500 !important;
+  font-size: 14px !important; 
 }
 .fw-medium{
   font-weight: 500 !important;
+}
+.borderd-purple{
+  border:1px solid rgba(85, 112, 241, 0.6);
+}
+.apperance-none{
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
 }
 .cardDesign{
   border-radius: 12px !important;
@@ -137,6 +169,34 @@ h1, h2, h3, h4, h5, h6{
     }
   }
 }
+.bitTable{
+  thead{
+    tr{
+        th{ 
+          font-weight: 500 !important; 
+          font-size: 14px; 
+          padding-block: 4px; 
+          border-bottom: .5px solid rgba(207, 207, 207, 1) !important;
+          &:nth-child(even){
+            border-bottom-color: rgba(233, 218, 83, 1) !important;
+          }
+        }
+        }
+    }
+    tbody{
+        tr{
+            td{
+                font-size: 14px;
+                font-weight: 400 !important;
+            }
+        }
+    }
+}
+.totalShare{
+  input{
+    max-width: 80px;
+  }
+}
 .btn-cstm{
     background-color:#16639e !important;
     border-color: #16639e!important;
@@ -144,6 +204,116 @@ h1, h2, h3, h4, h5, h6{
 }
 .btn-cstm:hover{
     opacity: 1 !important;
+}
+
+.orderCard{
+  .list-group{
+    .list-group-item{
+      font-size: 13px !important;
+      font-weight: 700;
+      color: #45464E;
+    }
+    .list-group-item.maxProfitNumber{
+      background-color: rgba(85, 111, 241, 0.4);
+      color: #5570F1;
+      font-size: 14px !important;
+      font-weight: 500;
+    }
+  }
+}
+
+.priceWithProfit{
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap:10px;
+  border: 1px solid #00000080;
+  border-radius: 2px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  padding: 5px;
+  label{
+    color: #5570F1;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  select, input[type="number"]{
+    border:none;
+    width: 100%;
+    color: rgba(83, 84, 92, 0.7);
+    font-size: 14px;
+    font-weight: 500; 
+    &:hover, &:focus-within{
+      border: none;
+      outline: none;
+    }
+  }
+    select{
+      max-width: 40px;
+      text-align: center;
+      font-size: 12px;
+      color: rgba(69, 70, 78, 1);
+      font-weight: 400;
+      optgroup{
+        height: 100px;
+        overflow-y: auto;
+      }
+    }
+}
+.apperance-none, .apperance-none:hover{
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+}
+.existingPosition{
+  .list-group{
+    .list-group-item{
+      display: flex;
+      align-items: center;
+      justify-content: space-between !important;
+      padding: 3px 0 !important;
+      background-color: transparent !important;
+      font-size: 13px !important;
+      color: rgba(69, 70, 78, 1) !important;
+      font-weight: 400 !important;
+      .value{
+        font-size: 14px !important;
+        font-weight: 500;
+        color: #000;
+      }
+    }
+  }
+}
+.positionList{
+  ul{
+  display: flex;
+  flex-flow: row nowrap;
+  background: #fff;
+  li{
+    width: 25%;
+    padding: 5px 10px;
+    text-align: center;
+    background: rgba(245, 126, 119, 0.16);
+    color: rgba(0, 0, 0, 1);
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .recomended{
+    background: rgba(85, 112, 241, 1);
+    color: #fff;
+  }
+  }
+}
+.totalPosition, .totalPosition ul{
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  gap:30px;
+}
+.totalPosition ul li{
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(37, 123, 92, 1);
 }
 table{
     thead{
@@ -209,7 +379,7 @@ tbody{
 }
 
 .app-sidebar__heading , .metismenu-link{
-    color: #0b0c0c !important;
+    color: #0b0c0c ;
 }
 .rdw-editor-wrapper{
     border: 1px solid;
@@ -323,8 +493,8 @@ font-family: "Roboto","Helvetica","Arial",sans-serif !important;
  
 }
 .metismenu-item a{
-  line-height: 3rem !important;
-  height: 3rem !important;
+  // line-height: 3rem !important;
+  // height: 3rem !important;
 
 }
 .metismenu-item .active i{
