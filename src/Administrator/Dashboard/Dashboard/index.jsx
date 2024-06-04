@@ -48,6 +48,7 @@ import {
   Tooltip,
   Breadcrumbs,
   Link,
+  Box,
 } from "@mui/material";
 import SearchIcon from "@material-ui/icons/Search";
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -616,14 +617,56 @@ export default function ContentManagement() {
                 </Card>
               </div>
             </div>
-            <div className=" row m-1  card p-3" style={{ overflowX: "auto" }}>
-              <div className="col-12 d-flex">
+            <div className=" row">
+              <div className="col-12">
                 <table class="table table-hover table-striped">
-                  <Paper>
-                    <TableContainer sx={{}}>
+                  <Card className="cardDesign">
+                    <Box className="tableHeader">
+                      <Grid container spacing={1} p={"0 !important"}>
+                        <Grid
+                          item
+                          xs={"auto"}
+                          sx={{ flexGrow: " 1 !important" }}
+                        >
+                          <Typography variant="h6" className="tableHeading">
+                            Existing Position{" "}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={"auto"}>
+                          <Box className="btn-box d-flex align-items-center justify-content-end gap-3">
+                            <button className="btn btn-sm btn-outline-lightBlue">
+                              Today’s UR NetGn/Ls - 900
+                            </button>
+                            <button className="btn btn-sm btn-outline-orange">
+                              Today’s UR Gn/Ls - 2164
+                            </button>
+                            <button className="btn btn-sm btn-outline-lightYellow">
+                              System exit Yes/No-0
+                            </button>
+                            <button className="btn btn-sm btn-blue">
+                              Preview
+                              <svg
+                                width="12"
+                                height="17"
+                                viewBox="0 0 12 17"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                style={{ marginInlineStart: "10px" }}
+                              >
+                                <path
+                                  d="M11.376 8.9161L0.77735 15.9818C0.54759 16.135 0.23715 16.0729 0.0839701 15.8432C0.0292201 15.761 0 15.6645 0 15.5658V1.43433C0 1.15818 0.22386 0.934326 0.5 0.934326C0.59871 0.934326 0.69522 0.963546 0.77735 1.0183L11.376 8.084C11.6057 8.2372 11.6678 8.5477 11.5146 8.7774C11.478 8.8323 11.4309 8.8795 11.376 8.9161Z"
+                                  fill="white"
+                                />
+                              </svg>
+                            </button>
+                          </Box>
+                        </Grid>
+                      </Grid>
+                    </Box>
+                    <TableContainer className="tableDesignFrame">
                       <Table
                         sx={{ minWidth: 650 }}
-                        class="table table-hover table-striped"
+                        class="table table-hover table-striped tableDesign"
                       >
                         <TableHead>
                           <TableRow className="tableRow1">
@@ -715,7 +758,7 @@ export default function ContentManagement() {
                         )}
                       </Table>
                     </TableContainer>
-                  </Paper>
+                  </Card>
                 </table>
               </div>
               {tableData?.contentData?.totalPages > 1 ? (
