@@ -394,6 +394,61 @@ export default function ContentManagement() {
                               </CardContent>
                             </Card>
                           </div>
+                          <div className="col-md-6 col-12">
+                            <Card className="cardDesign grayBg">
+                              <CardContent className="cardContent">
+                                <div className="cardHeader mb-3">
+                                  <h6 className="fs-6">Order Type</h6>
+                                </div>
+                                <div className="row">
+                                  <div className="col-6">
+                                    <Card className="orderCard shadow-none rounded-1">
+                                      <div className="card-header h-auto p-2">
+                                        <h6 className="fs-7 fw-500 mb-0">
+                                          Max- X
+                                        </h6>
+                                      </div>
+                                      <div className="card-body p-0">
+                                        <ul className="list-group ">
+                                          <li className="list-group-item">
+                                            Limited Order
+                                          </li>
+                                          <li className="list-group-item maxProfitNumber">
+                                            150.16
+                                          </li>
+                                          <li className="list-group-item">
+                                            Profit Order
+                                          </li>
+                                        </ul>
+                                        <div className="priceWithProfit">
+                                          <label htmlFor="addMoney"> $ </label>
+                                          <input
+                                            type="number"
+                                            id="addMoney"
+                                            className="apperance-none"
+                                          />
+                                          <select name="" id="" class="">
+                                            <optgroup>
+                                              <option value="">0%</option>
+                                              <option value="">1%</option>
+                                              <option value="">2%</option>
+                                              <option value="">3%</option>
+                                              <option value="">4%</option>
+                                              <option value="">5%</option>
+                                              <option value="">6%</option>
+                                              <option value="">7%</option>
+                                              <option value="">8%</option>
+                                            </optgroup>
+                                          </select>
+                                        </div>
+                                      </div>
+                                    </Card>
+                                  </div>
+                                  <div className="col-6"></div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </div>
                         </div>
                       </div>
                     </div>

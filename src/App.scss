@@ -145,6 +145,67 @@ h1, h2, h3, h4, h5, h6{
 .btn-cstm:hover{
     opacity: 1 !important;
 }
+
+.orderCard{
+  .list-group{
+    .list-group-item{
+      font-size: 13px !important;
+      font-weight: 700;
+      color: #45464E;
+    }
+    .list-group-item.maxProfitNumber{
+      background-color: rgba(85, 111, 241, 0.4);
+      color: #5570F1;
+      font-size: 14px !important;
+      font-weight: 500;
+    }
+  }
+}
+
+.priceWithProfit{
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap:10px;
+  border: 1px solid #00000080;
+  border-radius: 2px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  padding: 5px;
+  label{
+    color: #5570F1;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  select, input[type="number"]{
+    border:none;
+    width: 100%;
+    color: rgba(83, 84, 92, 0.7);
+    font-size: 14px;
+    font-weight: 500; 
+    &:hover, &:focus-within{
+      border: none;
+      outline: none;
+    }
+  }
+    select{
+      max-width: 40px;
+      text-align: center;
+      font-size: 12px;
+      color: rgba(69, 70, 78, 1);
+      font-weight: 400;
+      optgroup{
+        height: 100px;
+        overflow-y: auto;
+      }
+    }
+}
+.apperance-none, .apperance-none:hover{
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+}
+
 table{
     thead{
         tr{
