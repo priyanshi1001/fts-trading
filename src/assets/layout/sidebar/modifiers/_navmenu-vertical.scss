@@ -36,6 +36,7 @@
       position: relative;
       @include border-radius($border-radius);
       color: $gray-800;
+      font-size: 15px;
       white-space: nowrap;
       border-radius: 12px;
       -moz-border-radius: 12px;
