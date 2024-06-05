@@ -251,7 +251,11 @@ const Login = () => {
                   </Row>
 
                   <div className="d-flex align-items-center">
-                    <div className="ms-auto"></div>
+                    <div className="ms-auto">
+                      <Button type="submit" color="primary" size="small">
+                        Login
+                      </Button>
+                    </div>
                   </div>
                 </form>
               </div>
