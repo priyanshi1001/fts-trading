@@ -14,6 +14,7 @@ import AppHeader from "../../../Layout/AppHeader";
 import { useDispatch, useSelector } from "react-redux";
 import Transition from "../../../reusables/languagesModal";
 import AppSidebar from "../../../Layout/AppSidebar";
+// import AppFooters from "../../../Layout/AppFooter";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
@@ -920,27 +921,8 @@ export default function ContentManagement() {
                 </Card>
               </div>
             </div>
-            {/* <div className="col-12 mb-4 mt-2">
-              <Button
-                size="small"
-                className="btn-cstm mx-1 mb-4"
-                style={{ float: "right", marginLeft: "5px" }}
-                
-              >
-                Import
-              </Button>
-
-              <Button
-                size="small"
-                className="btn-cstm  mb-4"
-                style={{ float: "right", marginLeft: "5px" }}
-                onClick={() => {
-                  // dispatch(exportContent());
-                }}
-              >
-                Export
-              </Button>
-            </div> */}
+          
+          
           </div>
         </div>
       </div>

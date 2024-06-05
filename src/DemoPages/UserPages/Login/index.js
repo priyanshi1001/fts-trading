@@ -446,6 +446,11 @@ const Login = () => {
                     </Grid>
                   </Grid>
                   <Box mt={2}>
+                    <Typography className="my-2">Don't have an account? <Link  to="/register"
+                        className="btn-link my-2"
+                        onClick={() => {
+                          history.push("/register");
+                        }}>Sign Up</Link></Typography>
                     <Button type="submit" color="primary" variant="contained">
                       Login
                     </Button>

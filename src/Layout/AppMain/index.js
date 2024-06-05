@@ -8,7 +8,7 @@ import { Help } from "@mui/icons-material";
 const login = lazy(()=>import("../../DemoPages/UserPages/Login"))
 const Forget = lazy(() => import("../../DemoPages/UserPages/ForgotPassword"))
 const Register = lazy(() => import("../../DemoPages/UserPages/Register"))
-
+const ResetPassword = lazy(() => import("../../DemoPages/UserPages/ResetPassword"))
 const Accounts = lazy(() => import("../../Administrator/Accounts/Accounts"));
 
 const Stocks_Details = lazy(() => import("../../Administrator/StockDetails/Stocks"));
@@ -36,6 +36,20 @@ const AppMain = () => {
     
     <Fragment>
            <Suspense
+        fallback={
+          <div className="loader-container">
+            <div className="loader-container-inner">
+              <div className="text-center">
+                <Loader type="line-scale" />
+              </div>
+            </div>
+          </div>
+        }
+      >
+        <Route path="/resetPassword" component={ResetPassword}/>
+      </Suspense>
+
+      <Suspense
         fallback={
           <div className="loader-container">
             <div className="loader-container-inner">

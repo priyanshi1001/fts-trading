@@ -95,7 +95,7 @@ const Forget = () => {
                       </Link>
                     </Typography>
                     <Box ml="auto">
-                      <Button variant="contained" color="primary" size="small">
+                      <Button variant="contained" color="primary" onClick={()=>history.push("/resetPassword")}size="small">
                         Recover Password
                       </Button>
                     </Box>
