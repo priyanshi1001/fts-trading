@@ -180,7 +180,9 @@ export default function ContentManagement() {
                 <div className="d-flex align-items-center justify-content-end px-lg-5 px-md-4 px-sm-3 px-3 my-3">
                   <Link
                     className="textPurpal text-decoration-none fs-6 fw-medium"
-                    to="/"
+                    onClick={() => {
+                      history.push("/Stocks_Details");
+                    }}
                   >
                     Stock Details{" "}
                     <svg

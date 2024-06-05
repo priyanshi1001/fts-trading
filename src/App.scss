@@ -13,6 +13,14 @@ h1, h2, h3, h4, h5, h6{
 .btn{
   text-transform: capitalize;
   text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow:row nowrap;
+  gap: 10px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
 }
 .btn-sm{
   padding: 7px 8px;
@@ -67,8 +75,24 @@ h1, h2, h3, h4, h5, h6{
     border: 1px solid rgba(237, 202, 114, 1);
     color: rgba(44, 45, 51, 1);
 }
+.btn-outline-gray{
+  background: rgba(255, 255, 255, 1);
+  border: 1px solid rgba(214, 214, 214, 1);
+  color:rgba(83, 84, 92, 1);
+}
 
 // btn design end
+
+// search Box Design
+.searchBox{
+  position: relative;
+  .searchInput{
+    .MuiInputBase-input{padding: 8px 14px 8px 0 !important; color: rgba(171, 175, 177, 1); font-size: 12px; font-family: "Inter", sans-serif !important;}
+  }
+  .MuiOutlinedInput-notchedOutline{
+    border-color: rgb(214, 214, 214) !important;
+  }
+}
 
 .fw-500{
     font-weight: 500 !important;
