@@ -661,7 +661,7 @@ font-family: "Roboto","Helvetica","Arial",sans-serif !important;
 
 
   .app-header__logo {
-    visibility: visible;
+    visibility: collapse;
   }
 }
 
@@ -795,5 +795,11 @@ display: none !important;
 .errorClass{
   color: red !important;
   font-size: 12px !important;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+   -webkit-box-shadow: 0 0 0 30px #ffffff inset !important;
 }
 

@@ -18,7 +18,7 @@
   &:not(.fixed-sidebar):not(.closed-sidebar) {
     .app-sidebar {
       .app-header__logo {
-        visibility: hidden;
+        visibility: visible;
       }
     }
   }
