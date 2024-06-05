@@ -57,11 +57,7 @@
     height: 2.25em !important
   }
   
-  .end-0 {
-    position: absolute !important;
-    right: 20px!important;
-    top: 3rem!important;
-}  
+  
 .errorClass{
   color: red;
 }
@@ -76,4 +72,38 @@
 }
 .column{
   position: relative!important;
+}
+
+.logoBox{
+  display: inline-flex;
+  flex-flow: column;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 60px;
+  .app-logo{
+    margin-bottom: 0 !important;
+    display: inline-block;
+  }
+  .authSlogen{
+    display: flex;
+    flex-flow: column;
+    gap: 10px;
+    h6{
+      font-size: 20px;
+      font-weight: 500;
+      color: rgba(0, 0, 0, 1);
+      margin-bottom: 0;
+    }
+    p{
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(139, 141, 151, 1);
+      margin-bottom: 0;
+    }
+
+  }
+}
+.loginSignupForm{
+  width: 100%;
+  max-width: 375px;
 }

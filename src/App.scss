@@ -50,6 +50,10 @@ h1, h2, h3, h4, h5, h6{
   background: rgba(85, 112, 241, 1);
   border: 1px solid rgba(85, 112, 241, 1);
   color: rgba(255, 255, 255, 1);
+  &:hover{
+    color: #fff;
+    background-color: rgb(71, 96, 218);
+  }
 }
 
 .btn-outline-orange{

@@ -21,6 +21,14 @@ import { Link, useHistory } from "react-router-dom";
 import "./index.scss";
 import { useDispatch } from "react-redux";
 import { loginAction } from "../../../redux/Actions";
+import {
+  FormControl,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+} from "@mui/material";
+import { IconButton } from "material-ui";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const Login = () => {
   const history = useHistory();
@@ -52,25 +60,26 @@ const Login = () => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    if(data.email.trim()!=="" && data.password.trim()!=="")
-   { dispatch(
-      loginAction(data, () => {
-        history.push("/Dashboard");
-        window.location.reload();
-      })
-    );}
-    else{
-      if(data.email.trim()===""){
+    if (data.email.trim() !== "" && data.password.trim() !== "") {
+      dispatch(
+        loginAction(data, () => {
+          history.push("/Dashboard");
+          window.location.reload();
+        })
+      );
+    } else {
+      if (data.email.trim() === "") {
         setError({ ...isError, email: true });
-      }else
-     { setError({ ...isError, password: true });}
+      } else {
+        setError({ ...isError, password: true });
+      }
     }
   };
   return (
     <Fragment>
       <div className="h-100">
         <Row className="h-100 g-0 row">
-          <Col lg="4" className="d-none d-lg-block">
+          <Col lg="6" md="6" sm="12">
             <div className="slider-light">
               <Slider {...settings}>
                 <div className="h-100 d-flex justify-content-center align-items-center bg-plum-plate">
@@ -124,37 +133,25 @@ const Login = () => {
             </div>
           </Col>
           <Col
-            lg="8"
-            md="12"
-            className="h-100 d-flex bg-white justify-content-center align-items-center"
+            lg="6"
+            md="6"
+            sm="12"
+            className="h-100 bg-white d-flex justify-content-center align-items-center"
           >
-            <Col lg="9" md="10" sm="12" className="mx-auto app-login-box">
-            <div className="d-flex">
-            <div className="app-logo" /> <span className="Login-Heading">
-                  FTS TRADING
-                </span>
-            </div>
-              <h4 className="mb-0">
-                <div className="Label">Welcome</div>
-                {/* <span className="textClass">
-                  Please sign in to your account
-                </span> */}
-              </h4>
-              {/* <h6 className="mt-3">
-                No account?{" "}
-                <Link to="/register" className="text-primary">
-                  Sign up now
-                </Link>
-              </h6> */}
+            <div className="app-login-box px-3 text-center">
+              <div className="logoBox">
+                <div className="app-logo" />
+                <div className="authSlogen">
+                  <h6>Welcome back!</h6>
+                  <p className="authSlogenText">Login to your account</p>
+                </div>
+              </div>
 
-              <div>
+              <div className="loginSignupForm">
                 <form onSubmit={handleSubmit}>
                   <Row>
-                    <Col md={6}>
+                    <Col md={12}>
                       <FormGroup>
-                        <Label className="textClassLabel" for="exampleEmail">
-                          Email
-                        </Label>
                         <Input
                           required
                           autoComplete="off"
@@ -166,13 +163,16 @@ const Login = () => {
                           onChange={handleChange}
                         />
                       </FormGroup>
-                      {isError.email ? (<small className="errorClass">Please Enter Email.</small>) : ''}
+                      {isError.email ? (
+                        <small className="errorClass">
+                          Please Enter Email.
+                        </small>
+                      ) : (
+                        ""
+                      )}
                     </Col>
-                    <Col md={6} className="column">
-                      <FormGroup>
-                        <Label className="textClassLabel" for="examplePassword">
-                          Password
-                        </Label>
+                    <Col md={12}>
+                      <FormGroup className="position-relative">
                         <Input
                           required
                           autoComplete="off"
@@ -184,8 +184,8 @@ const Login = () => {
                           onChange={handleChange}
                         />
                         <div
-                          className="position-absolute d-flex end-0 mr-5 h-10"
-                          style={{ cursor: "pointer" }}
+                          className="position-absolute d-flex top-50 translate-middle-y"
+                          style={{ cursor: "pointer", right: "10px" }}
                         >
                           {showPassword ? (
                             <AiOutlineEye
@@ -200,29 +200,62 @@ const Login = () => {
                           )}
                         </div>
                       </FormGroup>
-                      {isError.password ? (<small className="errorClass">Please Enter Password.</small>) : ''}
+
+                      {/* <FormControl
+                        sx={{ m: 1, width: "25ch" }}
+                        variant="outlined"
+                      >
+                        <OutlinedInput
+                          id="outlined-adornment-password"
+                          type={showPassword ? "text" : "password"}
+                          endAdornment={
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={() => setShowPassword(false)}
+                                onMouseDown={() => setShowPassword(false)}
+                                edge="end"
+                              >
+                                {showPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          }
+                          placeholder="Password"
+                          value={data.password}
+                          onChange={handleChange}
+                        />
+                      </FormControl> */}
+                      {isError.password ? (
+                        <small className="errorClass">
+                          Please Enter Password.
+                        </small>
+                      ) : (
+                        ""
+                      )}
+                    </Col>
+                    <Col md={12} className="text-end">
+                      <Link
+                        to="/forget"
+                        className=" btn btn-link m-auto px-0"
+                        onClick={() => {
+                          history.push("/forget");
+                        }}
+                      >
+                        Forget Password
+                      </Link>
                     </Col>
                   </Row>
 
                   <div className="d-flex align-items-center">
-                    <div className="ms-auto">
-                      {/* <Link
-                        to="/forget"
-                        className="btn-lg btn btn-link"
-                        // onClick={() => {
-                        //   history.push("/forget");
-                        // }}
-                      >
-                        Forget Password
-                      </Link>{" "} */}
-                      <Button type="submit" color="primary" size="small">
-                        Login
-                      </Button>
-                    </div>
+                    <div className="ms-auto"></div>
                   </div>
                 </form>
               </div>
-            </Col>
+            </div>
           </Col>
         </Row>
       </div>

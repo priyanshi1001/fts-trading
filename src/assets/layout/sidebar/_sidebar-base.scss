@@ -17,6 +17,9 @@
   .app-sidebar__inner {
     padding: 2px ($layout-spacer-x) $layout-spacer-x;
     background-color: rgba(255, 255, 255, 1) !important;
+    .app-sidebar__heading{
+      display: none;
+    }
   }
 
   .scrollbar-container {
