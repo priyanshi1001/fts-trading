@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 *{
   box-sizing: border-box;
 }
@@ -91,6 +92,7 @@ h1, h2, h3, h4, h5, h6{
   }
   .MuiOutlinedInput-notchedOutline{
     border-color: rgb(214, 214, 214) !important;
+    border-width: 1px !important;
   }
 }
 
@@ -100,8 +102,15 @@ h1, h2, h3, h4, h5, h6{
 .textPurpal{
   color:rgba(85, 112, 241, 1) !important;
 }
+.text-light-blue{
+  color: rgba(85, 112, 241, 1)
+  ;
+}
 .text-gray{
 color: rgba(104, 104, 104, 1) !important;
+}
+.text-orange{
+  color: rgba(248, 155, 83, 1) !important;
 }
 .text-dark-gray{
   color: rgba(69, 70, 78, 1) !important;
@@ -112,7 +121,10 @@ color: rgba(104, 104, 104, 1) !important;
 .lightGreenBg{
   background: rgba(42, 163, 31, 0.34) !important;
 }
- 
+.link-text{
+  font-size: 14px !important;
+  text-transform: capitalize;
+}
 .fs-6{
   font-size: 1rem !important;
   font-weight:500 !important;
@@ -148,7 +160,7 @@ color: rgba(104, 104, 104, 1) !important;
   border-radius: 12px !important;
   -moz-border-radius: 12px !important;
   -webkit-border-radius: 12px !important;
-  padding: 20px !important;
+  padding: 24px !important;
   box-sizing: border-box;
   box-shadow: none !important;
   margin-bottom: 20px !important;
@@ -203,6 +215,7 @@ color: rgba(104, 104, 104, 1) !important;
     font-size: 14px !important;
     font-weight: 500; 
     border: none;
+    
   }
 }
 .stockInfo {
@@ -355,12 +368,20 @@ color: rgba(104, 104, 104, 1) !important;
       font-size: 13px !important;
       font-weight: 700;
       color: #45464E;
+      @media screen and (max-width: 1280px) {
+        font-size: 10px !important;
+        padding:6px 8px !important;
+      }
     }
     .list-group-item.maxProfitNumber{
       background-color: rgba(85, 111, 241, 0.4);
       color: #5570F1;
       font-size: 14px !important;
       font-weight: 500;
+      @media screen and (max-width: 1280px) {
+        font-size: 10px !important;
+        padding:6px 8px !important;
+      }
     }
   }
 }
@@ -370,15 +391,22 @@ color: rgba(104, 104, 104, 1) !important;
   flex-flow: row nowrap;
   align-items: center;
   gap:10px;
-  border: 1px solid #00000080;
+  border: 1.3px solid #00000080;
   border-radius: 2px;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
   padding: 5px;
+  @media screen and (max-width: 1280px) {
+    gap: 4px;
+    padding: 2px 4px ; 
+  }
   label{
     color: #5570F1;
     font-size: 14px;
     font-weight: 500;
+    @media screen and (max-width: 1280px) {
+      font-size: 10px;
+    }
   }
   select, input[type="number"]{
     border:none;
@@ -386,6 +414,9 @@ color: rgba(104, 104, 104, 1) !important;
     color: rgba(83, 84, 92, 0.7);
     font-size: 14px;
     font-weight: 500; 
+    @media screen and (max-width: 1280px) {
+      font-size: 10px;
+    }
     &:hover, &:focus-within{
       border: none;
       outline: none;
@@ -397,6 +428,15 @@ color: rgba(104, 104, 104, 1) !important;
       font-size: 12px;
       color: rgba(69, 70, 78, 1);
       font-weight: 400;
+      appearance: none;
+      padding-right: 8px;
+      background: url("./assets/utils//images/dropdown-header/down-trangle.png") no-repeat right center;
+      background-size: 8px 4px;
+      @media screen and (max-width: 1280px) {
+        font-size: 10px;
+        max-width: 30px;
+        padding-right: 8px;
+      }
       optgroup{
         height: 100px;
         overflow-y: auto;
@@ -827,3 +867,142 @@ input:-webkit-autofill:active{
    -webkit-box-shadow: 0 0 0 30px #ffffff inset !important;
 }
 
+// login form css
+.logoBox{
+  display: inline-flex;
+  flex-flow: column;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 60px;
+  .app-logo{
+    margin-bottom: 0 !important;
+    display: inline-block;
+  }
+  .authSlogen{
+    display: flex;
+    flex-flow: column;
+    gap: 10px;
+    h6{
+      font-size: 20px;
+      font-weight: 500;
+      color: rgba(0, 0, 0, 1);
+      margin-bottom: 0;
+    }
+    p{
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(139, 141, 151, 1);
+      margin-bottom: 0;
+    }
+
+  }
+}
+.loginSignupForm{
+  width: 100%;
+  max-width: 375px;
+}
+
+.loginInput{
+  .MuiInputBase-root{
+    background: rgba(239, 241, 249, 0.6);
+  }
+  .MuiOutlinedInput-notchedOutline{
+    border:none;
+  }
+  .MuiInputBase-input{
+    padding-left:5px;
+    background: rgba(239, 241, 249, 0.6);
+  }
+  input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active{
+    -webkit-box-shadow:0 0 0 30px rgb(245 247 251) inset !important;
+  }
+}
+.loginSignupForm{
+  form{
+    display: flex;
+    flex-flow: column;
+    gap: 48px;
+    @media screen and (max-width: 768px) {
+      gap: 38px;
+    }
+    @media screen and (max-width: 676px) {
+      gap: 28px;
+    }
+  }
+}
+
+.userInfo{
+  display: flex;
+  align-items: start;
+  justify-content: start;
+  gap: 10px;
+  margin-bottom: 20px;
+  .userIcon{
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .green-bg{
+    background: rgba(71, 167, 133, 1);
+  }
+  .orange-bg{
+    background: rgba(248, 155, 83, 1);
+  }
+  .userName{
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.25;
+    margin-bottom: 5px;
+    color: rgba(30, 41, 59, 1) !important;
+    font-family: "Montserrat", sans-serif !important;
+  }
+  .userCount{
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1.25;
+    margin-bottom: 5px;
+    color: rgba(30, 41, 59, 1) !important;
+    font-family: "Montserrat", sans-serif !important;
+  }
+}
+.small-select-box{
+  width: fit-content;
+  min-width: 100px;
+  max-width: 100px;
+  color: #000;
+  border:1px solid #000;
+  .MuiSelect-select{
+    padding: 6px 14px !important;
+    font-size: 12px;
+    min-width: 100px !important;
+    box-sizing: border-box;
+  }
+  .dropArrow{
+    position: absolute !important;
+    right: 10px !important;
+    top:50% !important;
+    transform: translateY(-50%) !important;
+  }
+  .MuiOutlinedInput-notchedOutline{
+    border-color: rgb(214, 214, 214) !important;
+    border-width: 1px !important;
+  }
+}
+/* Hide the arrows in Chrome, Safari, Edge, and Opera */
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+/* Hide the arrows in Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}

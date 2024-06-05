@@ -123,16 +123,22 @@
   &:not(.closed-sidebar-mobile) {
     .app-header {
       .app-header__logo {
+        display: flex;
+        align-items: center;
         width: $app-sidebar-width-collapsed;
         .logo-src {
-          display: inline-block;
-          width: auto;
+          display: inline-block; 
+          width: 60px;
+    background-position: center;
         }
         .MuiTypography-root{
           display: none;
         }
         .header__pane {
           margin-right: auto;
+          .Burger{
+            padding: 0;
+          }
         }
       }
     }

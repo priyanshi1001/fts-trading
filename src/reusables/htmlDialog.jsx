@@ -71,7 +71,7 @@ const Modal = (props) => {
     <Fragment>
       <Dialog
         fullWidth
-        maxWidth={"md"}
+        maxWidth={"sm"}
         open={open}
         keepMounted
         // onClose={handleClose}

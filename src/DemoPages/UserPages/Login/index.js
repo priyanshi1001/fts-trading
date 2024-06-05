@@ -269,9 +269,9 @@
 // export default Login;
 import React, { Fragment, useState, useEffect } from "react";
 import Carousel from "react-material-ui-carousel";
-import bg1 from "../../../assets/utils/images/originals/city.jpg";
-import bg2 from "../../../assets/utils/images/originals/citydark.jpg";
-import bg3 from "../../../assets/utils/images/originals/citynights.jpg";
+import bg1 from "../../../assets/utils/images/originals/shareChart.png";
+import bg2 from "../../../assets/utils/images/originals/shareChart.png";
+import bg3 from "../../../assets/utils/images/originals/shareChart.png";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 import {
@@ -287,7 +287,7 @@ import {
 import { Link, useHistory } from "react-router-dom";
 import "./index.scss";
 import { useDispatch } from "react-redux";
-import { loginAction } from "../../../redux/Actions";
+import { loginAction, setBackgroundColor } from "../../../redux/Actions";
 
 const Login = () => {
   const history = useHistory();
@@ -328,27 +328,29 @@ const Login = () => {
   const items = [
     {
       image: bg1,
-      title: "Perfect Balance",
-      description:
-        "ArchitectUI is like a dream. Some think it's too good to be true! Extensive collection of unified React Boostrap Components and Elements.",
+      title: " ",
+      description: " ",
     },
     {
       image: bg3,
-      title: "Scalable, Modular, Consistent",
-      description:
-        "Easily exclude the components you don't require. Lightweight, consistent Bootstrap based styles across all elements and components",
+      title: " ",
+      description: " ",
     },
     {
       image: bg2,
-      title: "Complex, but lightweight",
-      description:
-        "We've included a lot of components that cover almost all use cases for any type of application.",
+      title: " ",
+      description: " ",
     },
   ];
 
   return (
-    <Fragment style={{overflow:"hidden"}}>
-      <Box height="100vh" display="flex" flexDirection="row" style={{overflow:"hidden"}}>
+    <Fragment style={{ overflow: "hidden" }}>
+      <Box
+        height="100vh"
+        display="flex"
+        flexDirection="row"
+        style={{ overflow: "hidden" }}
+      >
         <Grid container>
           <Grid item lg={6} md={6} sm={12}>
             <Carousel>
@@ -359,12 +361,20 @@ const Login = () => {
                   justifyContent="center"
                   alignItems="center"
                   height="100vh"
-                  style={{ backgroundImage: `url(${item.image})` }}
+                  style={{
+                    // backgroundImage: `url(${item.image})`,
+                    backgroundColor: "rgba(184, 195, 249, 1)",
+                  }}
                   className="slider-content"
                 >
                   <Box textAlign="center" color="#fff">
-                    <Typography variant="h3">{item.title}</Typography>
-                    <Typography>{item.description}</Typography>
+                    {/* <Typography variant="h3">{item.title}</Typography>
+                    <Typography>{item.description}</Typography> */}
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="img-fluid"
+                    />
                   </Box>
                 </Box>
               ))}
@@ -382,75 +392,161 @@ const Login = () => {
           >
             <Container maxWidth="xs">
               <Box textAlign="center">
-                <Box mb={4}>
-                  <Typography variant="h6">Welcome back!</Typography>
-                  <Typography variant="body1">Login to your account</Typography>
+                <div className="logoBox">
+                  <div className="app-logo" />
+                  <div className="authSlogen">
+                    <h6>Welcome back!</h6>
+                    <p className="authSlogenText">Login to your account</p>
+                  </div>
+                </div>
+                <Box component={"div"} className="loginSignupForm">
+                  <form onSubmit={handleSubmit}>
+                    <Box component={"div"} className="loginInputBox">
+                      <Grid container spacing={4}>
+                        <Grid item xs={12}>
+                          <TextField
+                            className="loginInput"
+                            fullWidth
+                            required
+                            autoComplete="off"
+                            type="email"
+                            name="email"
+                            placeholder="Email"
+                            value={data.email}
+                            onChange={handleChange}
+                            error={isError.email}
+                            helperText={
+                              isError.email ? "Please Enter Email." : ""
+                            }
+                            InputProps={{
+                              startAdornment: (
+                                <InputAdornment position="start">
+                                  <svg
+                                    width="22"
+                                    height="20"
+                                    viewBox="0 0 22 20"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      d="M16.9026 6.85107L12.4593 10.4641C11.6198 11.1301 10.4387 11.1301 9.59921 10.4641L5.11843 6.85107"
+                                      stroke="#6E7079"
+                                      stroke-width="1.5"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                    />
+                                    <path
+                                      fill-rule="evenodd"
+                                      clip-rule="evenodd"
+                                      d="M15.9089 19C18.9502 19.0084 21 16.5095 21 13.4384V6.57001C21 3.49883 18.9502 1 15.9089 1H6.09114C3.04979 1 1 3.49883 1 6.57001V13.4384C1 16.5095 3.04979 19.0084 6.09114 19H15.9089Z"
+                                      stroke="#6E7079"
+                                      stroke-width="1.5"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                    />
+                                  </svg>
+                                </InputAdornment>
+                              ),
+                            }}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <TextField
+                            className="loginInput"
+                            fullWidth
+                            required
+                            autoComplete="off"
+                            type={showPassword ? "text" : "password"}
+                            name="password"
+                            placeholder="Password"
+                            value={data.password}
+                            onChange={handleChange}
+                            error={isError.password}
+                            helperText={
+                              isError.password ? "Please Enter Password." : ""
+                            }
+                            InputProps={{
+                              startAdornment: (
+                                <InputAdornment position="start">
+                                  <svg
+                                    width="18"
+                                    height="20"
+                                    viewBox="0 0 18 20"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      d="M13.4234 7.4478V5.3008C13.4234 2.7878 11.3854 0.7498 8.8724 0.7498C6.3594 0.7388 4.3134 2.7668 4.3024 5.2808V5.3008V7.4478"
+                                      stroke="#6E7079"
+                                      stroke-width="1.5"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                    />
+                                    <path
+                                      fill-rule="evenodd"
+                                      clip-rule="evenodd"
+                                      d="M12.6832 19.2496H5.0422C2.9482 19.2496 1.2502 17.5526 1.2502 15.4576V11.1686C1.2502 9.07359 2.9482 7.37659 5.0422 7.37659H12.6832C14.7772 7.37659 16.4752 9.07359 16.4752 11.1686V15.4576C16.4752 17.5526 14.7772 19.2496 12.6832 19.2496Z"
+                                      stroke="#6E7079"
+                                      stroke-width="1.5"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                    />
+                                    <path
+                                      d="M8.8629 12.2028V14.4238"
+                                      stroke="#6E7079"
+                                      stroke-width="1.5"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                    />
+                                  </svg>
+                                </InputAdornment>
+                              ),
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  <IconButton
+                                    onClick={() =>
+                                      setShowPassword(!showPassword)
+                                    }
+                                  >
+                                    {showPassword ? (
+                                      <AiOutlineEye />
+                                    ) : (
+                                      <AiOutlineEyeInvisible />
+                                    )}
+                                  </IconButton>
+                                </InputAdornment>
+                              ),
+                            }}
+                          />
+                        </Grid>
+                      </Grid>
+                      <Box mt={1} display="flex" justifyContent="end">
+                        <Link
+                          to="/forget"
+                          className="btn textPurpal px-0 link-text"
+                          onClick={() => {
+                            history.push("/forget");
+                          }}
+                        >
+                          Forgot Password
+                        </Link>
+                      </Box>
+                    </Box>
+                    <Box component={"div"}>
+                      <Typography variant="subtitle1">
+                        Don’t have an account?{" "}
+                        <Link to="/signup" className="btn textPurpal">
+                          Sign Up
+                        </Link>
+                      </Typography>
+                    </Box>
+                    <Box mt={2}>
+                      <Button type="submit" color="primary" variant="contained">
+                        Login
+                      </Button>
+                    </Box>
+                  </form>
                 </Box>
-                <form onSubmit={handleSubmit}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                      <TextField
-                        fullWidth
-                        required
-                        autoComplete="off"
-                        type="email"
-                        name="email"
-                        label="Email"
-                        value={data.email}
-                        onChange={handleChange}
-                        error={isError.email}
-                        helperText={isError.email ? "Please Enter Email." : ""}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <TextField
-                        fullWidth
-                        required
-                        autoComplete="off"
-                        type={showPassword ? "text" : "password"}
-                        name="password"
-                        label="Password"
-                        value={data.password}
-                        onChange={handleChange}
-                        error={isError.password}
-                        helperText={
-                          isError.password ? "Please Enter Password." : ""
-                        }
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <IconButton
-                                onClick={() => setShowPassword(!showPassword)}
-                              >
-                                {showPassword ? (
-                                  <AiOutlineEye />
-                                ) : (
-                                  <AiOutlineEyeInvisible />
-                                )}
-                              </IconButton>
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={12} textAlign="right">
-                      <Link
-                        to="/forget"
-                        className="btn btn-link"
-                        onClick={() => {
-                          history.push("/forget");
-                        }}
-                      >
-                        Forget Password
-                      </Link>
-                    </Grid>
-                  </Grid>
-                  <Box mt={2}>
-                    <Button type="submit" color="primary" variant="contained">
-                      Login
-                    </Button>
-                  </Box>
-                </form>
               </Box>
             </Container>
           </Grid>
