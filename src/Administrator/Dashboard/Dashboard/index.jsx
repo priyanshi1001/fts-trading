@@ -97,29 +97,18 @@ export default function ContentManagement() {
     e.preventDefault();
     setPage(1);
     setSize(10);
-    dispatch(getAllContentType(page, size, search));
+    
   };
-  useEffect(() => {
-    if (search === "") {
-      setPage(1);
-      setSize(10);
-      dispatch(getAllContentType(page, size, search));
-    }
-  }, [search]);
+ 
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
-  useEffect(() => {
-    dispatch(getAllContentType(page, size));
-  }, [page]);
+ 
 
   const tableData = useSelector((state) => state.getAllContentTypeByIdReducer);
 
-  useEffect(() => {
-    dispatch(getAllContentType(page, size, search));
-    // dispatch(getAllLanguages());
-  }, []);
+ 
 
   return (
     <Fragment>
