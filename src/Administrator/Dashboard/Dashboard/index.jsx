@@ -180,8 +180,10 @@ export default function ContentManagement() {
               <div className="col-12">
                 <div className="d-flex align-items-center justify-content-end px-lg-5 px-md-4 px-sm-3 px-3 my-3">
                   <Link
-                    className="textPurpal text-decoration-none fs-7 fw-medium"
-                    to="/"
+                    className="textPurpal text-decoration-none fs-6 fw-medium"
+                    onClick={() => {
+                      history.push("/Stocks_Details");
+                    }}
                   >
                     Stock Details{" "}
                     <svg
@@ -338,7 +340,7 @@ export default function ContentManagement() {
                               <div class="form-check p-0 d-flex align-items-center justify-content-between">
                                 <label
                                   class="form-check-label  flex-grow-1"
-                                  for="flexRadioDefault1"
+                                  htmlFor="flexRadioDefault1"
                                 >
                                   Buy
                                 </label>
@@ -354,7 +356,7 @@ export default function ContentManagement() {
                               <div class="form-check p-0 d-flex align-items-center justify-content-between">
                                 <label
                                   class="form-check-label flex-grow-1"
-                                  for="flexRadioDefault2"
+                                  htmlFor="flexRadioDefault2"
                                 >
                                   Sell Short
                                 </label>
@@ -375,7 +377,7 @@ export default function ContentManagement() {
                               <div class="form-check p-0 d-flex align-items-center justify-content-between">
                                 <label
                                   class="form-check-label flex-grow-1"
-                                  for="cancleTrade"
+                                  htmlFor="cancleTrade"
                                 >
                                   Close
                                 </label>
@@ -500,6 +502,8 @@ export default function ContentManagement() {
                                               <option value="">6%</option>
                                               <option value="">7%</option>
                                               <option value="">8%</option>
+                                              <option value="">10%</option>
+                                              <option value="">100%</option>
                                             </optgroup>
                                           </select>
                                         </div>
