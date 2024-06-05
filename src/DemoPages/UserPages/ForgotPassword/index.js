@@ -1,116 +1,113 @@
-import React, { Fragment, Component } from "react";
-
-import Slider from "react-slick";
-
+import React, { Fragment } from "react";
+import Carousel from "react-material-ui-carousel";
 import bg1 from "../../../assets/utils/images/originals/city.jpg";
 import bg2 from "../../../assets/utils/images/originals/citydark.jpg";
 import bg3 from "../../../assets/utils/images/originals/citynights.jpg";
+import { Box, Button, Grid, TextField, Typography, Link, Container } from "@mui/material";
+import { useHistory } from "react-router-dom";
 import "./index.scss";
-import { Col, Row, Button, Form, FormGroup, Label, Input } from "reactstrap";
-import { Link, useHistory } from "react-router-dom";
 
 const Forget = () => {
-    let settings = {
-      dots: true,
-      infinite: true,
-      speed: 500,
-      arrows: true,
-      slidesToShow: 1,
-      slidesToScroll: 1,
-      fade: true,
-      initialSlide: 0,
-      autoplay: true,
-      adaptiveHeight: true,
-    };
-    let history = useHistory();
-    return (
-      <Fragment>
-        <div className="h-100">
-          <Row className="h-100 g-0">
-            <Col lg="4" className="d-none d-lg-block">
-              <div className="slider-light">
-                <Slider {...settings}>
-                  <div className="h-100 d-flex justify-content-center align-items-center bg-plum-plate">
-                    <div className="slide-img-bg"
-                      style={{
-                        backgroundImage: "url(" + bg1 + ")",
-                      }}/>
-                    <div className="slider-content">
-                      <h3>Perfect Balance</h3>
-                      <p>
-                        ArchitectUI is like a dream. Some think it's too good to
-                        be true! Extensive collection of unified React Boostrap
-                        Components and Elements.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="h-100 d-flex justify-content-center align-items-center bg-premium-dark">
-                    <div className="slide-img-bg"
-                      style={{
-                        backgroundImage: "url(" + bg3 + ")",
-                      }}/>
-                    <div className="slider-content">
-                      <h3>Scalable, Modular, Consistent</h3>
-                      <p>
-                        Easily exclude the components you don't require.
-                        Lightweight, consistent Bootstrap based styles across
-                        all elements and components
-                      </p>
-                    </div>
-                  </div>
-                  <div className="h-100 d-flex justify-content-center align-items-center bg-sunny-morning">
-                    <div className="slide-img-bg opacity-6"
-                      style={{
-                        backgroundImage: "url(" + bg2 + ")",
-                      }}/>
-                    <div className="slider-content">
-                      <h3>Complex, but lightweight</h3>
-                      <p>
-                        We've included a lot of components that cover almost all
-                        use cases for any type of application.
-                      </p>
-                    </div>
-                  </div>
-                </Slider>
-              </div>
-            </Col>
-            <Col lg="8" md="12"
-              className="h-100 d-flex bg-white justify-content-center align-items-center">
-              <Col lg="6" md="8" sm="12" className="mx-auto app-login-box">
-                <div className="app-logo" />
-                <h4>
-                  <div className="textClass">Forgot your Password?</div>
-                  <span className="textClassLabel">Use the form below to recover it.</span>
-                </h4>
-                <div>
-                  <Form>
-                    <Row form>
-                      <Col md={12}>
-                        <FormGroup>
-                          <Label className="textClassLabel" for="exampleEmail">Email</Label>
-                          <Input className="textClassLabel" type="email" name="email" id="exampleEmail" placeholder="Email here..."/>
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <div className="mt-4 d-flex align-items-center">
-                      <h6 className="mb-0">
-                        <a  onClick={() => history.push("/login")} className="text-primary">
-                          Sign in existing account
-                        </a>
-                      </h6>
-                      <div className="ms-auto">
-                        <Button color="primary" size="lg">
-                          Recover Password
-                        </Button>
-                      </div>
-                    </div>
-                  </Form>
-                </div>
-              </Col>
-            </Col>
-          </Row>
-        </div>
-      </Fragment>
-    );
-  }
-  export default Forget;
+  let settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    arrows: true,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    fade: true,
+    initialSlide: 0,
+    autoplay: true,
+    adaptiveHeight: true,
+  };
+  let history = useHistory();
+  
+  const items = [
+    {
+      image: bg1,
+      title: "Perfect Balance",
+      description: "ArchitectUI is like a dream. Some think it's too good to be true! Extensive collection of unified React Bootstrap Components and Elements.",
+    },
+    {
+      image: bg3,
+      title: "Scalable, Modular, Consistent",
+      description: "Easily exclude the components you don't require. Lightweight, consistent Bootstrap based styles across all elements and components.",
+    },
+    {
+      image: bg2,
+      title: "Complex, but lightweight",
+      description: "We've included a lot of components that cover almost all use cases for any type of application.",
+    },
+  ];
+
+  return (
+    <Fragment>
+      <Box height="100vh" display="flex" flexDirection="row">
+        <Grid container>
+          <Grid item lg={4} className="d-none d-lg-block">
+            <Carousel>
+              {items.map((item, index) => (
+                <Box
+                  key={index}
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  height="100vh"
+                  style={{ backgroundImage: `url(${item.image})` }}
+                  className="slider-content"
+                >
+                  <Box textAlign="center" color="#fff">
+                    <Typography variant="h3">{item.title}</Typography>
+                    <Typography>{item.description}</Typography>
+                  </Box>
+                </Box>
+              ))}
+            </Carousel>
+          </Grid>
+          <Grid item lg={8} md={12} display="flex" bgcolor="white" justifyContent="center" alignItems="center">
+            <Container maxWidth="xs">
+              <Box textAlign="center">
+                <Box mb={4}>
+                  <Typography variant="h4" gutterBottom>
+                    Forgot your Password?
+                  </Typography>
+                  <Typography variant="body1">
+                    Use the form below to recover it.
+                  </Typography>
+                </Box>
+                <form>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <TextField
+                        fullWidth
+                        required
+                        type="email"
+                        name="email"
+                        label="Email"
+                        placeholder="Email here..."
+                      />
+                    </Grid>
+                  </Grid>
+                  <Box mt={4} display="flex" alignItems="center">
+                    <Typography variant="body1">
+                      <Link onClick={() => history.push("/login")} style={{ cursor: "pointer", color: "#1976d2" }}>
+                        Sign in existing account
+                      </Link>
+                    </Typography>
+                    <Box ml="auto">
+                      <Button variant="contained" color="primary" size="small">
+                        Recover Password
+                      </Button>
+                    </Box>
+                  </Box>
+                </form>
+              </Box>
+            </Container>
+          </Grid>
+        </Grid>
+      </Box>
+    </Fragment>
+  );
+};
+
+export default Forget;

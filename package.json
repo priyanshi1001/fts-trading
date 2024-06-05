@@ -87,6 +87,7 @@
     "react-loaders": "^3.0.1",
     "react-loading-overlay-ts": "^1.0.4",
     "react-map-gl": "^6.1.18",
+    "react-material-ui-carousel": "^3.4.2",
     "react-metismenu": "^1.4.0",
     "react-numeric-input": "^2.2.3",
     "react-on-screen": "^2.1.1",
