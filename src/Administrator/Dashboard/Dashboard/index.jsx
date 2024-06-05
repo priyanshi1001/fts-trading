@@ -179,13 +179,13 @@ export default function ContentManagement() {
               <div className="col-12">
                 <div className="d-flex align-items-center justify-content-end px-lg-5 px-md-4 px-sm-3 px-3 my-3">
                   <Link
-                    className="textPurpal text-decoration-none fs-6 fw-medium"
+                    className="textPurpal text-decoration-none fs-7 fw-medium"
                     to="/"
                   >
                     Stock Details{" "}
                     <svg
-                      width="24"
-                      height="24"
+                      width="18"
+                      height="18"
                       viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
