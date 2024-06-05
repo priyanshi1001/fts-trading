@@ -725,10 +725,12 @@ font-family: "Roboto","Helvetica","Arial",sans-serif !important;
 
 
   .app-header__logo {
-    visibility: collapse;
+    visibility: visible;
   }
 }
-
+.closed-sidebar:not(.closed-sidebar-mobile) .app-header .app-header__logo {
+  width: 120px;
+}
 
 .css-q0jhri-MuiInputBase-root-MuiInput-root:hover:not(.Mui-disabled, .Mui-error):before {
   border: none !important;

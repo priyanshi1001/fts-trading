@@ -9,9 +9,9 @@ class AppFooter extends React.Component {
         <div className="app-footer" style={{backgroundColor:"white"}}>
        
           <div className="app-footer__inner">
-            {/* <div className="app-footer-left">
+            <div className="app-footer-left">
               <FooterDots />
-            </div> */}
+            </div>
             <div className="app-footer-right">
                <div id="google_translate_element"></div>
             </div>

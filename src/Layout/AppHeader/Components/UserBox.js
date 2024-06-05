@@ -52,7 +52,7 @@ const UserBox = () => {
                      
                
                    />
-                   <div style={{cursor:"pointer" ,fontSize:'10px'}}>LogOut</div>
+                   <div style={{cursor:"pointer" ,fontSize:'10px',marginRight:"10px"}}>LogOut</div>
                </div>
                     
                
