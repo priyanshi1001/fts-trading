@@ -344,12 +344,12 @@ const Login = () => {
   ];
 
   return (
-    <Fragment style={{ overflow: "hidden" }}>
+    <Fragment>
       <Box
         height="100vh"
         display="flex"
         flexDirection="row"
-        style={{ overflow: "hidden" }}
+       
       >
         <Grid container>
           <Grid item lg={6} md={6} sm={12}>
@@ -535,7 +535,7 @@ const Login = () => {
                     <Box component={"div"}>
                       <Typography variant="subtitle1">
                         Don’t have an account?{" "}
-                        <Link to="/signup" className="btn textPurpal">
+                        <Link to="/signup" className="textPurpal">
                           Sign Up
                         </Link>
                       </Typography>
