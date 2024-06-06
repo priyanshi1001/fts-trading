@@ -554,16 +554,7 @@ tbody{
   }
 }
 
-.logo-src{
-    height: 52px ;
-    width: 25%;
-    background-size: contain !important;
-    background-repeat: no-repeat !important;
-}
 
-.app-sidebar__heading , .metismenu-link{
-    color: #0b0c0c ;
-}
 .rdw-editor-wrapper{
     border: 1px solid;
 }
@@ -716,19 +707,95 @@ font-family: "Roboto","Helvetica","Arial",sans-serif !important;
 
 }
 }
-.app-header {
-  position: fixed;
-  top: 0;
-  // width: 100%;
-  opacity: 1 !important;
-  background-color: white;
 
-
-  .app-header__logo {
-    visibility: collapse;
+.fixed-header {
+  .app-main {
+    padding-top: 110px;
   }
 }
 
+.app-sidebar__heading,
+.metismenu-link {
+  color: #0b0c0c;
+}
+.app-header {
+  position: fixed;
+  top: 0;  
+  opacity: 1 !important;
+  background-color: white;
+  width: 100% !important;
+  height: auto;
+  .app-header__logo {
+    max-width: 260px;
+    gap: 10px;
+    justify-content: space-between;
+    .logo-src {
+        height: 52px !important;
+        width: 52px !important;
+        background-size: contain !important;
+        background-repeat: no-repeat !important;
+      }
+    h5{
+      font-size: 15px !important;
+      font-weight: 700 !important;
+      color: rgba(69, 70, 78, 1) !important ;
+    }
+        .Burger{
+          padding: 5px;
+        }
+  }
+  .headerTop{
+    border-bottom: 1px solid rgba(241, 243, 249, 1);
+    padding: 14px 20px 14px 0;
+    .app-header-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        .userIcon{
+          height: 32px;
+          width: 32px;
+          border-radius: 8px;
+          -moz-border-radius: 8px;
+          -webkit-border-radius:8px;
+          overflow: hidden;
+          img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+      }
+  }
+  .headerBottom{
+    padding: 8px 20px 8px 0;
+    .MuiBreadcrumbs-separator{
+      margin-inline: 11px !important;
+    }
+    .currentPage{
+      font-size: 12px;
+      text-transform: capitalize;
+      color: rgba(139, 141, 151, 1);
+      margin: 0;
+    }
+    a{
+      color: rgba(85, 112, 241, 1) !important;
+      text-decoration: none !important;
+      cursor: pointer;
+      &:hover{
+        color: rgba(69, 70, 78, 1) !important;
+        path{
+          fill: rgba(69, 70, 78, 1) !important;
+        }
+      }
+    }
+  }
+    
+}
+.pageName {
+  font-size: 20px !important;
+  font-family: "Inter", sans-serif !important;
+  color: rgba(69, 70, 78, 1) !important;
+}
 
 .css-q0jhri-MuiInputBase-root-MuiInput-root:hover:not(.Mui-disabled, .Mui-error):before {
   border: none !important;

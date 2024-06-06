@@ -325,7 +325,7 @@ export default function ContentManagement() {
                   </div>
                   <CardContent className="cardContent">
                     <div className="row">
-                      <div className="col-md-3 col-12">
+                      <div className="col-lg-3 col-12">
                         <div className="stockInfo">
                           <ul class="list-group mb-2">
                             <li className="list-group-item">Stock System</li>
@@ -391,7 +391,7 @@ export default function ContentManagement() {
                           </ul>
                         </div>
                       </div>
-                      <div className="col-md-9 col-12">
+                      <div className="col-lg-9 col-12">
                         <div className="row">
                           <div className="col-md-6 col-12">
                             <Card
