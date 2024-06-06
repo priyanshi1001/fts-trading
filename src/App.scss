@@ -1073,3 +1073,23 @@ input[type='number']::-webkit-outer-spin-button {
 input[type='number'] {
   -moz-appearance: textfield;
 }
+
+
+.closed-sidebar .app-sidebar:hover{
+  width: 100px !important;
+}
+.closed-sidebar .vertical-nav-menu .metismenu-container .metismenu-link{
+  color:  transparent !important;
+}
+.closed-sidebar .vertical-nav-menu .metismenu-container .metismenu-link.active{
+  i{
+
+    color:  white !important;
+  }
+}
+.closed-sidebar .vertical-nav-menu .metismenu-container .metismenu-link{
+  i{
+
+    color:  gray !important;
+  }
+}
