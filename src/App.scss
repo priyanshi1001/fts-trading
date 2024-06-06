@@ -103,21 +103,22 @@ h1, h2, h3, h4, h5, h6{
   color:rgba(85, 112, 241, 1) !important;
 }
 .text-light-blue{
-  color: rgba(85, 112, 241, 1)
-  ;
+  color: rgba(85, 112, 241, 1)  ;
+}
+.text-orange {
+  color: rgba(248, 155, 83, 1) !important;
 }
 .text-gray{
 color: rgba(104, 104, 104, 1) !important;
 }
-.text-orange{
-  color: rgba(248, 155, 83, 1) !important;
-}
+
 .text-dark-gray{
   color: rgba(69, 70, 78, 1) !important;
 }
 .semiGray{
   color: rgba(69, 70, 78, 1) !important;
 }
+
 .lightGreenBg{
   background: rgba(42, 163, 31, 0.34) !important;
 }
@@ -938,9 +939,18 @@ input:-webkit-autofill:active{
 .logoBox{
   display: inline-flex;
   flex-flow: column;
-  align-items: center;
-  gap: 30px;
-  margin-bottom: 60px;
+  align-items: start;
+  gap: 40px;
+  margin-bottom: 40px;
+  @media screen and (max-width: 768px) {
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+  
+    @media screen and (max-width: 676px) {
+      gap: 20px;
+      margin-bottom: 20px;
+    }
   .app-logo{
     margin-bottom: 0 !important;
     display: inline-block;
@@ -948,7 +958,7 @@ input:-webkit-autofill:active{
   .authSlogen{
     display: flex;
     flex-flow: column;
-    gap: 10px;
+    gap: 8px;
     h6{
       font-size: 20px;
       font-weight: 500;
@@ -966,7 +976,7 @@ input:-webkit-autofill:active{
 }
 .loginSignupForm{
   width: 100%;
-  max-width: 375px;
+  max-width: 100%;
 }
 
 .loginInput{
@@ -980,20 +990,21 @@ input:-webkit-autofill:active{
     padding-left:5px;
     background: rgba(239, 241, 249, 0.6);
   }
+  // autofill 
   input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active{
-    -webkit-box-shadow:0 0 0 30px rgb(245 247 251) inset !important;
+    -webkit-box-shadow:0 0 0 30px rgba(241, 244, 255, 1) inset !important;
   }
 }
 .loginSignupForm{
   form{
     display: flex;
     flex-flow: column;
-    gap: 48px;
+    gap: 40px;
     @media screen and (max-width: 768px) {
-      gap: 38px;
+      gap: 30px;
     }
     @media screen and (max-width: 676px) {
-      gap: 28px;
+      gap: 20px;
     }
   }
 }

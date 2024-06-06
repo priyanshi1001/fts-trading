@@ -269,9 +269,9 @@
 // export default Login;
 import React, { Fragment, useState, useEffect } from "react";
 import Carousel from "react-material-ui-carousel";
-import bg1 from "../../../assets/utils/images/originals/shareChart.png";
-import bg2 from "../../../assets/utils/images/originals/shareChart.png";
-import bg3 from "../../../assets/utils/images/originals/shareChart.png";
+import bg1 from "../../../assets/utils/images/originals/shareOffice.png";
+import bg2 from "../../../assets/utils/images/originals/shareOffice.png";
+import bg3 from "../../../assets/utils/images/originals/shareOffice.png";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 import {
@@ -345,24 +345,23 @@ const Login = () => {
 
   return (
     <Fragment>
-      <Box
-        height="100vh"
-        display="flex"
-        flexDirection="row"
-       
-      >
+      <Box height="100vh" display="flex" flexDirection="row">
         <Grid container>
-          <Grid item lg={6} md={6} sm={12}>
-            <Carousel>
+          <Grid item lg={4} md={5} sm={12}>
+            <Carousel
+              indicators={false}
+              sx={{ height: "100% !Important", minHeight: "100vh" }}
+            >
               {items.map((item, index) => (
                 <Box
                   key={index}
                   display="flex"
                   justifyContent="center"
                   alignItems="center"
-                  height="100vh"
+                  minHeight="100vh"
+                  height="100%"
                   style={{
-                    // backgroundImage: `url(${item.image})`,
+                    backgroundImage: `url(${item.image})`,
                     backgroundColor: "rgba(184, 195, 249, 1)",
                   }}
                   className="slider-content"
@@ -370,11 +369,11 @@ const Login = () => {
                   <Box textAlign="center" color="#fff">
                     {/* <Typography variant="h3">{item.title}</Typography>
                     <Typography>{item.description}</Typography> */}
-                    <img
+                    {/* <img
                       src={item.image}
                       alt={item.title}
                       className="img-fluid"
-                    />
+                    /> */}
                   </Box>
                 </Box>
               ))}
@@ -382,16 +381,16 @@ const Login = () => {
           </Grid>
           <Grid
             item
-            lg={6}
-            md={6}
+            lg={8}
+            md={7}
             sm={12}
             display="flex"
             justifyContent="center"
             alignItems="center"
             bgcolor="white"
           >
-            <Container maxWidth="xs">
-              <Box textAlign="center">
+            <Container fullWidth>
+              <Box textAlign="start" sx={{ px: { lg: "40px", md: "20px" } }}>
                 <div className="logoBox">
                   <div className="app-logo" />
                   <div className="authSlogen">
@@ -402,8 +401,8 @@ const Login = () => {
                 <Box component={"div"} className="loginSignupForm">
                   <form onSubmit={handleSubmit}>
                     <Box component={"div"} className="loginInputBox">
-                      <Grid container spacing={4}>
-                        <Grid item xs={12}>
+                      <Grid container spacing={2}>
+                        <Grid item md={6} xs={12}>
                           <TextField
                             className="loginInput"
                             fullWidth
@@ -450,7 +449,7 @@ const Login = () => {
                             }}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item md={6} xs={12}>
                           <TextField
                             className="loginInput"
                             fullWidth
@@ -523,7 +522,7 @@ const Login = () => {
                       <Box mt={1} display="flex" justifyContent="end">
                         <Link
                           to="/forget"
-                          className="btn textPurpal px-0 link-text"
+                          className="btn textPurpal px-0 link-text fw-normal"
                           onClick={() => {
                             history.push("/forget");
                           }}
@@ -532,18 +531,22 @@ const Login = () => {
                         </Link>
                       </Box>
                     </Box>
-                    <Box component={"div"}>
-                      <Typography variant="subtitle1">
+                    <Box
+                      component={"div"}
+                      className="d-flex align-items-center justify-content-between mb-3"
+                    >
+                      <Typography variant="p" className="fs-7 text-gray">
                         Don’t have an account?{" "}
-                        <Link to="/signup" className="textPurpal">
+                        <Link to="/signup" className="btn textPurpal py-0 px-1">
                           Sign Up
                         </Link>
                       </Typography>
-                    </Box>
-                    <Box mt={2}>
-                      <Button type="submit" color="primary" variant="contained">
+                      <button
+                        type="submit"
+                        className="btn btn-lg btn-blue rounded-3"
+                      >
                         Login
-                      </Button>
+                      </button>
                     </Box>
                   </form>
                 </Box>
