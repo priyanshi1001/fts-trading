@@ -41,12 +41,16 @@ class HeaderLogo extends React.Component {
       <Fragment>
         <div className="app-header__logo">
           <div className="logo-src" />
-          <Typography style={{fontSize:"17px",fontWeight:"bold",width:"50%",marginLeft:"17px"}}>FTS Trading</Typography>
-          <div className="header__pane" style={{marginLeft:"4px",marginTop:"5px"}}>
-            <div onClick={this.toggleEnableClosedSidebar}>
-              <Slider width={26} lineHeight={2} lineSpacing={5} color="#6c757d"
-                active={this.state.active} onClick={() => this.setState({ active: !this.state.active })}/>
-            </div>
+          <Typography variant="h5">FTS Trading</Typography>
+          <div className="hamberger" onClick={this.toggleEnableClosedSidebar}>
+            <Slider
+              width={26}
+              lineHeight={2}
+              lineSpacing={5}
+              color="#6c757d"
+              active={this.state.active}
+              onClick={() => this.setState({ active: !this.state.active })}
+            />
           </div>
         </div>
         <AppMobileMenu />
