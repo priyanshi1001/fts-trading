@@ -1,32 +1,36 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 import cx from "classnames";
-import { Breadcrumbs, Button, Link, Typography } from "@mui/material";
-
+import { Breadcrumbs, Link, Typography } from "@mui/material";
+import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-// import { useEffectOnce } from "../.././Translator/UseEffectOne.jsx";
 
 import HeaderLogo from "../AppLogo";
-import PageHeader from "./header";
-// import SearchBox from "./Components/SearchBox";
-import MegaMenu from "./Components/MegaMenu";
 import UserBox from "./Components/UserBox";
-import GoogleTranslate from "./newFile";
-import HeaderDots from "./Components/HeaderDots";
 import userImg from "../../assets/utils/images/avatars/2.jpg";
 
 class Header extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      translate: false,
-    };
+  getPageName = () => {
+    const { location } = this.props;
+    if (!location || !location.pathname) return "";
+    const path = location.pathname.split("/")[1]; // get the first part of the path after '/'
+    if (path === "Stocks_Details") {
+      return "Stock Details";
+    }
+    else if (path === "Screens") {
+     return "Pre Build Screens";
+    }
+    else if (path === "WatchList"){
+      return "Watch List";
   }
-
+  else if (path === "OtherFunctions"){
+    return "Other Functions";
+}
+    return path.charAt(0).toUpperCase() + path.slice(1); // capitalize the first letter
+  };
   render() {
-    let { headerBackgroundColor, enableMobileMenuSmall, enableHeaderShadow } =
-      this.props;
+    let { headerBackgroundColor, enableMobileMenuSmall, enableHeaderShadow } = this.props;
+
     return (
       <Fragment>
         <TransitionGroup>
@@ -54,7 +58,7 @@ class Header extends React.Component {
                   <div className="d-flex align-items-center justify-content-between gap-3">
                     <div className="app-header-left">
                       <Typography variant="h5" className="pageName">
-                        Dashboard
+                        {this.getPageName()}
                       </Typography>
                     </div>
                     <div className="app-header-right">
@@ -100,7 +104,7 @@ class Header extends React.Component {
                         />
                       </svg>
                     </Link>
-                    <p className="currentPage">Content Management Languages</p>
+                    <p className="currentPage">{this.getPageName()}</p>
                   </Breadcrumbs>
                 </div>
               </div>
@@ -116,9 +120,10 @@ const mapStateToProps = (state) => ({
   enableHeaderShadow: state.ThemeOptions.enableHeaderShadow,
   closedSmallerSidebar: state.ThemeOptions.closedSmallerSidebar,
   headerBackgroundColor: state.ThemeOptions.headerBackgroundColor,
-  enableMobileMenuSmall: state.ThemeOptions.enableMobileMenuSmall,
+  enableMobileMenu : state.ThemeOptions.enableMobileMenuSmall,
 });
 
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+  const mapDispatchToProps = (dispatch) => ({});
+  
+  
+  export default connect(mapStateToProps,mapDispatchToProps)(withRouter(Header));
