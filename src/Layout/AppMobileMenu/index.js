@@ -55,7 +55,7 @@ class AppMobileMenu extends React.Component {
           </div>
         </div>
         <div className="app-header__menu">
-          <span onClick={this.toggleMobileSmall}>
+          {/* <span onClick={this.toggleMobileSmall}>
             <Button size="sm" className={cx("btn-icon btn-icon-only", {
                 active: this.state.activeSecondaryMenuMobile,
               })}
@@ -70,7 +70,7 @@ class AppMobileMenu extends React.Component {
                 <FontAwesomeIcon icon={faEllipsisV} />
               </div>
             </Button>
-          </span>
+          </span> */}
         </div>
       </Fragment>
     );
