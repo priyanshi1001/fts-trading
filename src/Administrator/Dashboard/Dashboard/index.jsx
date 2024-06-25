@@ -55,6 +55,8 @@ import SearchIcon from "@material-ui/icons/Search";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import DialogTransition from "../../../reusables/deleteDialog";
 import Modal from "../../../reusables/htmlDialog";
+import { toast } from "react-toastify";
+import { fetchAccountDetail, fetchIBAuthStatus, fetchIBPortfolioSummary, fetchIBPortfolioAccounts } from "../../../api/ApiCall"
 
 // getAllContentTypeByIdReducer   getAllContentType
 
@@ -77,6 +79,33 @@ export default function ContentManagement() {
   const [search, setSearch] = useState("");
   const [dropDownData, setDropDownData] = useState([]);
   const [open2, setOpen2] = useState(false);
+
+  const [accountDetail, setAccountDetail] = useState(null);
+
+  useEffect(() => {
+
+    // fetchIBAuthStatus().then((response) => {
+    //   console.log("response==================", response)
+    //   setAccountDetail(response || null);
+    // }).catch((err) => {
+    //   console.log("Account Details Error:", err);
+    // });
+
+    fetchIBPortfolioSummary().then((response) => {
+      setAccountDetail(response || null);
+    }).catch((err) => {
+      console.log("Account Details Error:", err);
+      toast.error("Something went wrong.");
+    });
+
+    // fetchIBPortfolioAccounts().then((response) => {
+    //   console.log("response==================", response)
+    // }).catch((err) => {
+    //   console.log("Account Details Error:", err);
+    // });
+
+  }, []);
+
   const handleClickOpen2 = () => setOpen2(true);
   const handleClose2 = () => {
     setOpen2(false);
@@ -97,18 +126,18 @@ export default function ContentManagement() {
     e.preventDefault();
     setPage(1);
     setSize(10);
-    
+
   };
- 
+
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
- 
+
 
   const tableData = useSelector((state) => state.getAllContentTypeByIdReducer);
 
- 
+
 
   return (
     <Fragment>
@@ -197,23 +226,23 @@ export default function ContentManagement() {
                     <ul className="twopartContent">
                       <li>
                         Live Account Values
-                        <span className="digit">1,056,250</span>
+                        <span className="digit">{accountDetail?.availablefunds?.amount || 0}</span>
                       </li>
                       <li>
                         Cash Buying Power
-                        <span className="digit">35,0000</span>
+                        <span className="digit">{accountDetail?.buyingpower?.amount || 0}</span>
                       </li>
                       <li>
                         Margin Buying Power
-                        <span className="digit">1,750.25</span>
+                        <span className="digit">{accountDetail?.fullinitmarginreq?.amount || 0}</span>
                       </li>
                       <li>
                         Day Trading buying Power
-                        <span className="digit">3.150,251</span>
+                        <span className="digit">{0}</span>
                       </li>
                       <li>
                         Day Trade Excess
-                        <span className="digit">521,245</span>
+                        <span className="digit">{accountDetail?.excessliquidity?.amount || 0}</span>
                       </li>
                       <li>
                         Today’s Trading G/L
@@ -692,7 +721,7 @@ export default function ContentManagement() {
                         </TableRow>
                       </TableHead>
                       {tableData?.contentData &&
-                      tableData?.contentData?.records?.length ? (
+                        tableData?.contentData?.records?.length ? (
                         <TableBody>
                           {tableData?.contentData?.records.map((row) => (
                             <TableRow
@@ -712,7 +741,7 @@ export default function ContentManagement() {
                               <TableCell
                                 align="left"
                                 className="table_content tableRow1"
-                                // onClick={() => getLangById(row.id)}
+                              // onClick={() => getLangById(row.id)}
                               >
                                 <span
                                   className="addSubpage "
@@ -833,7 +862,7 @@ export default function ContentManagement() {
                         </TableRow>
                       </TableHead>
                       {tableData?.contentData &&
-                      tableData?.contentData?.records?.length ? (
+                        tableData?.contentData?.records?.length ? (
                         <TableBody>
                           {tableData?.contentData?.records.map((row) => (
                             <TableRow
@@ -853,7 +882,7 @@ export default function ContentManagement() {
                               <TableCell
                                 align="left"
                                 className="table_content tableRow1"
-                                // onClick={() => getLangById(row.id)}
+                              // onClick={() => getLangById(row.id)}
                               >
                                 <span
                                   className="addSubpage "
@@ -914,8 +943,8 @@ export default function ContentManagement() {
                 </Card>
               </div>
             </div>
-          
-          
+
+
           </div>
         </div>
       </div>
@@ -925,8 +954,8 @@ export default function ContentManagement() {
         setOpen={setOpen}
         handleClickOpen={handleClickOpen}
         handleClose={handleClose}
-        // deleteApi={deletePAGES}
-        // getAllApi={getAllPages}
+      // deleteApi={deletePAGES}
+      // getAllApi={getAllPages}
       />
 
       <Transition

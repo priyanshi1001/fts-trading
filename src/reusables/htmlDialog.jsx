@@ -49,22 +49,22 @@ const Modal = (props) => {
   };
 
   const handleSubmit = () => {
-    const file = fileData;
-    if (file === undefined || file === "") {
-      setError(true);
-    } else {
-      setError(false);
-      const reader = new FileReader();
-      reader.readAsBinaryString(file);
-      // reader.onloadend = () => {
-      const binaryString = reader.result; // Binary string.
-      // const newFile = new File([binaryString], file.name, { type: file.type }) // Re-create file from binary data.
-      // }
-      const formData = new FormData();
-      formData.append("formFile", fileData);
-      apiCall(formData);
-      setOpen(false);
-    }
+    // const file = fileData;
+    // if (file === undefined || file === "") {
+    //   setError(true);
+    // } else {
+    //   setError(false);
+    //   const reader = new FileReader();
+    //   reader.readAsBinaryString(file);
+    //   // reader.onloadend = () => {
+    //   const binaryString = reader.result; // Binary string.
+    //   // const newFile = new File([binaryString], file.name, { type: file.type }) // Re-create file from binary data.
+    //   // }
+    //   const formData = new FormData();
+    //   formData.append("formFile", fileData);
+    //   apiCall(formData);
+    // }
+    setOpen(false);
   };
 
   return (

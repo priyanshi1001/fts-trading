@@ -13,8 +13,14 @@ class Header extends React.Component {
   getPageName = () => {
     const { location } = this.props;
     if (!location || !location.pathname) return "";
-    const path = location.pathname.split("/")[1]; // get the first part of the path after '/'
-    if (path === "Stocks_Details") {
+    const path = location.pathname.split("/")[1];
+    if (path === "Get_real_time_stock") {
+      return "Stock Details";
+    }
+    else if (path === "Get_historical_price") {
+      return "Stock Details";
+    }
+    else if (path === "Stocks_Details") {
       return "Stock Details";
     }
     else if (path === "Screens") {

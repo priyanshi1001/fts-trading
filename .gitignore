@@ -12,6 +12,7 @@
 # production
 /build
 /documentation
+cred_details.txt
 
 # misc
 .DS_Store

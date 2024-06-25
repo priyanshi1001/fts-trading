@@ -5,13 +5,15 @@ import Loader from "react-loaders";
 import { ToastContainer } from "react-toastify";
 import { Help } from "@mui/icons-material";
 
-const login = lazy(()=>import("../../DemoPages/UserPages/Login"))
+const login = lazy(() => import("../../DemoPages/UserPages/Login"))
 const Forget = lazy(() => import("../../DemoPages/UserPages/ForgotPassword"))
 const Register = lazy(() => import("../../DemoPages/UserPages/Register"))
 const ResetPassword = lazy(() => import("../../DemoPages/UserPages/ResetPassword"))
 const Accounts = lazy(() => import("../../Administrator/Accounts/Accounts"));
 
 const Stocks_Details = lazy(() => import("../../Administrator/StockDetails/Stocks"));
+const RealTimeStock = lazy(() => import("../../Administrator/StockDetails/Stocks/realTimeStock"));
+const HistoricalPrice = lazy(() => import("../../Administrator/StockDetails/Stocks/historicalPrice"));
 const Screens = lazy(() => import("../../Administrator/PreBuildScreens/Screens"));
 const Report = lazy(() => import("../../Administrator/Report/Reports"));
 const WatchList = lazy(() => import("../../Administrator/WatchList/WatchLists"));
@@ -22,20 +24,20 @@ const Dashboard_details = lazy(() =>
   import("../../Administrator/Dashboard/DashBoard_details")
 );
 
-const Logout = lazy(()=> import("../../Administrator/LogOut")) 
+const Logout = lazy(() => import("../../Administrator/LogOut"))
 
 
 const AppMain = () => {
-  function isAuth(){
-    if(localStorage.getItem("accessToken") && localStorage.getItem("accessToken")!==""){
-       return true;
+  function isAuth() {
+    if (localStorage.getItem("accessToken") && localStorage.getItem("accessToken") !== "") {
+      return true;
     }
     else return false;
-}
+  }
   return (
-    
+
     <Fragment>
-           <Suspense
+      <Suspense
         fallback={
           <div className="loader-container">
             <div className="loader-container-inner">
@@ -46,7 +48,7 @@ const AppMain = () => {
           </div>
         }
       >
-        <Route path="/resetPassword" component={ResetPassword}/>
+        <Route path="/resetPassword" component={ResetPassword} />
       </Suspense>
 
       <Suspense
@@ -60,9 +62,9 @@ const AppMain = () => {
           </div>
         }
       >
-        <Route path="/register" component={Register}/>
+        <Route path="/register" component={Register} />
       </Suspense>
-      
+
       <Suspense
         fallback={
           <div className="loader-container">
@@ -74,7 +76,7 @@ const AppMain = () => {
           </div>
         }
       >
-        <Route path="/forget" component={Forget}/>
+        <Route path="/forget" component={Forget} />
       </Suspense>
       <Suspense
         fallback={
@@ -87,12 +89,12 @@ const AppMain = () => {
           </div>
         }
       >
-        <Route path="/login" component={isAuth() ?login: login}/>
+        <Route path="/login" component={isAuth() ? login : login} />
       </Suspense>
-      
 
 
-<Suspense
+
+      <Suspense
         fallback={
           <div className="loader-container">
             <div className="loader-container-inner">
@@ -107,29 +109,9 @@ const AppMain = () => {
           </div>
         }
       >
-        <Route path="/logout" component={isAuth() ?Logout: login}/>
-      </Suspense>
-  
-    
-      <Suspense
-        fallback={
-          <div className="loader-container">
-            <div className="loader-container-inner">
-              <div className="text-center">
-                <Loader type="line-scale" />
-              </div>
-              <h6 className="mt-3">
-                Please wait while we load all Dashboard
-                {/* <small>Because this is a demonstration we load at once all the Elements examples. This wouldn't happen in a real live app!</small> */}
-              </h6>
-            </div>
-          </div>
-        }
-      >
-        <Route path="/Dashboard" component={isAuth() ?Dashboard: login}/>
+        <Route path="/logout" component={isAuth() ? Logout : login} />
       </Suspense>
 
-     
 
       <Suspense
         fallback={
@@ -146,7 +128,27 @@ const AppMain = () => {
           </div>
         }
       >
-        <Route path="/Dashboard_details" component={isAuth() ?Dashboard_details: login}/>
+        <Route path="/Dashboard" component={isAuth() ? Dashboard : login} />
+      </Suspense>
+
+
+
+      <Suspense
+        fallback={
+          <div className="loader-container">
+            <div className="loader-container-inner">
+              <div className="text-center">
+                <Loader type="line-scale" />
+              </div>
+              <h6 className="mt-3">
+                Please wait while we load all Dashboard
+                {/* <small>Because this is a demonstration we load at once all the Elements examples. This wouldn't happen in a real live app!</small> */}
+              </h6>
+            </div>
+          </div>
+        }
+      >
+        <Route path="/Dashboard_details" component={isAuth() ? Dashboard_details : login} />
       </Suspense>
 
       <Suspense
@@ -164,7 +166,7 @@ const AppMain = () => {
           </div>
         }
       >
-        <Route path="/OtherFunctions" component={isAuth() ?OtherFunctions: login}/>
+        <Route path="/OtherFunctions" component={isAuth() ? OtherFunctions : login} />
       </Suspense>
       <Suspense
         fallback={
@@ -181,7 +183,7 @@ const AppMain = () => {
           </div>
         }
       >
-        <Route path="/WatchList" component={isAuth() ?WatchList: login}/>
+        <Route path="/WatchList" component={isAuth() ? WatchList : login} />
       </Suspense>
       <Suspense
         fallback={
@@ -198,7 +200,7 @@ const AppMain = () => {
           </div>
         }
       >
-        <Route path="/Report" component={isAuth() ?Report: login}/>
+        <Route path="/Report" component={isAuth() ? Report : login} />
       </Suspense>
       <Suspense
         fallback={
@@ -215,7 +217,7 @@ const AppMain = () => {
           </div>
         }
       >
-        <Route path="/Screens" component={isAuth() ?Screens: login}/>
+        <Route path="/Screens" component={isAuth() ? Screens : login} />
       </Suspense>
       <Suspense
         fallback={
@@ -232,7 +234,39 @@ const AppMain = () => {
           </div>
         }
       >
-        <Route path="/Stocks_Details" component={isAuth() ?Stocks_Details: login}/>
+        <Route path="/Stocks_Details" component={isAuth() ? Stocks_Details : login} />
+      </Suspense>
+      <Suspense
+        fallback={
+          <div className="loader-container">
+            <div className="loader-container-inner">
+              <div className="text-center">
+                <Loader type="line-scale" />
+              </div>
+              <h6 className="mt-3">
+                Please wait while we load all real time stock
+              </h6>
+            </div>
+          </div>
+        }
+      >
+        <Route path="/Get_real_time_stock/:conid" component={isAuth() ? RealTimeStock : login} />
+      </Suspense>
+      <Suspense
+        fallback={
+          <div className="loader-container">
+            <div className="loader-container-inner">
+              <div className="text-center">
+                <Loader type="line-scale" />
+              </div>
+              <h6 className="mt-3">
+                Please wait while we load all historical price
+              </h6>
+            </div>
+          </div>
+        }
+      >
+        <Route path="/Get_historical_price/:conid" component={isAuth() ? HistoricalPrice : login} />
       </Suspense>
       <Suspense
         fallback={
@@ -249,7 +283,7 @@ const AppMain = () => {
           </div>
         }
       >
-        <Route path="/Accounts" component={isAuth() ?Accounts: login}/>
+        <Route path="/Accounts" component={isAuth() ? Accounts : login} />
       </Suspense>
 
 

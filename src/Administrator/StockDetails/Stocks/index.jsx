@@ -4,8 +4,9 @@ import {
   Card,
   Grid,
   Breadcrumbs,
-  Link,
+  // Link,
   Box,
+  Button,
   TextField,
   InputAdornment,
 } from "@mui/material";
@@ -23,80 +24,54 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import { useDispatch, useSelector } from "react-redux";
 import SearchIcon from "@mui/icons-material/Search";
-import { Route, useHistory } from "react-router-dom";
-import {
-  // exportContent,
-  getAllContentType,
-  getAllLanguages,
-  getContentLanguageById,
-  importContent,
-} from "../../../redux/Actions";
+import { Route, useHistory, Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { fetchIBStockList } from "../../../api/ApiCall"
+
 export default function Stocks() {
   const dispatch = useDispatch();
   const history = useHistory();
-  const [typeId, setTypeId] = React.useState(1);
-  const [open, setOpen] = useState(false);
-  const handleClickOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const [rowId, setRowId] = useState({});
-  const [fileData, setFileData] = useState();
-  const [open1, setOpen1] = useState(false);
-  const handleClickOpen1 = () => setOpen1(true);
-  const handleClose1 = () => setOpen1(false);
   const [page, setPage] = useState(1);
-  const [size, setSize] = useState(10);
-  const [idData, setIdData] = useState(0);
+  const [size, setSize] = useState(100);
   const [search, setSearch] = useState("");
-  const [dropDownData, setDropDownData] = useState([]);
-  const [open2, setOpen2] = useState(false);
-  const handleClickOpen2 = () => setOpen2(true);
-  const handleClose2 = () => {
-    setOpen2(false);
-    setRowId({});
-  };
-  const languageData = useSelector((state) => state.LanguagesReducer);
-  const [data, setData] = React.useState({
-    // id: 4,
-    name: "",
-    text: "",
-    moreText: "",
-    language: null,
-    translation: null,
-    toolTip: "",
-    typeId: null,
+  const [data, setData] = useState(null);
+  const [payload, setPayload] = useState({
+    "pageNumber": 1,
+    "pageSize": 100,
+    "sortField": "symbol",
+    "sortDirection": "asc",
+    "productCountry": [
+      "US"
+    ],
+    "productSymbol": "",
+    "newProduct": "all",
+    "productType": [
+      "STK"
+    ],
+    "domain": "com"
   });
-  const setSubmit = (e) => {
-    e.preventDefault();
-    setPage(1);
-    setSize(10);
-    dispatch(getAllContentType(page, size, search));
-  };
-  useEffect(() => {
-    if (search === "") {
-      setPage(1);
-      setSize(10);
-      dispatch(getAllContentType(page, size, search));
-    }
-  }, [search]);
-  const handleChange = (e) => {
-    setData({ ...data, [e.target.name]: e.target.value });
-  };
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    dispatch(getAllContentType(page, size));
-  }, [page]);
+    if (size > 0) payload["pageSize"] = size;
+    if (page > 0) payload["pageNumber"] = page;
+    payload["productSymbol"] = (search || "");
 
-  const tableData = useSelector((state) => state.getAllContentTypeByIdReducer);
+    setPayload({ ...payload });
 
-  useEffect(() => {
-    dispatch(getAllContentType(page, size, search));
-    // dispatch(getAllLanguages());
-  }, []);
+    fetchIBStockList(payload).then((response) => {
+      console.log("response==================", response)
+      setData(response || null);
+      setIsLoading(false);
+    }).catch((err) => {
+      setIsLoading(false);
+    })
+  }, [size, page, search]);
+
   return (
     <Card>
       <Fragment>
         <ThemeOptions />
-
         <div className="app-main">
           <AppSidebar />
           <div className="app-main__outer">
@@ -191,105 +166,168 @@ export default function Stocks() {
                               align="left"
                               className="table_head tableRow1"
                             >
-                              Name
+                              Symbol
                             </TableCell>
-
                             <TableCell
                               align="left"
                               className="table_head tableRow1"
                             >
-                              Translations
+                              Description
                             </TableCell>
-
                             <TableCell
                               align="right"
                               className="table_head tableRow1"
                             >
-                              Action
+                              Exchange
+                            </TableCell>
+                            <TableCell
+                              align="right"
+                              className="table_head tableRow1"
+                            >
+                              Contract id
+                            </TableCell>
+                            <TableCell
+                              align="right"
+                              className="table_head tableRow1"
+                            >
+                              Type
+                            </TableCell>
+                            <TableCell
+                              align="right"
+                              className="table_head tableRow1"
+                            >
+                              Currency
+                            </TableCell>
+                            <TableCell
+                              align="right"
+                              className="table_head tableRow1"
+                            >
+                              Country
+                            </TableCell>
+                            <TableCell
+                              align="right"
+                              className="table_head tableRow1"
+                            >
+                            </TableCell>
+                            <TableCell
+                              align="right"
+                              className="table_head tableRow1"
+                            >
                             </TableCell>
                           </TableRow>
                         </TableHead>
-                        {tableData?.contentData &&
-                        tableData?.contentData?.records?.length ? (
-                          <TableBody>
-                            {tableData?.contentData?.records.map((row) => (
-                              <TableRow
-                                align="left"
-                                className="tableRow1"
-                                key={row.name}
-                                sx={{
-                                  "&:last-child td, &:last-child th": {
-                                    border: 0,
-                                  },
-                                }}
-                              >
-                                <TableCell className="table_content tableRow1">
-                                  {row.name}
-                                </TableCell>
 
-                                <TableCell
+
+                        <TableBody>
+                          <TableRow
+                            align="left"
+                            className="tableRow1"
+                            sx={{
+                              "&:last-child td, &:last-child th": {
+                                border: 0,
+                              },
+                            }}
+                          >
+                            <TableCell className="table_content tableRow1">
+                              AAA
+                            </TableCell>
+                            <TableCell className="table_content tableRow1">
+                              AAA
+                            </TableCell>
+                            <TableCell className="table_content tableRow1">
+                              AAA
+                            </TableCell>
+                            <TableCell className="table_content tableRow1">
+                              AAA
+                            </TableCell>
+                            <TableCell className="table_content tableRow1">
+                              AAA
+                            </TableCell>
+                            <TableCell className="table_content tableRow1">
+                              AAA
+                            </TableCell>
+                            <TableCell className="table_content tableRow1">
+                              AAA
+                            </TableCell>
+                            <TableCell className="table_content tableRow1">
+                              <Link to={`/Get_real_time_stock/265598`}>
+                                Get Real Time Stock
+                              </Link>
+                            </TableCell>
+                            <TableCell className="table_content tableRow1">
+                              <Link to={`/Get_historical_price/265598`}>
+                                Get Historical Price
+                              </Link>
+                            </TableCell>
+                          </TableRow>
+                        </TableBody>
+
+
+                        {isLoading ?
+                          <div className="notDataDiv">Please wait...</div>
+                          : data?.products?.length ? (
+                            <TableBody>
+                              {data.products.map((row, ind) => (
+                                <TableRow
                                   align="left"
-                                  className="table_content tableRow1"
-                                  // onClick={() => getLangById(row.id)}
+                                  className="tableRow1"
+                                  key={ind}
+                                  sx={{
+                                    "&:last-child td, &:last-child th": {
+                                      border: 0,
+                                    },
+                                  }}
                                 >
-                                  <span
-                                    className="addSubpage "
-                                    onClick={() => {
-                                      setOpen2(true);
-                                      setDropDownData(row?.id);
-                                      dispatch(
-                                        getContentLanguageById(
-                                          row?.id,
-                                          (item) => setRowId(item)
-                                        )
-                                      );
-                                    }}
-                                  >
-                                    Select Languages
-                                  </span>
-                                </TableCell>
-                                <TableCell
-                                  className="table_content tableRow1"
-                                  align="right"
-                                >
-                                  {row.action}
-                                  <div className="actionRow">
-                                    <EditIcon
-                                      style={{
-                                        color: "green",
-                                        fontSize: "20px",
-                                      }}
-                                      onClick={() => {
-                                        history.push(
-                                          `/content_edits/${row.id}`
-                                        );
-                                      }}
-                                    />
-                                  </div>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        ) : (
-                          <div className="notDataDiv">No Data Available</div>
-                        )}
+                                  <TableCell className="table_content tableRow1">
+                                    {row.symbol}
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    {row.description}
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    {row.exchangeId}
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    {row.conid}
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    {row.type}
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    {row.currency}
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    {row.country}
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    <Link to={`/Get_real_time_stock/${row.conid}`}>
+                                      Get Real Time Stock
+                                    </Link>
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    <Link to={`/Get_historical_price/${row.conid}`}>
+                                      Get Historical Price
+                                    </Link>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          ) : (
+                            <div className="notDataDiv">No Data Available</div>
+                          )}
                       </Table>
                     </TableContainer>
                     <Box className="tableFooter">
-                      {tableData?.contentData?.totalPages > 1 ? (
-                        <Stack spacing={2}>
-                          <Pagination
-                            className="d-flex justify-content-end"
-                            variant="outlined"
-                            shape="rounded"
-                            color="primary"
-                            count={tableData?.contentData?.totalPages}
-                            onChange={(e, value) => setPage(value)}
-                          />
-                        </Stack>
-                      ) : (
-                        ""
-                      )}
+                      <Stack spacing={2}>
+                        <Pagination
+                          className="d-flex justify-content-end"
+                          variant="outlined"
+                          shape="rounded"
+                          color="primary"
+                          count={10}
+                          onChange={(e, value) => setPage(value)}
+                        />
+                      </Stack>
                     </Box>
                   </Card>
                 </div>
@@ -298,6 +336,6 @@ export default function Stocks() {
           </div>
         </div>
       </Fragment>
-    </Card>
+    </Card >
   );
 }
