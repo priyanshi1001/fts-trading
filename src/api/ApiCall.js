@@ -8,11 +8,11 @@ const alpacaPaperAccBaseUrl = `https://paper-api.alpaca.markets/v2`;
 const alpacaPaperAccUsername = "PK5WSGFGWR644GFAK2XK";
 const alpacaPaperAccPassword = "ps1vadEfOzLnZWyrRFR7lLZK2zfapmAluMAKUvIg";
 
-const IBBaseUrl = `http://localhost/v1`;
+const IBAccountId = "DU9313757";
+const IBBaseUrl = `http://122.176.139.248:8098/v1`; // http://122.176.139.248:8098 http://localhost/v1 
 const IBProductList = `https://www.interactivebrokers.com/webrest/search/products-by-filters`;
 const ApiUrl = `http://122.176.139.248:8093`;
-const IBAccountId = "DU9313757";
-const NodeServBaseUrl = `http://localhost:4545`;
+const NodeServBaseUrl = `http://122.176.139.248:9011`; // http://122.176.139.248:9011 http://localhost:4545
 
 // export const fetchAssetsList = () => {
 //     return new Promise((resolve, reject) => {

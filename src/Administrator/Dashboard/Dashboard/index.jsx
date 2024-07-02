@@ -25,7 +25,7 @@ import {
   getContentLanguageById,
   importContent,
 } from "../../../redux/Actions";
-import { Route, useHistory } from "react-router-dom";
+import { Route, useHistory, useLocation } from "react-router-dom";
 // import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import AppFooter from "../../../Layout/AppFooter";
@@ -82,28 +82,25 @@ export default function ContentManagement() {
 
   const [accountDetail, setAccountDetail] = useState(null);
 
+  let searchParams = {};
+  const location = useLocation();
+  if (location?.search) {
+    let locSearch = location.search.split("?")[1] || "";
+    let searchArr = locSearch.split("&") || [];
+    for (let dt of searchArr) {
+      let queryArr = dt.split("=") || [];
+      if (queryArr[0] && queryArr[1])
+        searchParams = { ...searchParams, [queryArr[0]]: queryArr[1] };
+    }
+  }
+
   useEffect(() => {
-
-    // fetchIBAuthStatus().then((response) => {
-    //   console.log("response==================", response)
-    //   setAccountDetail(response || null);
-    // }).catch((err) => {
-    //   console.log("Account Details Error:", err);
-    // });
-
     fetchIBPortfolioSummary().then((response) => {
       setAccountDetail(response || null);
     }).catch((err) => {
       console.log("Account Details Error:", err);
       toast.error("Something went wrong.");
     });
-
-    // fetchIBPortfolioAccounts().then((response) => {
-    //   console.log("response==================", response)
-    // }).catch((err) => {
-    //   console.log("Account Details Error:", err);
-    // });
-
   }, []);
 
   const handleClickOpen2 = () => setOpen2(true);
@@ -358,15 +355,15 @@ export default function ContentManagement() {
                               <div class="form-check p-0 d-flex align-items-center justify-content-between">
                                 <label
                                   class="form-check-label  flex-grow-1"
-                                  htmlFor="flexRadioDefault1"
+                                  htmlFor="buy-checkbox"
                                 >
                                   Buy
                                 </label>
                                 <input
                                   class="form-check-input m-0"
                                   type="radio"
-                                  name="flexRadioDefault"
-                                  id="flexRadioDefault1"
+                                  name="stockType"
+                                  id="buy-checkbox"
                                 />
                               </div>
                             </li>
@@ -374,22 +371,39 @@ export default function ContentManagement() {
                               <div class="form-check p-0 d-flex align-items-center justify-content-between">
                                 <label
                                   class="form-check-label flex-grow-1"
-                                  htmlFor="flexRadioDefault2"
+                                  htmlFor="sell-short-checkbox"
                                 >
                                   Sell Short
                                 </label>
                                 <input
                                   class="form-check-input m-0"
                                   type="radio"
-                                  name="flexRadioDefault"
-                                  id="flexRadioDefault2"
+                                  name="stockType"
+                                  id="sell-short-checkbox"
+                                  checked
+                                />
+                              </div>
+                            </li>
+                            <li className="list-group-item border-0">
+                              <div class="form-check p-0 d-flex align-items-center justify-content-between">
+                                <label
+                                  class="form-check-label flex-grow-1"
+                                  htmlFor="close-checkbox"
+                                >
+                                  Close
+                                </label>
+                                <input
+                                  class="form-check-input m-0"
+                                  type="radio"
+                                  name="stockType"
+                                  id="close-checkbox"
                                   checked
                                 />
                               </div>
                             </li>
                           </ul>
                         </div>
-                        <div className="StockActionClose">
+                        {/* <div className="StockActionClose">
                           <ul class="list-group mb-2">
                             <li className="list-group-item border-0">
                               <div class="form-check p-0 d-flex align-items-center justify-content-between">
@@ -408,7 +422,7 @@ export default function ContentManagement() {
                               </div>
                             </li>
                           </ul>
-                        </div>
+                        </div> */}
                       </div>
                       <div className="col-lg-9 col-12">
                         <div className="row">

@@ -234,7 +234,9 @@ export default function Stocks() {
                                   }}
                                 >
                                   <TableCell className="table_content tableRow1">
-                                    {row.symbol}
+                                    <Link to={`/Dashboard?conid=${row.conid}&symbol=${row.symbol}`}>
+                                      {row.symbol}
+                                    </Link>
                                   </TableCell>
                                   <TableCell className="table_content tableRow1">
                                     {row.description}
