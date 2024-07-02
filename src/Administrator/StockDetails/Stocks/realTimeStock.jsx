@@ -4,7 +4,6 @@ import {
   Card,
   Grid,
   Breadcrumbs,
-  // Link,
   Box,
   Button,
   TextField,
@@ -27,6 +26,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Route, useHistory, Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { socket } from "../../../api/socket"
+import { socketHistorical } from "../../../api/ApiCall"
+socket.connect();
 
 export default function RealTimeStock() {
   const dispatch = useDispatch();
@@ -38,22 +39,37 @@ export default function RealTimeStock() {
   useEffect(() => {
     console.log("RealTimeStock conid============", conid);
 
-    socket.connect();
+    // socketHistorical().then((response)=>{
+    //   console.log("socketHistorical============", response);
+    // }).catch((err)=>{
+    //   console.log("socketHistorical Error============", err);
+    // })
 
-    socket.on("connect", ()=>{
+    socket.on("connect", () => {
       console.log("IB socket connect successfully.");
     })
-    socket.on("disconnect", ()=>{
-      console.log("IB socket disconnect successfully.");
+    socket.on("disconnect", () => {
+      console.log("IB socket disconnected.");
     });
-    
-    // fetchIBStockList({}).then((response) => {
-    //   console.log("response==================", response)
-    //   setData(response || null);
-    //   setIsLoading(false);
-    // }).catch((err) => {
-    //   setIsLoading(false);
-    // })
+
+    socket.emit("message", {
+      message:"Hello socket"
+    }, "localhost")
+
+    socket.on("send_message", (data)=>{
+      console.log("send_message socket on:", data)
+    })
+
+    socket.on(`smh+265598+{
+        "period": "1d",
+        "bar": "1hour", 
+        "source": "trades", 
+        "format": "%o/%c/%h/%l"
+    }`, (data) => {
+      console.log("socket.emit data===============", data)
+    });
+
+    setIsLoading(false);
   }, []);
 
   return (

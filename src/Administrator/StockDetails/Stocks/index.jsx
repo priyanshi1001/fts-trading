@@ -60,8 +60,7 @@ export default function Stocks() {
     setPayload({ ...payload });
 
     fetchIBStockList(payload).then((response) => {
-      console.log("response==================", response)
-      setData(response || null);
+      setData(response);
       setIsLoading(false);
     }).catch((err) => {
       setIsLoading(false);
@@ -108,6 +107,8 @@ export default function Stocks() {
                                 placeholder="Search"
                                 variant="outlined"
                                 size="small"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
                                 InputProps={{
                                   className: "searchInput",
                                   startAdornment: (
@@ -217,52 +218,6 @@ export default function Stocks() {
                           </TableRow>
                         </TableHead>
 
-
-                        <TableBody>
-                          <TableRow
-                            align="left"
-                            className="tableRow1"
-                            sx={{
-                              "&:last-child td, &:last-child th": {
-                                border: 0,
-                              },
-                            }}
-                          >
-                            <TableCell className="table_content tableRow1">
-                              AAA
-                            </TableCell>
-                            <TableCell className="table_content tableRow1">
-                              AAA
-                            </TableCell>
-                            <TableCell className="table_content tableRow1">
-                              AAA
-                            </TableCell>
-                            <TableCell className="table_content tableRow1">
-                              AAA
-                            </TableCell>
-                            <TableCell className="table_content tableRow1">
-                              AAA
-                            </TableCell>
-                            <TableCell className="table_content tableRow1">
-                              AAA
-                            </TableCell>
-                            <TableCell className="table_content tableRow1">
-                              AAA
-                            </TableCell>
-                            <TableCell className="table_content tableRow1">
-                              <Link to={`/Get_real_time_stock/265598`}>
-                                Get Real Time Stock
-                              </Link>
-                            </TableCell>
-                            <TableCell className="table_content tableRow1">
-                              <Link to={`/Get_historical_price/265598`}>
-                                Get Historical Price
-                              </Link>
-                            </TableCell>
-                          </TableRow>
-                        </TableBody>
-
-
                         {isLoading ?
                           <div className="notDataDiv">Please wait...</div>
                           : data?.products?.length ? (
@@ -324,7 +279,7 @@ export default function Stocks() {
                           variant="outlined"
                           shape="rounded"
                           color="primary"
-                          count={10}
+                          count={Math.ceil((data?.productCount || 1) / size)}
                           onChange={(e, value) => setPage(value)}
                         />
                       </Stack>

@@ -226,15 +226,15 @@ export default function ContentManagement() {
                     <ul className="twopartContent">
                       <li>
                         Live Account Values
-                        <span className="digit">{accountDetail?.availablefunds?.amount || 0}</span>
+                        <span className="digit">{accountDetail?.["availablefunds-s"]?.amount || 0}</span>
                       </li>
                       <li>
                         Cash Buying Power
-                        <span className="digit">{accountDetail?.buyingpower?.amount || 0}</span>
+                        <span className="digit">{accountDetail?.["buyingpower"]?.amount || 0}</span>
                       </li>
                       <li>
                         Margin Buying Power
-                        <span className="digit">{accountDetail?.fullinitmarginreq?.amount || 0}</span>
+                        <span className="digit">{accountDetail?.["fullinitmarginreq-s"]?.amount || 0}</span>
                       </li>
                       <li>
                         Day Trading buying Power
@@ -242,7 +242,7 @@ export default function ContentManagement() {
                       </li>
                       <li>
                         Day Trade Excess
-                        <span className="digit">{accountDetail?.excessliquidity?.amount || 0}</span>
+                        <span className="digit">{accountDetail?.["excessliquidity-s"]?.amount || 0}</span>
                       </li>
                       <li>
                         Today’s Trading G/L

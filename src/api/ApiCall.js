@@ -10,7 +10,9 @@ const alpacaPaperAccPassword = "ps1vadEfOzLnZWyrRFR7lLZK2zfapmAluMAKUvIg";
 
 const IBBaseUrl = `http://localhost/v1`;
 const IBProductList = `https://www.interactivebrokers.com/webrest/search/products-by-filters`;
+const ApiUrl = `http://122.176.139.248:8093`;
 const IBAccountId = "DU9313757";
+const NodeServBaseUrl = `http://localhost:4545`;
 
 // export const fetchAssetsList = () => {
 //     return new Promise((resolve, reject) => {
@@ -148,17 +150,9 @@ export const fetchIBStockList = (payload) => {
 
         let config = {
             method: 'post',
-            maxBodyLength: Infinity,
-            url: 'http://localhost/webrest/search/products-by-filters',
+            url: `${NodeServBaseUrl}/products-by-filters`,
             headers: {
-                'Accept': 'application/json',
-                // 'Content-Type': 'application/json',
-                // 'Cookie': 'iab=1',
-                // "Access-Control-Allow-Origin": "*",
-                // "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-                // "Access-Control-Allow-Headers": "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range",
-                // "Access-Control-Expose-Headers": "Content-Length,Content-Range",
-
+                'Accept': 'application/json'
             },
             data: payload
         };
@@ -174,3 +168,38 @@ export const fetchIBStockList = (payload) => {
 }
 
 
+export const socketHistorical = (payload) => {
+    return new Promise((resolve, reject) => {
+
+        let config = {
+            method: 'post',
+            url: 'http://localhost/v1/api/ws',
+            headers: {
+                'Accept': 'application/json',
+                // 'Content-Type': 'application/json',
+                // 'Cookie': 'iab=1',
+                // "Access-Control-Allow-Origin": "*",
+                // "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+                // "Access-Control-Allow-Headers": "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range",
+                // "Access-Control-Expose-Headers": "Content-Length,Content-Range",
+
+            },
+            data: {
+                message: `smh+265598+{
+                    "period": "1d",
+                    "bar": "1hour", 
+                    "source": "trades", 
+                    "format": "%o/%c/%h/%l"
+                }`
+            }
+        };
+
+        axios.request(config)
+            .then((response) => {
+                resolve(response?.data || []);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+}

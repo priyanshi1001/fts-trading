@@ -4,7 +4,6 @@ import {
   Card,
   Grid,
   Breadcrumbs,
-  // Link,
   Box,
   Button,
   TextField,
@@ -26,7 +25,7 @@ import { useDispatch, useSelector } from "react-redux";
 import SearchIcon from "@mui/icons-material/Search";
 import { Route, useHistory, Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { fetchIBStockList } from "../../../api/ApiCall"
+import { socket } from "../../../api/socket"
 
 export default function RealTimeStock() {
   const dispatch = useDispatch();
@@ -34,16 +33,6 @@ export default function RealTimeStock() {
   const { conid } = useParams();
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    // fetchIBStockList({}).then((response) => {
-    //   console.log("response==================", response)
-    //   setData(response || null);
-    //   setIsLoading(false);
-    // }).catch((err) => {
-    //   setIsLoading(false);
-    // })
-  }, []);
 
   return (
     <Card>
