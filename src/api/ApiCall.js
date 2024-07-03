@@ -9,10 +9,10 @@ const alpacaPaperAccUsername = "PK5WSGFGWR644GFAK2XK";
 const alpacaPaperAccPassword = "ps1vadEfOzLnZWyrRFR7lLZK2zfapmAluMAKUvIg";
 
 const IBAccountId = "DU9313757";
-const IBBaseUrl = `http://122.176.139.248:8098/v1`; // http://122.176.139.248:8098 http://localhost/v1 
+const IBBaseUrl = `http://localhost/v1`; // http://122.176.139.248:8098/v1 http://localhost/v1 
 const IBProductList = `https://www.interactivebrokers.com/webrest/search/products-by-filters`;
 const ApiUrl = `http://122.176.139.248:8093`;
-const NodeServBaseUrl = `http://122.176.139.248:9011`; // http://122.176.139.248:9011 http://localhost:4545
+const NodeServBaseUrl = `http://localhost:4545`; // http://122.176.139.248:9011 http://localhost:4545
 
 // export const fetchAssetsList = () => {
 //     return new Promise((resolve, reject) => {
@@ -167,31 +167,56 @@ export const fetchIBStockList = (payload) => {
     });
 }
 
-
-export const socketHistorical = (payload) => {
+export const fetchIBContractInfo = (conid) => {
     return new Promise((resolve, reject) => {
-
         let config = {
-            method: 'post',
-            url: 'http://localhost/v1/api/ws',
+            method: 'get',
+            url: `${IBBaseUrl}/api/iserver/contract/${conid}/info`,
+            headers: {
+                "Accept": 'application/json',
+            }
+        };
+
+        axios.request(config)
+            .then((response) => {
+                resolve(response?.data || []);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+}
+
+export const fetchIBOpenOders = () => {
+    return new Promise((resolve, reject) => {
+        let config = {
+            method: 'get',
+            url: `${IBBaseUrl}/api/iserver/account/orders`,
+            headers: {
+                "Accept": 'application/json',
+            }
+        };
+
+        axios.request(config)
+            .then((response) => {
+                resolve(response?.data || []);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+}
+
+export const orderPlaceApi = (payload) => {
+    return new Promise((resolve, reject) => {
+        let config = {
+            method: 'post', // https://localhost:5000/v1/api/iserver/account/${IBAccountId}/orders
+            url: `https://localhost:5000/v1/api/iserver/account/${IBAccountId}/orders`,
             headers: {
                 'Accept': 'application/json',
-                // 'Content-Type': 'application/json',
-                // 'Cookie': 'iab=1',
-                // "Access-Control-Allow-Origin": "*",
-                // "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-                // "Access-Control-Allow-Headers": "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range",
-                // "Access-Control-Expose-Headers": "Content-Length,Content-Range",
-
+                "Content-Type": "application/json"
             },
-            data: {
-                message: `smh+265598+{
-                    "period": "1d",
-                    "bar": "1hour", 
-                    "source": "trades", 
-                    "format": "%o/%c/%h/%l"
-                }`
-            }
+            data: JSON.stringify(payload)
         };
 
         axios.request(config)

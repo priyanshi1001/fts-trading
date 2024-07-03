@@ -26,7 +26,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Route, useHistory, Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { socket } from "../../../api/socket"
-import { socketHistorical } from "../../../api/ApiCall"
+import { } from "../../../api/ApiCall"
 socket.connect();
 
 export default function RealTimeStock() {
@@ -38,12 +38,6 @@ export default function RealTimeStock() {
 
   useEffect(() => {
     console.log("RealTimeStock conid============", conid);
-
-    // socketHistorical().then((response)=>{
-    //   console.log("socketHistorical============", response);
-    // }).catch((err)=>{
-    //   console.log("socketHistorical Error============", err);
-    // })
 
     socket.on("connect", () => {
       console.log("IB socket connect successfully.");

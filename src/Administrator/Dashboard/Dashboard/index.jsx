@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
+import moment from "moment";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -25,7 +26,7 @@ import {
   getContentLanguageById,
   importContent,
 } from "../../../redux/Actions";
-import { Route, useHistory, useLocation } from "react-router-dom";
+import { Route, useHistory, useLocation, Link } from "react-router-dom";
 // import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import AppFooter from "../../../Layout/AppFooter";
@@ -48,7 +49,6 @@ import {
   Button,
   Tooltip,
   Breadcrumbs,
-  Link,
   Box,
 } from "@mui/material";
 import SearchIcon from "@material-ui/icons/Search";
@@ -56,7 +56,15 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import DialogTransition from "../../../reusables/deleteDialog";
 import Modal from "../../../reusables/htmlDialog";
 import { toast } from "react-toastify";
-import { fetchAccountDetail, fetchIBAuthStatus, fetchIBPortfolioSummary, fetchIBPortfolioAccounts } from "../../../api/ApiCall"
+import {
+  fetchAccountDetail,
+  fetchIBAuthStatus,
+  fetchIBPortfolioSummary,
+  fetchIBPortfolioAccounts,
+  orderPlaceApi,
+  fetchIBContractInfo,
+  fetchIBOpenOders
+} from "../../../api/ApiCall"
 
 // getAllContentTypeByIdReducer   getAllContentType
 
@@ -64,7 +72,6 @@ const typeIdList = [{ ContentBlock: 1 }, { EasyHelp: 2 }, { Phrases: 3 }];
 export default function ContentManagement() {
   const dispatch = useDispatch();
   const history = useHistory();
-  const [typeId, setTypeId] = React.useState(1);
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -75,12 +82,14 @@ export default function ContentManagement() {
   const handleClose1 = () => setOpen1(false);
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
-  const [idData, setIdData] = useState(0);
-  const [search, setSearch] = useState("");
   const [dropDownData, setDropDownData] = useState([]);
   const [open2, setOpen2] = useState(false);
 
   const [accountDetail, setAccountDetail] = useState(null);
+  const [contractInfo, setContractInfo] = useState(null);
+  const [formData, setFormData] = useState({});
+  const [openOrderList, setOpenOrderList] = useState([]);
+  const [date, setDate] = useState(new Date());
 
   let searchParams = {};
   const location = useLocation();
@@ -101,7 +110,25 @@ export default function ContentManagement() {
       console.log("Account Details Error:", err);
       toast.error("Something went wrong.");
     });
+
+    const conid = searchParams.conid || "";
+    const symbol = searchParams.symbol || "";
+    fetchIBContractInfo(conid).then((response) => {
+      setContractInfo(response || null);
+    }).catch((err) => {
+      console.log("Fetch Contract Info:", err);
+    });
+
+    fetchIBOpenOders().then((response) => {
+      setOpenOrderList(response?.orders || []);
+    }).catch((err) => {
+      console.log("Fetch Open Orders:", err);
+    })
   }, []);
+
+  // useEffect(()=>{
+  //   setDate(new Date());
+  // })
 
   const handleClickOpen2 = () => setOpen2(true);
   const handleClose2 = () => {
@@ -125,16 +152,66 @@ export default function ContentManagement() {
     setSize(10);
 
   };
-
-  const handleChange = (e) => {
-    setData({ ...data, [e.target.name]: e.target.value });
-  };
-
-
-
   const tableData = useSelector((state) => state.getAllContentTypeByIdReducer);
 
+  function handleNumericInput(e) {
+    const name = e.target.name;
+    const value = e.target.value;
 
+    if (+value || value == "") {
+      setFormData({ ...formData, [name]: value });
+    }
+  }
+
+  function handleSubmitButton(e) {
+    let checkValidation = true;
+
+    if (!formData?.orderType) {
+      toast.error("Please select order type.", {
+        toastId: "form-error"
+      });
+      checkValidation = false;
+    }
+    if (!formData?.shares) {
+      toast.error("Please enter number of shares.", {
+        toastId: "form-error"
+      });
+      checkValidation = false;
+    }
+
+    if (checkValidation)
+      setOpen1(true);
+  }
+
+  function placeOrderFun() {
+    orderPlaceApi({
+      "orders": [
+        {
+          "acctId": "DU9313757",
+          "conid": 94127580,
+          "secType": "94127580@NSE",
+          "cOId": "IBOrderPlace",
+          "orderType": "LMT",
+          "price": 1000,
+          "side": "BUY", // SELL
+          "tif": "DAY",
+          "quantity": 10,
+          "strategy": "Adaptive",
+          "strategyParameters": { "adaptivePriority": "Normal" }
+        }
+      ]
+    }).then((response) => {
+      console.log("orderPlaceApi response==============", response);
+      setFormData({});
+      setOpen1(false);
+      toast.success("Order successfully placed.")
+    }).catch((err) => {
+      console.log("Order Place Error:", err);
+      setOpen1(false);
+      toast.error("Something went wrong. please try again.");
+    });
+
+  }
 
   return (
     <Fragment>
@@ -231,7 +308,7 @@ export default function ContentManagement() {
                       </li>
                       <li>
                         Margin Buying Power
-                        <span className="digit">{accountDetail?.["fullinitmarginreq-s"]?.amount || 0}</span>
+                        <span className="digit">{(accountDetail?.["fullinitmarginreq-s"]?.amount.toFixed(3) || 0)}</span>
                       </li>
                       <li>
                         Day Trading buying Power
@@ -337,7 +414,7 @@ export default function ContentManagement() {
                 <Card className="cardDesign">
                   <div className="cardHeader mb-lg-5 mb-md-4 mb-sm-3 mb-3">
                     <h6 className="fs-6 mb-3">Order Ticket- Stock</h6>
-                    <h6 className="fs-6 mb-3">10-May-24 - 11:50:25 AM</h6>
+                    <h6 className="fs-6 mb-3">{moment(date).format("DD-MMM-YY")} - {moment(date).format("hh:mm:ss A")}</h6>
                   </div>
                   <CardContent className="cardContent">
                     <div className="row">
@@ -345,9 +422,9 @@ export default function ContentManagement() {
                         <div className="stockInfo">
                           <ul class="list-group mb-2">
                             <li className="list-group-item">Stock System</li>
-                            <li className="list-group-item">AAPL</li>
+                            <li className="list-group-item">{contractInfo?.symbol || "--"}</li>
                           </ul>
-                          <p>Apple Computer Inc</p>
+                          <p>{contractInfo?.company_name || "--"}</p>
                         </div>
                         <div className="StockAction">
                           <ul class="list-group mb-2">
@@ -362,8 +439,10 @@ export default function ContentManagement() {
                                 <input
                                   class="form-check-input m-0"
                                   type="radio"
-                                  name="stockType"
+                                  name="orderType"
                                   id="buy-checkbox"
+                                  onChange={(e) => { setFormData({ ...formData, orderType: "BUY" }) }}
+                                  checked={formData?.orderType == "BUY" ? true : false}
                                 />
                               </div>
                             </li>
@@ -378,9 +457,10 @@ export default function ContentManagement() {
                                 <input
                                   class="form-check-input m-0"
                                   type="radio"
-                                  name="stockType"
+                                  name="orderType"
                                   id="sell-short-checkbox"
-                                  checked
+                                  onChange={(e) => { setFormData({ ...formData, orderType: "SELL" }) }}
+                                  checked={formData?.orderType == "SELL" ? true : false}
                                 />
                               </div>
                             </li>
@@ -395,34 +475,15 @@ export default function ContentManagement() {
                                 <input
                                   class="form-check-input m-0"
                                   type="radio"
-                                  name="stockType"
+                                  name="orderType"
                                   id="close-checkbox"
-                                  checked
+                                  onChange={(e) => { setFormData({ ...formData, orderType: "CLOSE" }) }}
+                                  checked={formData?.orderType == "CLOSE" ? true : false}
                                 />
                               </div>
                             </li>
                           </ul>
                         </div>
-                        {/* <div className="StockActionClose">
-                          <ul class="list-group mb-2">
-                            <li className="list-group-item border-0">
-                              <div class="form-check p-0 d-flex align-items-center justify-content-between">
-                                <label
-                                  class="form-check-label flex-grow-1"
-                                  htmlFor="cancleTrade"
-                                >
-                                  Close
-                                </label>
-                                <input
-                                  class="form-check-input m-0"
-                                  type="radio"
-                                  name="cancleTrade"
-                                  id="cancleTrade"
-                                />
-                              </div>
-                            </li>
-                          </ul>
-                        </div> */}
                       </div>
                       <div className="col-lg-9 col-12">
                         <div className="row">
@@ -479,12 +540,11 @@ export default function ContentManagement() {
                                 <div className="totalShare d-flex align-items-center justify-content-between">
                                   <h5 className="fw-bold fs-7"># of Shares</h5>
                                   <input
-                                    type="number"
+                                    type="text"
+                                    name="shares"
                                     className="form-control borderd-purple shadow-sm apperance-none"
-                                    min={"1"}
-                                    minLength={"1"}
-                                    max={"1000"}
-                                    maxLength={"1000"}
+                                    value={formData?.shares || ""}
+                                    onChange={handleNumericInput}
                                   />
                                 </div>
                               </CardContent>
@@ -510,7 +570,13 @@ export default function ContentManagement() {
                                             Limited Order
                                           </li>
                                           <li className="list-group-item maxProfitNumber">
-                                            150.16
+                                            <input
+                                              type="text"
+                                              name="max_x"
+                                              className="form-control borderd-purple shadow-sm apperance-none"
+                                              value={formData?.max_x || ""}
+                                              onChange={handleNumericInput}
+                                            />
                                           </li>
                                           <li className="list-group-item">
                                             Profit Order
@@ -521,21 +587,24 @@ export default function ContentManagement() {
                                           <input
                                             type="number"
                                             id="addMoney"
+                                            name="profit_order"
                                             className="apperance-none"
+                                            value={formData?.profit_order || ""}
+                                            onChange={handleNumericInput}
                                           />
-                                          <select name="" id="" class="">
+                                          <select name="profit_order_percentage" onChange={handleNumericInput}>
                                             <optgroup>
-                                              <option value="">0%</option>
-                                              <option value="">1%</option>
-                                              <option value="">2%</option>
-                                              <option value="">3%</option>
-                                              <option value="">4%</option>
-                                              <option value="">5%</option>
-                                              <option value="">6%</option>
-                                              <option value="">7%</option>
-                                              <option value="">8%</option>
-                                              <option value="">10%</option>
-                                              <option value="">100%</option>
+                                              <option value=""></option>
+                                              <option value="1">1%</option>
+                                              <option value="2">2%</option>
+                                              <option value="3">3%</option>
+                                              <option value="4">4%</option>
+                                              <option value="5">5%</option>
+                                              <option value="6">6%</option>
+                                              <option value="7">7%</option>
+                                              <option value="8">8%</option>
+                                              <option value="10">10%</option>
+                                              <option value="100">100%</option>
                                             </optgroup>
                                           </select>
                                         </div>
@@ -555,7 +624,13 @@ export default function ContentManagement() {
                                             Market Order
                                           </li>
                                           <li className="list-group-item ">
-                                            &nbsp;
+                                            <input
+                                              type="text"
+                                              name="max_y"
+                                              className="form-control borderd-purple shadow-sm apperance-none"
+                                              value={formData?.max_y || ""}
+                                              onChange={handleNumericInput}
+                                            />
                                           </li>
                                           <li className="list-group-item">
                                             Stop Loss
@@ -566,19 +641,24 @@ export default function ContentManagement() {
                                           <input
                                             type="number"
                                             id="addMoney"
+                                            name="stop_loss"
                                             className="apperance-none"
+                                            value={formData?.stop_loss || ""}
+                                            onChange={handleNumericInput}
                                           />
-                                          <select name="" id="" class="">
+                                          <select name="stop_loss_percentage" onChange={handleNumericInput}>
                                             <optgroup>
-                                              <option value="">0%</option>
-                                              <option value="">1%</option>
-                                              <option value="">2%</option>
-                                              <option value="">3%</option>
-                                              <option value="">4%</option>
-                                              <option value="">5%</option>
-                                              <option value="">6%</option>
-                                              <option value="">7%</option>
-                                              <option value="">8%</option>
+                                              <option value=""></option>
+                                              <option value="1">1%</option>
+                                              <option value="2">2%</option>
+                                              <option value="3">3%</option>
+                                              <option value="4">4%</option>
+                                              <option value="5">5%</option>
+                                              <option value="6">6%</option>
+                                              <option value="7">7%</option>
+                                              <option value="8">8%</option>
+                                              <option value="9">9%</option>
+                                              <option value="10">10%</option>
                                             </optgroup>
                                           </select>
                                         </div>
@@ -649,9 +729,7 @@ export default function ContentManagement() {
                             <div className="btn-box d-flex align-items-center justify-content-end">
                               <button
                                 className="btn btn-lg rounded-3 btn-purple"
-                                onClick={() => {
-                                  setOpen1(true);
-                                }}
+                                onClick={handleSubmitButton}
                               >
                                 submit
                               </button>
@@ -857,16 +935,44 @@ export default function ContentManagement() {
                             align="left"
                             className="table_head tableRow1"
                           >
-                            Name
+                            Ticker
                           </TableCell>
-
                           <TableCell
                             align="left"
                             className="table_head tableRow1"
                           >
-                            Translations
+                            Order Type
                           </TableCell>
-
+                          <TableCell
+                            align="left"
+                            className="table_head tableRow1"
+                          >
+                            Execution Time
+                          </TableCell>
+                          <TableCell
+                            align="left"
+                            className="table_head tableRow1"
+                          >
+                            Total Size
+                          </TableCell>
+                          <TableCell
+                            align="left"
+                            className="table_head tableRow1"
+                          >
+                            Remaining Quantity
+                          </TableCell>
+                          <TableCell
+                            align="left"
+                            className="table_head tableRow1"
+                          >
+                            Price
+                          </TableCell>
+                          <TableCell
+                            align="left"
+                            className="table_head tableRow1"
+                          >
+                            Status
+                          </TableCell>
                           <TableCell
                             align="right"
                             className="table_head tableRow1"
@@ -875,14 +981,13 @@ export default function ContentManagement() {
                           </TableCell>
                         </TableRow>
                       </TableHead>
-                      {tableData?.contentData &&
-                        tableData?.contentData?.records?.length ? (
+                      {openOrderList?.length ? (
                         <TableBody>
-                          {tableData?.contentData?.records.map((row) => (
+                          {openOrderList.map((row, ind) => (
                             <TableRow
                               align="left"
                               className="tableRow1"
-                              key={row.name}
+                              key={ind}
                               sx={{
                                 "&:last-child td, &:last-child th": {
                                   border: 0,
@@ -890,45 +995,28 @@ export default function ContentManagement() {
                               }}
                             >
                               <TableCell className="table_content tableRow1">
-                                {row.name}
+                                {row?.ticker} ({row?.exchange})
                               </TableCell>
-
-                              <TableCell
-                                align="left"
-                                className="table_content tableRow1"
-                              // onClick={() => getLangById(row.id)}
-                              >
-                                <span
-                                  className="addSubpage "
-                                  onClick={() => {
-                                    setOpen2(true);
-                                    setDropDownData(row?.id);
-                                    dispatch(
-                                      getContentLanguageById(row?.id, (item) =>
-                                        setRowId(item)
-                                      )
-                                    );
-                                  }}
-                                >
-                                  Select Languages
-                                </span>
+                              <TableCell className="table_content tableRow1">
+                                {row?.side}
                               </TableCell>
-                              <TableCell
-                                className="table_content tableRow1"
-                                align="right"
-                              >
-                                {row.action}
-                                <div className="actionRow">
-                                  <EditIcon
-                                    style={{
-                                      color: "green",
-                                      fontSize: "20px",
-                                    }}
-                                    onClick={() => {
-                                      history.push(`/content_edits/${row.id}`);
-                                    }}
-                                  />
-                                </div>
+                              <TableCell className="table_content tableRow1">
+                                {moment(row?.lastExecutionTime_r).format("DD-MM-YYYY hh:mm:ss A")}
+                              </TableCell>
+                              <TableCell className="table_content tableRow1">
+                                {row?.totalSize}
+                              </TableCell>
+                              <TableCell className="table_content tableRow1">
+                                {row?.remainingQuantity}
+                              </TableCell>
+                              <TableCell className="table_content tableRow1">
+                                {row?.price} ({row?.cashCcy})
+                              </TableCell>
+                              <TableCell className="table_content tableRow1">
+                                {row?.status}
+                              </TableCell>
+                              <TableCell className="table_content tableRow1">
+                                <Button>Delete</Button>
                               </TableCell>
                             </TableRow>
                           ))}
@@ -987,6 +1075,7 @@ export default function ContentManagement() {
       <Modal
         open={open1}
         // deleteItems={deleteItems}
+        formData={formData}
         fileData={fileData}
         setFileData={setFileData}
         dispatch={dispatch}
@@ -994,9 +1083,7 @@ export default function ContentManagement() {
         handleClickOpen={handleClickOpen1}
         handleClose={handleClose1}
         Heading="Confirm Order "
-        apiCall={(formData) => {
-          dispatch(importContent(formData));
-        }}
+        apiCall={placeOrderFun}
       />
     </Fragment>
   );

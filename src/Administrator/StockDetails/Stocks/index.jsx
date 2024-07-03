@@ -41,7 +41,8 @@ export default function Stocks() {
     "sortField": "symbol",
     "sortDirection": "asc",
     "productCountry": [
-      "US"
+      "US",
+      "IN"
     ],
     "productSymbol": "",
     "newProduct": "all",

@@ -64,7 +64,7 @@ const Modal = (props) => {
     //   formData.append("formFile", fileData);
     //   apiCall(formData);
     // }
-    setOpen(false);
+    apiCall();
   };
 
   return (
