@@ -1,23 +1,19 @@
 import React, { Fragment, useEffect, useState } from "react";
-import Paper from "@mui/material/Paper";
 import moment from "moment";
+import cryptoRandomString from "crypto-random-string";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import ThemeOptions from "../../../Layout/ThemeOptions";
-import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import AppHeader from "../../../Layout/AppHeader";
 import { useDispatch, useSelector } from "react-redux";
 import Transition from "../../../reusables/languagesModal";
 import AppSidebar from "../../../Layout/AppSidebar";
 // import AppFooters from "../../../Layout/AppFooter";
-import Pagination from "@mui/material/Pagination";
-import Stack from "@mui/material/Stack";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import {
   // exportContent,
@@ -27,46 +23,27 @@ import {
   importContent,
 } from "../../../redux/Actions";
 import { Route, useHistory, useLocation, Link } from "react-router-dom";
-// import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import AppFooter from "../../../Layout/AppFooter";
 import "./index.scss";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import {
-  TextField,
   Typography,
-  Collapse,
-  CardHeader,
-  IconButton,
   CardContent,
-  CardActions,
   Card,
-  Divider,
   Grid,
-  Select,
-  MenuItem,
-  Checkbox,
   Button,
-  Tooltip,
-  Breadcrumbs,
   Box,
 } from "@mui/material";
-import SearchIcon from "@material-ui/icons/Search";
-import InputAdornment from "@material-ui/core/InputAdornment";
 import DialogTransition from "../../../reusables/deleteDialog";
 import Modal from "../../../reusables/htmlDialog";
 import { toast } from "react-toastify";
 import {
-  fetchAccountDetail,
-  fetchIBAuthStatus,
+  fetchIBAccountDetail,
   fetchIBPortfolioSummary,
-  fetchIBPortfolioAccounts,
   orderPlaceApi,
   fetchIBContractInfo,
-  fetchIBOpenOders
+  fetchIBOpenOders,
+  orderConfirmApi
 } from "../../../api/ApiCall"
-
-// getAllContentTypeByIdReducer   getAllContentType
 
 const typeIdList = [{ ContentBlock: 1 }, { EasyHelp: 2 }, { Phrases: 3 }];
 export default function ContentManagement() {
@@ -80,15 +57,17 @@ export default function ContentManagement() {
   const [open1, setOpen1] = useState(false);
   const handleClickOpen1 = () => setOpen1(true);
   const handleClose1 = () => setOpen1(false);
-  const [page, setPage] = useState(1);
-  const [size, setSize] = useState(10);
   const [dropDownData, setDropDownData] = useState([]);
   const [open2, setOpen2] = useState(false);
 
   const [accountDetail, setAccountDetail] = useState(null);
+  const [portfolioSummary, setPortfolioSummary] = useState(null);
   const [contractInfo, setContractInfo] = useState(null);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    stockPosition: 10
+  });
   const [openOrderList, setOpenOrderList] = useState([]);
+  const [existingOrder, setExistingOrder] = useState([]);
   const [date, setDate] = useState(new Date());
 
   let searchParams = {};
@@ -104,12 +83,8 @@ export default function ContentManagement() {
   }
 
   useEffect(() => {
-    fetchIBPortfolioSummary().then((response) => {
-      setAccountDetail(response || null);
-    }).catch((err) => {
-      console.log("Account Details Error:", err);
-      toast.error("Something went wrong.");
-    });
+    fetchIBOpenOdersFun();
+    fetchIBAccountDetailFun();
 
     const conid = searchParams.conid || "";
     const symbol = searchParams.symbol || "";
@@ -119,53 +94,94 @@ export default function ContentManagement() {
       console.log("Fetch Contract Info:", err);
     });
 
+    setInterval(() => {
+      setDate(new Date());
+    }, 1000);
+  }, []);
+
+  function fetchIBAccountDetailFun() {
+    fetchIBAccountDetail().then((response) => {
+      let accId = response?.selectedAccount || "";
+      if (accId)
+        fetchPortfolioSummaryFun(accId);
+      setAccountDetail(response || null);
+    }).catch((err) => {
+      console.log("Account Details Error:", err);
+      toast.error("Interactive broker account detail not found. please login interactive broker acoount first", {
+        toastId: "interactive-broker-login-error"
+      });
+    });
+  }
+
+  function fetchPortfolioSummaryFun(accId) {
+    if (accId) {
+      fetchIBPortfolioSummary(accId).then((response) => {
+        setPortfolioSummary(response || null);
+      }).catch((err) => {
+        console.log("Portfolio Summary Error:", err);
+        toast.error("Portfolio summary not found. please try again.");
+      });
+    } else {
+      toast.error("Interactive broker account detail not found. please login interactive broker acoount first", {
+        toastId: "interactive-broker-login-error"
+      });
+    }
+  }
+
+  function fetchIBOpenOdersFun() {
     fetchIBOpenOders().then((response) => {
       setOpenOrderList(response?.orders || []);
     }).catch((err) => {
       console.log("Fetch Open Orders:", err);
-    })
-  }, []);
-
-  // useEffect(()=>{
-  //   setDate(new Date());
-  // })
+    });
+  }
 
   const handleClickOpen2 = () => setOpen2(true);
   const handleClose2 = () => {
     setOpen2(false);
     setRowId({});
   };
-  const languageData = useSelector((state) => state.LanguagesReducer);
-  const [data, setData] = React.useState({
-    // id: 4,
-    name: "",
-    text: "",
-    moreText: "",
-    language: null,
-    translation: null,
-    toolTip: "",
-    typeId: null,
-  });
-  const setSubmit = (e) => {
-    e.preventDefault();
-    setPage(1);
-    setSize(10);
-
-  };
-  const tableData = useSelector((state) => state.getAllContentTypeByIdReducer);
 
   function handleNumericInput(e) {
     const name = e.target.name;
     const value = e.target.value;
 
     if (+value || value == "") {
-      setFormData({ ...formData, [name]: value });
+      if (name == "profit_order")
+        setFormData({ ...formData, [name]: value, profit_order_percentage: 0 });
+      else if (name == "profit_order_percentage")
+        setFormData({ ...formData, [name]: value, profit_order: "" });
+      else if (name == "stop_loss")
+        setFormData({ ...formData, [name]: value, stop_loss_percentage: 0 });
+      else if (name == "stop_loss_percentage")
+        setFormData({ ...formData, [name]: value, stop_loss: "" });
+      else
+        setFormData({ ...formData, [name]: value });
+    }
+  }
+
+  function handleStockPosition(value) {
+    if (+value || value == "") {
+      setFormData({ ...formData, stockPosition: value, stockPositionVal: "" });
     }
   }
 
   function handleSubmitButton(e) {
     let checkValidation = true;
+    let accId = accountDetail?.selectedAccount || "";
 
+    if (!accId) {
+      toast.error("Interactive broker account detail not found. please login interactive broker acoount first", {
+        toastId: "form-error"
+      });
+      checkValidation = false;
+    }
+    if (!contractInfo?.con_id || !contractInfo?.symbol || !contractInfo?.exchange) {
+      toast.error("Invalid contract id or you are not login in interactive broker account.", {
+        toastId: "form-error"
+      });
+      checkValidation = false;
+    }
     if (!formData?.orderType) {
       toast.error("Please select order type.", {
         toastId: "form-error"
@@ -184,33 +200,75 @@ export default function ContentManagement() {
   }
 
   function placeOrderFun() {
-    orderPlaceApi({
+    const randomStr = cryptoRandomString({ length: 10 });
+    let accId = accountDetail?.selectedAccount || "";
+    if (!accId || !contractInfo) {
+      toast.error("Interactive broker account detail not found. please login interactive broker acoount first", {
+        toastId: "interactive-broker-login-error"
+      });
+      return 0;
+    }
+    orderPlaceApi(accId, {
       "orders": [
         {
-          "acctId": "DU9313757",
-          "conid": 94127580,
-          "secType": "94127580@NSE",
-          "cOId": "IBOrderPlace",
+          "acctId": accId,
+          "conid": contractInfo.con_id,
+          "conidex": String(contractInfo.con_id),
+          "secType": String(contractInfo.con_id) + ":STK",
+          "cOID": randomStr,
           "orderType": "LMT",
-          "price": 1000,
-          "side": "BUY", // SELL
+          "listingExchange": contractInfo.exchange,
+          "isSingleGroup": false,
+          "outsideRTH": false,
+          "price": +formData.shares || 0,
+          "side": formData.orderType,
+          "ticker": contractInfo.symbol,
           "tif": "DAY",
-          "quantity": 10,
+          "referrer": "QuickTrade",
+          "quantity": 1,
+          "fxQty": 0,
+          "useAdaptive": false,
+          "isCcyConv": false,
+          "allocationMethod": "AvailableEquity",
           "strategy": "Adaptive",
-          "strategyParameters": { "adaptivePriority": "Normal" }
+          "strategyParameters": {
+            "adaptivePriority": "Normal"
+          }
         }
       ]
     }).then((response) => {
-      console.log("orderPlaceApi response==============", response);
-      setFormData({});
-      setOpen1(false);
-      toast.success("Order successfully placed.")
+      let orderId = response?.[0]?.id || "";
+      let order_id = response?.[0]?.order_id || "";
+      let order_status = response?.[0]?.order_status || "";
+
+      if (orderId) {
+        orderConfirmApi(orderId, {
+          "confirmed": true
+        }).then((response2) => {
+          orderSuccessPlaceMsg();
+        }).catch((err) => {
+          toast.error("Something went wrong. please try again.");
+        });
+      } else if (order_status == "Submitted" && order_id) {
+        orderSuccessPlaceMsg();
+      } else {
+        toast.error("Something went wrong. please try again");
+      }
     }).catch((err) => {
       console.log("Order Place Error:", err);
       setOpen1(false);
       toast.error("Something went wrong. please try again.");
     });
+  }
 
+  function orderSuccessPlaceMsg() {
+    let accId = accountDetail?.selectedAccount || "";
+    if (accId)
+      fetchPortfolioSummaryFun(accId);
+    fetchIBOpenOdersFun();
+    setFormData({});
+    setOpen1(false);
+    toast.success("Order successfully placed.");
   }
 
   return (
@@ -300,15 +358,15 @@ export default function ContentManagement() {
                     <ul className="twopartContent">
                       <li>
                         Live Account Values
-                        <span className="digit">{accountDetail?.["availablefunds-s"]?.amount || 0}</span>
+                        <span className="digit">{portfolioSummary?.["availablefunds-s"]?.amount || 0}</span>
                       </li>
                       <li>
                         Cash Buying Power
-                        <span className="digit">{accountDetail?.["buyingpower"]?.amount || 0}</span>
+                        <span className="digit">{portfolioSummary?.["buyingpower"]?.amount || 0}</span>
                       </li>
                       <li>
                         Margin Buying Power
-                        <span className="digit">{(accountDetail?.["fullinitmarginreq-s"]?.amount.toFixed(3) || 0)}</span>
+                        <span className="digit">{(portfolioSummary?.["fullinitmarginreq-s"]?.amount.toFixed(3) || 0)}</span>
                       </li>
                       <li>
                         Day Trading buying Power
@@ -316,7 +374,7 @@ export default function ContentManagement() {
                       </li>
                       <li>
                         Day Trade Excess
-                        <span className="digit">{accountDetail?.["excessliquidity-s"]?.amount || 0}</span>
+                        <span className="digit">{portfolioSummary?.["excessliquidity-s"]?.amount || 0}</span>
                       </li>
                       <li>
                         Today’s Trading G/L
@@ -592,9 +650,9 @@ export default function ContentManagement() {
                                             value={formData?.profit_order || ""}
                                             onChange={handleNumericInput}
                                           />
-                                          <select name="profit_order_percentage" onChange={handleNumericInput}>
+                                          <select name="profit_order_percentage" onChange={handleNumericInput} value={formData?.profit_order_percentage || 0}>
                                             <optgroup>
-                                              <option value=""></option>
+                                              <option value="0">0%</option>
                                               <option value="1">1%</option>
                                               <option value="2">2%</option>
                                               <option value="3">3%</option>
@@ -646,9 +704,9 @@ export default function ContentManagement() {
                                             value={formData?.stop_loss || ""}
                                             onChange={handleNumericInput}
                                           />
-                                          <select name="stop_loss_percentage" onChange={handleNumericInput}>
+                                          <select name="stop_loss_percentage" onChange={handleNumericInput} value={formData?.stop_loss_percentage || 0}>
                                             <optgroup>
-                                              <option value=""></option>
+                                              <option value="0">0%</option>
                                               <option value="1">1%</option>
                                               <option value="2">2%</option>
                                               <option value="3">3%</option>
@@ -708,9 +766,24 @@ export default function ContentManagement() {
                                 <div className="card-body p-0">
                                   <div className="positionList">
                                     <ul className="list-unstyled">
-                                      <li>5% </li>
-                                      <li className="recomended">10% </li>
-                                      <li>15% </li>
+                                      <li className={`${formData?.stockPosition == 5 ? "recomended" : ""}`}>
+                                        <Button onClick={() => handleStockPosition(5)}>5%</Button>
+                                      </li>
+                                      <li className={`${formData?.stockPosition == 10 ? "recomended" : ""}`}>
+                                        <Button onClick={() => handleStockPosition(10)}>10%</Button>
+                                      </li>
+                                      <li className={`${formData?.stockPosition == 15 ? "recomended" : ""}`}>
+                                        <Button onClick={() => handleStockPosition(15)}>15%</Button>
+                                      </li>
+                                      <li>
+                                        <input
+                                          type="text"
+                                          name="stockPositionVal"
+                                          className="form-control borderd-purple shadow-sm apperance-none"
+                                          value={formData?.stockPositionVal || ""}
+                                          onChange={(e) => setFormData({ ...formData, stockPositionVal: e.target.value, stockPosition: 0 })}
+                                        />
+                                      </li>
                                     </ul>
                                   </div>
                                 </div>
@@ -812,10 +885,9 @@ export default function ContentManagement() {
                           </TableCell>
                         </TableRow>
                       </TableHead>
-                      {tableData?.contentData &&
-                        tableData?.contentData?.records?.length ? (
+                      {existingOrder ? (
                         <TableBody>
-                          {tableData?.contentData?.records.map((row) => (
+                          {existingOrder.map((row) => (
                             <TableRow
                               align="left"
                               className="tableRow1"
@@ -875,22 +947,6 @@ export default function ContentManagement() {
                       )}
                     </Table>
                   </TableContainer>
-                  <Box className="tableFooter">
-                    {tableData?.contentData?.totalPages > 1 ? (
-                      <Stack spacing={2}>
-                        <Pagination
-                          className="d-flex justify-content-end"
-                          variant="outlined"
-                          shape="rounded"
-                          color="primary"
-                          count={tableData?.contentData?.totalPages}
-                          onChange={(e, value) => setPage(value)}
-                        />
-                      </Stack>
-                    ) : (
-                      ""
-                    )}
-                  </Box>
                 </Card>
               </div>
               <div className="col-12 mb-3">
@@ -1026,22 +1082,6 @@ export default function ContentManagement() {
                       )}
                     </Table>
                   </TableContainer>
-                  <Box className="tableFooter">
-                    {tableData?.contentData?.totalPages > 1 ? (
-                      <Stack spacing={2}>
-                        <Pagination
-                          className="d-flex justify-content-end"
-                          variant="outlined"
-                          shape="rounded"
-                          color="primary"
-                          count={tableData?.contentData?.totalPages}
-                          onChange={(e, value) => setPage(value)}
-                        />
-                      </Stack>
-                    ) : (
-                      ""
-                    )}
-                  </Box>
                 </Card>
               </div>
             </div>
