@@ -42,7 +42,8 @@ import {
   orderPlaceApi,
   fetchIBContractInfo,
   fetchIBOpenOders,
-  orderConfirmApi
+  orderConfirmApi,
+  fetchIBSnapshotApi
 } from "../../../api/ApiCall"
 
 const typeIdList = [{ ContentBlock: 1 }, { EasyHelp: 2 }, { Phrases: 3 }];
@@ -64,10 +65,17 @@ export default function ContentManagement() {
   const [portfolioSummary, setPortfolioSummary] = useState(null);
   const [contractInfo, setContractInfo] = useState(null);
   const [formData, setFormData] = useState({
-    stockPosition: 10
+    stockPosition: 10,
+    tif: "DAY"
   });
   const [openOrderList, setOpenOrderList] = useState([]);
   const [existingOrder, setExistingOrder] = useState([]);
+  const [snapshot, setSnapshot] = useState({
+    bid: 0,
+    mid: 0,
+    ask: 0,
+    lastPrice: 0
+  });
   const [date, setDate] = useState(new Date());
 
   let searchParams = {};
@@ -85,6 +93,7 @@ export default function ContentManagement() {
   useEffect(() => {
     fetchIBOpenOdersFun();
     fetchIBAccountDetailFun();
+    fetchIBSnapshotFun();
 
     const conid = searchParams.conid || "";
     const symbol = searchParams.symbol || "";
@@ -94,10 +103,35 @@ export default function ContentManagement() {
       console.log("Fetch Contract Info:", err);
     });
 
-    setInterval(() => {
-      setDate(new Date());
-    }, 1000);
+    // setInterval(() => {
+    //   setDate(new Date());
+    // }, 1000);
   }, []);
+
+  function fetchIBSnapshotFun() {
+    const conid = searchParams.conid || "";
+    if (conid) {
+      fetchIBSnapshotApi(conid, "31,84,86").then((response) => {
+        if (response.length == 0) {
+          fetchIBSnapshotFun();
+          return 0;
+        }
+        let bid = +response?.[0]?.[84] || 0;
+        let ask = +response?.[0]?.[86] || 0;
+        let mid = (bid + ask) / 2;
+        mid = +mid.toFixed(2) || 0
+        let lastPrice = +response?.[0]?.[31] || 0;
+        setSnapshot({
+          bid: bid,
+          mid: mid,
+          ask: ask,
+          lastPrice: lastPrice
+        });
+      }).catch((err) => {
+        console.log("IB Snapshot Error", err);
+      });
+    }
+  }
 
   function fetchIBAccountDetailFun() {
     fetchIBAccountDetail().then((response) => {
@@ -145,6 +179,7 @@ export default function ContentManagement() {
   function handleNumericInput(e) {
     const name = e.target.name;
     const value = e.target.value;
+    let accountBal = portfolioSummary?.["availablefunds-s"]?.amount || 0;
 
     if (+value || value == "") {
       if (name == "profit_order")
@@ -155,8 +190,56 @@ export default function ContentManagement() {
         setFormData({ ...formData, [name]: value, stop_loss_percentage: 0 });
       else if (name == "stop_loss_percentage")
         setFormData({ ...formData, [name]: value, stop_loss: "" });
+      else if (name == "limitPrice") {
+        let shares = +formData?.shares || 0;
+        let existingValue = 0;
+        let liveAccPercentage = 0;
+        let midPrice = +value || +snapshot.mid || 0;
+        if (shares) {
+          existingValue = (midPrice * shares);
+          if (accountBal)
+            liveAccPercentage = existingValue * 100 / accountBal;
+          setFormData({ ...formData, [name]: value, liveAccPercentage, existingValue });
+        } else {
+          setFormData({ ...formData, [name]: value });
+        }
+      }
+      else if (name == "shares") {
+        let shares = +value;
+        let existingValue = 0;
+        let liveAccPercentage = 0;
+        let midPrice = +formData?.limitPrice || +snapshot.mid || 0;
+        if (shares) {
+          existingValue = (midPrice * shares);
+          if (accountBal)
+            liveAccPercentage = (existingValue * 100) / (portfolioSummary?.["availablefunds-s"]?.amount || 0);
+        }
+        setFormData({ ...formData, [name]: value, liveAccPercentage, existingValue });
+      }
       else
         setFormData({ ...formData, [name]: value });
+    }
+  }
+
+  function handleOrderTypeChange(e) {
+    let value = e.target.value;
+    let accountBal = portfolioSummary?.["availablefunds-s"]?.amount || 0;
+
+    let shares = +formData?.shares || 0;
+    let existingValue = 0;
+    let liveAccPercentage = 0;
+    let midPrice = +snapshot.mid || 0;
+    if (shares) {
+      existingValue = (midPrice * shares);
+      if (accountBal)
+        liveAccPercentage = (existingValue * 100) / accountBal;
+    }
+
+    if (value == "LMT") {
+      setFormData({ ...formData, orderType: value, limitPrice: snapshot.mid, liveAccPercentage, existingValue });
+    }
+    else {
+      setFormData({ ...formData, orderType: value, limitPrice: "", liveAccPercentage, existingValue });
     }
   }
 
@@ -182,14 +265,37 @@ export default function ContentManagement() {
       });
       checkValidation = false;
     }
-    if (!formData?.orderType) {
-      toast.error("Please select order type.", {
+    if (!formData?.shareType) {
+      toast.error("Please select share type BUY or SELL.", {
         toastId: "form-error"
       });
       checkValidation = false;
     }
     if (!formData?.shares) {
-      toast.error("Please enter number of shares.", {
+      toast.error("Please enter number of shares quantity.", {
+        toastId: "form-error"
+      });
+      checkValidation = false;
+    }
+    if (!snapshot?.ask || !snapshot?.bid || !snapshot?.mid) {
+      toast.error("Mid, Bid, Ask price not found. please check your interactive broker account login", {
+        toastId: "form-error"
+      });
+      checkValidation = false;
+    }
+    if (!formData?.orderType) {
+      toast.error("Please select order type.", {
+        toastId: "form-error"
+      });
+      checkValidation = false;
+    } else if (formData?.orderType == "LMT" && formData.limitPrice && (+formData.limitPrice < snapshot.bid || +formData.limitPrice > snapshot.ask)) {
+      toast.error("Limit price should be greater than bid price and less than ask price.", {
+        toastId: "form-error"
+      });
+      checkValidation = false;
+    }
+    if (!formData?.tif) {
+      toast.error("Please select TIF.", {
         toastId: "form-error"
       });
       checkValidation = false;
@@ -216,16 +322,16 @@ export default function ContentManagement() {
           "conidex": String(contractInfo.con_id),
           "secType": String(contractInfo.con_id) + ":STK",
           "cOID": randomStr,
-          "orderType": "LMT",
+          "orderType": formData.orderType,
           "listingExchange": contractInfo.exchange,
           "isSingleGroup": false,
           "outsideRTH": false,
-          "price": +formData.shares || 0,
-          "side": formData.orderType,
+          "price": +formData?.limitPrice || snapshot?.mid || 0,
+          "side": formData.shareType,
           "ticker": contractInfo.symbol,
-          "tif": "DAY",
+          "tif": formData.tif,
           "referrer": "QuickTrade",
-          "quantity": 1,
+          "quantity": +formData.shares || 1,
           "fxQty": 0,
           "useAdaptive": false,
           "isCcyConv": false,
@@ -270,6 +376,8 @@ export default function ContentManagement() {
     setOpen1(false);
     toast.success("Order successfully placed.");
   }
+
+  console.log("formData=================", formData)
 
   return (
     <Fragment>
@@ -331,9 +439,7 @@ export default function ContentManagement() {
                 <div className="d-flex align-items-center justify-content-end px-lg-5 px-md-4 px-sm-3 px-3 my-3">
                   <Link
                     className="textPurpal text-decoration-none fs-6 fw-medium"
-                    onClick={() => {
-                      history.push("/Stocks_Details");
-                    }}
+                    to="/Stocks_Details"
                   >
                     Stock Details{" "}
                     <svg
@@ -476,7 +582,7 @@ export default function ContentManagement() {
                   </div>
                   <CardContent className="cardContent">
                     <div className="row">
-                      <div className="col-lg-3 col-12">
+                      {/* <div className="col-lg-3 col-12">
                         <div className="stockInfo">
                           <ul class="list-group mb-2">
                             <li className="list-group-item">Stock System</li>
@@ -497,10 +603,10 @@ export default function ContentManagement() {
                                 <input
                                   class="form-check-input m-0"
                                   type="radio"
-                                  name="orderType"
+                                  name="shareType"
                                   id="buy-checkbox"
-                                  onChange={(e) => { setFormData({ ...formData, orderType: "BUY" }) }}
-                                  checked={formData?.orderType == "BUY" ? true : false}
+                                  onChange={(e) => { setFormData({ ...formData, shareType: "BUY" }) }}
+                                  checked={formData?.shareType == "BUY" ? true : false}
                                 />
                               </div>
                             </li>
@@ -515,10 +621,10 @@ export default function ContentManagement() {
                                 <input
                                   class="form-check-input m-0"
                                   type="radio"
-                                  name="orderType"
+                                  name="shareType"
                                   id="sell-short-checkbox"
-                                  onChange={(e) => { setFormData({ ...formData, orderType: "SELL" }) }}
-                                  checked={formData?.orderType == "SELL" ? true : false}
+                                  onChange={(e) => { setFormData({ ...formData, shareType: "SELL" }) }}
+                                  checked={formData?.shareType == "SELL" ? true : false}
                                 />
                               </div>
                             </li>
@@ -533,24 +639,76 @@ export default function ContentManagement() {
                                 <input
                                   class="form-check-input m-0"
                                   type="radio"
-                                  name="orderType"
+                                  name="shareType"
                                   id="close-checkbox"
-                                  onChange={(e) => { setFormData({ ...formData, orderType: "CLOSE" }) }}
-                                  checked={formData?.orderType == "CLOSE" ? true : false}
+                                  onChange={(e) => { setFormData({ ...formData, shareType: "CLOSE" }) }}
+                                  checked={formData?.shareType == "CLOSE" ? true : false}
                                 />
                               </div>
                             </li>
                           </ul>
                         </div>
-                      </div>
-                      <div className="col-lg-9 col-12">
+                      </div> */}
+                      <div className="col-lg-12 col-12">
                         <div className="row">
-                          <div className="col-md-6 col-12">
+                          <div className="col-md-12 col-12">
                             <Card
                               className="cardDesign grayBg"
                               style={{ height: "calc(100% - 20px)" }}
                             >
                               <CardContent className="cardContent">
+                                <div className="totalShare d-flex align-items-center justify-content-between">
+                                  {/* <h5 className="fw-bold fs-7">Stock System</h5> */}
+                                  <h5 className="fw-bold fs-7">{contractInfo?.symbol || "--"} {contractInfo?.company_name ? `(${contractInfo.company_name})` : "--"}</h5>
+                                  <div class="form-check p-0 d-flex align-items-center justify-content-between">
+                                    <label
+                                      class="form-check-label  flex-grow-1"
+                                      htmlFor="buy-checkbox"
+                                    >
+                                      Buy
+                                    </label>
+                                    <input
+                                      class="form-check-input m-0"
+                                      type="radio"
+                                      name="shareType"
+                                      id="buy-checkbox"
+                                      onChange={(e) => { setFormData({ ...formData, shareType: "BUY" }) }}
+                                      checked={formData?.shareType == "BUY" ? true : false}
+                                    />
+                                  </div>
+                                  <div class="form-check p-0 d-flex align-items-center justify-content-between">
+                                    <label
+                                      class="form-check-label flex-grow-1"
+                                      htmlFor="sell-short-checkbox"
+                                    >
+                                      Sell Short
+                                    </label>
+                                    <input
+                                      class="form-check-input m-0"
+                                      type="radio"
+                                      name="shareType"
+                                      id="sell-short-checkbox"
+                                      onChange={(e) => { setFormData({ ...formData, shareType: "SELL" }) }}
+                                      checked={formData?.shareType == "SELL" ? true : false}
+                                    />
+                                  </div>
+                                  <div class="form-check p-0 d-flex align-items-center justify-content-between">
+                                    <label
+                                      class="form-check-label flex-grow-1"
+                                      htmlFor="close-checkbox"
+                                    >
+                                      Close
+                                    </label>
+                                    <input
+                                      class="form-check-input m-0"
+                                      type="radio"
+                                      name="shareType"
+                                      id="close-checkbox"
+                                      onChange={(e) => { setFormData({ ...formData, shareType: "CLOSE" }) }}
+                                      checked={formData?.shareType == "CLOSE" ? true : false}
+                                    />
+                                  </div>
+                                </div>
                                 <div className="cardHeader mb-3">
                                   <h6 className="fs-7 fw-500 semiGray">
                                     Current prices
@@ -583,20 +741,20 @@ export default function ContentManagement() {
                                     <tbody>
                                       <tr>
                                         <td className=" bg-white">
-                                          <p className=" ">10:55</p>
+                                          <p className=" ">{snapshot.bid}</p>
                                         </td>
                                         <td className="  lightGreenBg">
-                                          <p className=" ">10:55</p>
+                                          <p className=" ">{snapshot.mid}</p>
                                         </td>
                                         <td className=" bg-white">
-                                          <p className=" ">10:55</p>
+                                          <p className=" ">{snapshot.ask}</p>
                                         </td>
                                       </tr>
                                     </tbody>
                                   </table>
                                 </div>
                                 <div className="totalShare d-flex align-items-center justify-content-between">
-                                  <h5 className="fw-bold fs-7"># of Shares</h5>
+                                  <h5 className="fw-bold fs-7">Qty</h5>
                                   <input
                                     type="text"
                                     name="shares"
@@ -604,11 +762,100 @@ export default function ContentManagement() {
                                     value={formData?.shares || ""}
                                     onChange={handleNumericInput}
                                   />
+                                  <h5 className="fw-bold fs-7">Order Type</h5>
+                                  <select name="orderType" value={formData?.orderType || ""} onChange={handleOrderTypeChange}>
+                                    <option value="">Select</option>
+                                    <option value="LMT">LMT</option>
+                                    <option value="MKT">MKT</option>
+                                    <option value="STP">STP</option>
+                                    <option value="STOP_LIMIT">STOP LIMIT</option>
+                                    <option value="MIDPRICE">MIDPRICE</option>
+                                    <option value="TRAIL">TRAIL</option>
+                                    <option value="TRAILLMT">TRAILLMT</option>
+                                  </select>
+                                  {formData?.orderType == "LMT" ?
+                                    <input
+                                      type="text"
+                                      name="limitPrice"
+                                      className="form-control borderd-purple shadow-sm apperance-none"
+                                      value={formData?.limitPrice || ""}
+                                      onChange={handleNumericInput}
+                                      placeholder="Limit Price"
+                                    />
+                                    : <input
+                                      type="text"
+                                      name="limitPrice"
+                                      className="form-control borderd-purple shadow-sm apperance-none"
+                                      value={formData?.orderType || ""}
+                                      disabled
+                                    />}
+                                  <h5 className="fw-bold fs-7">TIF</h5>
+                                  <select name="tif" value={formData?.tif || ""} onChange={(e) => setFormData({ ...formData, tif: e.target.value })}>
+                                    <option value="DAY">DAY</option>
+                                    <option value="GTC">GTC</option>
+                                    <option value="OPG">OPG</option>
+                                    <option value="IOC">IOC</option>
+                                  </select>
+                                </div>
+                                <div className="priceWithProfit">
+                                  Profit Order
+                                  <label htmlFor="addMoney">$ </label>
+                                  <input
+                                    type="number"
+                                    id="addMoney"
+                                    name="profit_order"
+                                    className="apperance-none"
+                                    value={formData?.profit_order || ""}
+                                    onChange={handleNumericInput}
+                                  />
+                                  <select name="profit_order_percentage" onChange={handleNumericInput} value={formData?.profit_order_percentage || 0}>
+                                    <optgroup>
+                                      <option value="0">0%</option>
+                                      <option value="1">1%</option>
+                                      <option value="2">2%</option>
+                                      <option value="3">3%</option>
+                                      <option value="4">4%</option>
+                                      <option value="5">5%</option>
+                                      <option value="6">6%</option>
+                                      <option value="7">7%</option>
+                                      <option value="8">8%</option>
+                                      <option value="10">10%</option>
+                                      <option value="100">100%</option>
+                                    </optgroup>
+                                  </select>
+                                </div>
+
+                                <div className="priceWithProfit">
+                                  Stop Loss
+                                  <label htmlFor="addMoney"> $ </label>
+                                  <input
+                                    type="number"
+                                    id="addMoney"
+                                    name="stop_loss"
+                                    className="apperance-none"
+                                    value={formData?.stop_loss || ""}
+                                    onChange={handleNumericInput}
+                                  />
+                                  <select name="stop_loss_percentage" onChange={handleNumericInput} value={formData?.stop_loss_percentage || 0}>
+                                    <optgroup>
+                                      <option value="0">0%</option>
+                                      <option value="1">1%</option>
+                                      <option value="2">2%</option>
+                                      <option value="3">3%</option>
+                                      <option value="4">4%</option>
+                                      <option value="5">5%</option>
+                                      <option value="6">6%</option>
+                                      <option value="7">7%</option>
+                                      <option value="8">8%</option>
+                                      <option value="9">9%</option>
+                                      <option value="10">10%</option>
+                                    </optgroup>
+                                  </select>
                                 </div>
                               </CardContent>
                             </Card>
                           </div>
-                          <div className="col-md-6 col-12">
+                          {/* <div className="col-md-6 col-12">
                             <Card className="cardDesign grayBg">
                               <CardContent className="cardContent">
                                 <div className="cardHeader mb-3">
@@ -726,7 +973,7 @@ export default function ContentManagement() {
                                 </div>
                               </CardContent>
                             </Card>
-                          </div>
+                          </div> */}
                           <div className="col-md-6 col-12">
                             <Card
                               className="cardDesign grayBg "
@@ -742,12 +989,12 @@ export default function ContentManagement() {
                                   <div className="existingPosition">
                                     <ul className="list-group">
                                       <li className="list-group-item">
-                                        Existing Value of AAPL
-                                        <span className="value">$11,000</span>
+                                        Existing Value of {contractInfo?.symbol || "--"}
+                                        <span className="value">${formData?.existingValue || 0}</span>
                                       </li>
                                       <li className="list-group-item">
                                         % of Live Account Value
-                                        <span className="value"> 11%</span>
+                                        <span className="value"> {formData?.liveAccPercentage || 0}%</span>
                                       </li>
                                     </ul>
                                   </div>
@@ -787,14 +1034,14 @@ export default function ContentManagement() {
                                     </ul>
                                   </div>
                                 </div>
-                                <div className="card-footer bg-transparent border-0 px-0 pb-0 mt-5">
+                                {/* <div className="card-footer bg-transparent border-0 px-0 pb-0 mt-5">
                                   <div className="totalPosition">
                                     <ul className="list-unstyled mb-0">
                                       <li>$ 298,739</li>
                                       <li>28%</li>
                                     </ul>
                                   </div>
-                                </div>
+                                </div> */}
                               </CardContent>
                             </Card>
                           </div>

@@ -9,7 +9,7 @@ import axios from "axios";
 // const alpacaPaperAccPassword = "ps1vadEfOzLnZWyrRFR7lLZK2zfapmAluMAKUvIg";
 
 const IBAccountId = "DU9313757";
-const IBBaseUrl = `http://122.176.139.248:8098/v1`; // http://122.176.139.248:8098/v1 http://localhost/v1
+const IBBaseUrl = `http://localhost/v1`; // http://122.176.139.248:8098/v1 http://localhost/v1
 const NodeServBaseUrl = `http://localhost:4545`; // http://122.176.139.248:9011 http://localhost:4545
 
 // export const fetchAssetsList = () => {
@@ -210,6 +210,32 @@ export const fetchIBOpenOders = () => {
         let config = {
             method: 'get',
             url: `${IBBaseUrl}/api/iserver/account/orders`,
+            headers: {
+                "Accept": 'application/json',
+            }
+        };
+
+        axios.request(config)
+            .then((response) => {
+                resolve(response?.data || []);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+}
+
+// https://localhost:5000/v1/api/md/snapshot?conids=522300952&fields=31%2C84%2C86%2C
+
+// 31 : Last Value
+// 84 : Bid
+// 86 : Ask
+
+export const fetchIBSnapshotApi = (conids, fields) => { 
+    return new Promise((resolve, reject) => {
+        let config = {
+            method: 'get',
+            url: `${IBBaseUrl}/api/md/snapshot?conids=${conids}&fields=${fields}`,
             headers: {
                 "Accept": 'application/json',
             }
