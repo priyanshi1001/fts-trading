@@ -1,42 +1,45 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import cx from "classnames";
 import { Breadcrumbs, Link, Typography } from "@mui/material";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-
+import moment from "moment";
 import HeaderLogo from "../AppLogo";
 import UserBox from "./Components/UserBox";
 import userImg from "../../assets/utils/images/avatars/2.jpg";
 
 class Header extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      date: new Date(),
+    };
+  }
   getPageName = () => {
     const { location } = this.props;
     if (!location || !location.pathname) return "";
     const path = location.pathname.split("/")[1];
     if (path === "Get_real_time_stock") {
       return "Stock Details";
-    }
-    else if (path === "Get_historical_price") {
+    } else if (path === "Get_historical_price") {
       return "Stock Details";
-    }
-    else if (path === "Stocks_Details") {
+    } else if (path === "Stocks_Details") {
       return "Stock Details";
-    }
-    else if (path === "Screens") {
-     return "Pre Build Screens";
-    }
-    else if (path === "WatchList"){
+    } else if (path === "Screens") {
+      return "Pre Build Screens";
+    } else if (path === "WatchList") {
       return "Watch List";
-  }
-  else if (path === "OtherFunctions"){
-    return "Other Functions";
-}
+    } else if (path === "OtherFunctions") {
+      return "Other Functions";
+    }
     return path.charAt(0).toUpperCase() + path.slice(1); // capitalize the first letter
   };
-  render() {
-    let { headerBackgroundColor, enableMobileMenuSmall, enableHeaderShadow } = this.props;
 
+  render() {
+    let { headerBackgroundColor, enableMobileMenuSmall, enableHeaderShadow } =
+      this.props;
+    const { date } = this.state;
     return (
       <Fragment>
         <TransitionGroup>
@@ -94,24 +97,49 @@ class Header extends React.Component {
                     </div>
                   </div>
                 </div>
-                <div className="headerBottom">
-                  <Breadcrumbs aria-label="breadcrumb">
-                    <Link className="p-0 fs-7" to="/Dashboard">
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 14 14"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M5.09584 12.8548V10.8102C5.09583 10.2921 5.51713 9.87118 6.03898 9.86792H7.95509C8.47927 9.86792 8.9042 10.2898 8.9042 10.8102V12.8489C8.90419 13.2982 9.26937 13.6634 9.72198 13.6667H11.0292C11.6398 13.6683 12.2259 13.4286 12.6581 13.0005C13.0904 12.5725 13.3334 11.9912 13.3334 11.3851V5.57727C13.3333 5.08763 13.1147 4.62318 12.7364 4.30904L8.29534 0.782886C7.51903 0.166122 6.41027 0.186046 5.65695 0.830297L1.31136 4.30904C0.915181 4.61392 0.678389 5.07975 0.666687 5.57727V11.3791C0.666687 12.6425 1.69827 13.6667 2.9708 13.6667H4.24821C4.46614 13.6683 4.67568 13.5834 4.83034 13.431C4.98499 13.2786 5.07197 13.0711 5.07196 12.8548H5.09584Z"
-                          fill="#5570F1"
-                        />
-                      </svg>
-                    </Link>
-                    <p className="currentPage">{this.getPageName()}</p>
-                  </Breadcrumbs>
+                <div className="headerBottom d-flex align-items-center justify-content-between gap-3">
+                  {this.getPageName() == "Dashboard" ? (
+                    <Breadcrumbs aria-label="breadcrumb">
+                      <Link className="p-0 fs-7" to="/Dashboard">
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 14 14"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M5.09584 12.8548V10.8102C5.09583 10.2921 5.51713 9.87118 6.03898 9.86792H7.95509C8.47927 9.86792 8.9042 10.2898 8.9042 10.8102V12.8489C8.90419 13.2982 9.26937 13.6634 9.72198 13.6667H11.0292C11.6398 13.6683 12.2259 13.4286 12.6581 13.0005C13.0904 12.5725 13.3334 11.9912 13.3334 11.3851V5.57727C13.3333 5.08763 13.1147 4.62318 12.7364 4.30904L8.29534 0.782886C7.51903 0.166122 6.41027 0.186046 5.65695 0.830297L1.31136 4.30904C0.915181 4.61392 0.678389 5.07975 0.666687 5.57727V11.3791C0.666687 12.6425 1.69827 13.6667 2.9708 13.6667H4.24821C4.46614 13.6683 4.67568 13.5834 4.83034 13.431C4.98499 13.2786 5.07197 13.0711 5.07196 12.8548H5.09584Z"
+                            fill="#5570F1"
+                          />
+                        </svg>
+                      </Link>
+                      <p className="currentPage">{this.getPageName()}</p>
+                      <p className="currentPage">Order Ticket- Stock</p>
+                    </Breadcrumbs>
+                  ) : (
+                    <Breadcrumbs aria-label="breadcrumb">
+                      <Link className="p-0 fs-7" to="/Dashboard">
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 14 14"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M5.09584 12.8548V10.8102C5.09583 10.2921 5.51713 9.87118 6.03898 9.86792H7.95509C8.47927 9.86792 8.9042 10.2898 8.9042 10.8102V12.8489C8.90419 13.2982 9.26937 13.6634 9.72198 13.6667H11.0292C11.6398 13.6683 12.2259 13.4286 12.6581 13.0005C13.0904 12.5725 13.3334 11.9912 13.3334 11.3851V5.57727C13.3333 5.08763 13.1147 4.62318 12.7364 4.30904L8.29534 0.782886C7.51903 0.166122 6.41027 0.186046 5.65695 0.830297L1.31136 4.30904C0.915181 4.61392 0.678389 5.07975 0.666687 5.57727V11.3791C0.666687 12.6425 1.69827 13.6667 2.9708 13.6667H4.24821C4.46614 13.6683 4.67568 13.5834 4.83034 13.431C4.98499 13.2786 5.07197 13.0711 5.07196 12.8548H5.09584Z"
+                            fill="#5570F1"
+                          />
+                        </svg>
+                      </Link>
+                      <p className="currentPage">{this.getPageName()}</p>
+                    </Breadcrumbs>
+                  )}
+                  <div className="dateBox">
+                    {moment(date).format("DD-MMM-YY")} -{" "}
+                    {moment(date).format("hh:mm:ss A")}
+                  </div>
                 </div>
               </div>
             </div>
@@ -126,10 +154,9 @@ const mapStateToProps = (state) => ({
   enableHeaderShadow: state.ThemeOptions.enableHeaderShadow,
   closedSmallerSidebar: state.ThemeOptions.closedSmallerSidebar,
   headerBackgroundColor: state.ThemeOptions.headerBackgroundColor,
-  enableMobileMenu : state.ThemeOptions.enableMobileMenuSmall,
+  enableMobileMenu: state.ThemeOptions.enableMobileMenuSmall,
 });
 
-  const mapDispatchToProps = (dispatch) => ({});
-  
-  
-  export default connect(mapStateToProps,mapDispatchToProps)(withRouter(Header));
+const mapDispatchToProps = (dispatch) => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Header));
