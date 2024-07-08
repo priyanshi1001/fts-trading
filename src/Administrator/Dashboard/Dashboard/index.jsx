@@ -177,11 +177,13 @@ export default function ContentManagement() {
 
   function fetchIBOpenOdersFun() {
     let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,filled,pending_cancel,cancelled,warn_state,sort_by_time`;
-    fetchIBOpenOders(filtersVal).then((response) => {
-      setOpenOrderList(response?.orders || []);
-    }).catch((err) => {
-      console.log("Fetch Open Orders:", err);
-    });
+    fetchIBOpenOders(filtersVal)
+      .then((response) => {
+        setOpenOrderList(response?.orders || []);
+      })
+      .catch((err) => {
+        console.log("Fetch Open Orders:", err);
+      });
   }
 
   const handleClickOpen2 = () => setOpen2(true);
@@ -479,8 +481,11 @@ export default function ContentManagement() {
                   </Link>
                 </div>
               </div> */}
-              <div className="col-lg-3 col-md-12 col-12 pt-2">
-                <Card className="cardDesign">
+              <div
+                className="col-lg-3 col-md-12 col-12 pt-2"
+                style={{ marginBottom: "20px" }}
+              >
+                <Card className="cardDesign mb-0" style={{ height: "100%" }}>
                   <CardContent className="cardContent">
                     <h6 className="fs-6 mb-3">Account Information</h6>
                     <ul className="twopartContent">
@@ -523,86 +528,6 @@ export default function ContentManagement() {
                         <span className="digit text-success">25,625</span>
                       </li>
                     </ul>
-                  </CardContent>
-                </Card>
-                <Card
-                  className="cardDesign"
-                  sx={{ padding: "15px !important" }}
-                >
-                  <CardContent className="cardContent">
-                    <h6 className="fs-6 mb-3">Screen Triggered</h6>
-                    <div className="table-responsive">
-                      <table className="table w-100 simpleTable table-borderless">
-                        <thead>
-                          <tr>
-                            <th> </th>
-                            <th>Time</th>
-                            <th>Symbol</th>
-                            <th>Screen Trig</th>
-                            <th>Delete</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>
-                              <input
-                                type="radio"
-                                name="radio"
-                                className="form-check-input"
-                                id="radio1"
-                              />
-                            </td>
-                            <td>10:55</td>
-                            <td>AAPL</td>
-                            <td>PUBackinUptrnd</td>
-                            <td className="text-center">
-                              <Button className="btn btn-secondary rounded-circle px-2 deleteBtn">
-                                {" "}
-                                <DeleteOutlinedIcon fontSize="12px" />
-                              </Button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <input
-                                type="radio"
-                                name="radio"
-                                className="form-check-input"
-                                id="radio2"
-                              />
-                            </td>
-                            <td>10:55</td>
-                            <td>AAPL</td>
-                            <td>PUBackinUptrnd</td>
-                            <td className="text-center">
-                              <Button className="btn btn-secondary rounded-circle px-2 deleteBtn">
-                                {" "}
-                                <DeleteOutlinedIcon fontSize="12px" />
-                              </Button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <input
-                                type="radio"
-                                name="radio"
-                                className="form-check-input"
-                                id="radio3"
-                              />
-                            </td>
-                            <td>10:55</td>
-                            <td>AAPL</td>
-                            <td>PUBackinUptrnd</td>
-                            <td className="text-center">
-                              <Button className="btn btn-secondary rounded-circle px-2 deleteBtn">
-                                {" "}
-                                <DeleteOutlinedIcon fontSize="12px" />
-                              </Button>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
                   </CardContent>
                 </Card>
               </div>
@@ -682,7 +607,11 @@ export default function ContentManagement() {
                           <div className="col-md-12 col-12">
                             <Card
                               className="cardDesign grayBg"
-                              style={{ height: "calc(100% - 20px)" }}
+                              style={{
+                                height: "calc(100% - 20px)",
+                                padding: "18px",
+                                marginBottom: "15px",
+                              }}
                             >
                               <CardContent className="cardContent">
                                 <div className="row">
@@ -696,57 +625,10 @@ export default function ContentManagement() {
                                           : "--"}
                                       </h5>
                                     </div>
-                                    <div className="cardHeader">
-                                      <h6 className="fs-7 fw-500 semiGray mb-1">
+                                    <div className="cardHeader mb-2 flex-wrap gap-2">
+                                      <h6 className="fs-7 fw-500 semiGray mb-0">
                                         Current prices
                                       </h6>
-                                    </div>
-                                    <div className="bitTable">
-                                      <table className="table table-striped-columns table-borderless mb-2">
-                                        <thead>
-                                          <tr>
-                                            <th
-                                              scope="col"
-                                              className="semiGray bg-white"
-                                            >
-                                              Bid
-                                            </th>
-                                            <th
-                                              scope="col"
-                                              className="semiGray lightGreenBg"
-                                            >
-                                              Mid
-                                            </th>
-                                            <th
-                                              scope="col"
-                                              className="semiGray bg-white"
-                                            >
-                                              Ask
-                                            </th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          <tr>
-                                            <td className=" bg-white">
-                                              <p className=" ">
-                                                {snapshot.bid}
-                                              </p>
-                                            </td>
-                                            <td className="  lightGreenBg">
-                                              <p className=" ">
-                                                {snapshot.mid}
-                                              </p>
-                                            </td>
-                                            <td className=" bg-white">
-                                              <p className=" ">
-                                                {snapshot.ask}
-                                              </p>
-                                            </td>
-                                          </tr>
-                                        </tbody>
-                                      </table>
-                                    </div>
-                                    <div className="totalShare">
                                       <div className="userInputAction d-flex justify-content-start align-items-center gap-3">
                                         <div class="form-check p-0 d-flex align-items-center justify-content-between">
                                           <label
@@ -825,6 +707,84 @@ export default function ContentManagement() {
                                         </div>
                                       </div>
                                     </div>
+                                    <div className="bitTable">
+                                      <table className="table table-striped-columns table-borderless mb-2">
+                                        <thead>
+                                          <tr>
+                                            <th
+                                              scope="col"
+                                              className="semiGray bg-white"
+                                            >
+                                              Bid
+                                            </th>
+                                            <th
+                                              scope="col"
+                                              className="semiGray lightGreenBg"
+                                            >
+                                              Mid
+                                            </th>
+                                            <th
+                                              scope="col"
+                                              className="semiGray bg-white"
+                                            >
+                                              Ask
+                                            </th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          <tr>
+                                            <td className=" bg-white">
+                                              <p className=" ">
+                                                {snapshot.bid}
+                                              </p>
+                                            </td>
+                                            <td className="  lightGreenBg">
+                                              <p className=" ">
+                                                {snapshot.mid}
+                                              </p>
+                                            </td>
+                                            <td className=" bg-white">
+                                              <p className=" ">
+                                                {snapshot.ask}
+                                              </p>
+                                            </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+
+                                    <Card className="cardDesign bg-light my-2 mb-md-0 py-2 px-3">
+                                      <CardContent className="cardContent">
+                                        <div className="cardHeader mb-0">
+                                          <h6 className="fs-7 fw-500 semiGray mb-1">
+                                            Existing Position
+                                          </h6>
+                                        </div>
+                                        <div className="card-body p-0">
+                                          <div className="existingPosition">
+                                            <ul className="list-group">
+                                              <li className="list-group-item">
+                                                Existing Value of{" "}
+                                                {contractInfo?.symbol || "--"}
+                                                <span className="value">
+                                                  $
+                                                  {formData?.existingValue || 0}
+                                                </span>
+                                              </li>
+                                              <li className="list-group-item">
+                                                % of Live Account Value
+                                                <span className="value">
+                                                  {" "}
+                                                  {formData?.liveAccPercentage ||
+                                                    0}
+                                                  %
+                                                </span>
+                                              </li>
+                                            </ul>
+                                          </div>
+                                        </div>
+                                      </CardContent>
+                                    </Card>
                                   </div>
                                   <div className="col-md-6 col-12">
                                     <div className="totalShare">
@@ -921,11 +881,10 @@ export default function ContentManagement() {
                                         </div>
                                       </div>
                                     </div>
-
                                     <div className="row">
                                       <div className="col-6">
                                         Profit Order
-                                        <div className="priceWithProfit">
+                                        <div className="priceWithProfit bg-light">
                                           <label htmlFor="addMoney ">$ </label>
                                           <input
                                             type="number"
@@ -961,7 +920,7 @@ export default function ContentManagement() {
                                       </div>
                                       <div className="col-6">
                                         Stop Loss
-                                        <div className="priceWithProfit">
+                                        <div className="priceWithProfit bg-light">
                                           <label htmlFor="addMoney"> $ </label>
                                           <input
                                             type="number"
@@ -996,6 +955,93 @@ export default function ContentManagement() {
                                         </div>
                                       </div>
                                     </div>
+                                    <Card className="cardDesign bg-light my-2 mb-md-0 py-2 px-3 ">
+                                      <CardContent className="cardContent">
+                                        <div className="cardHeader mb-0">
+                                          <h6 className="fs-7 fw-500 semiGray">
+                                            Add to Position
+                                          </h6>
+                                        </div>
+                                        <div className="card-body p-0">
+                                          <div className="positionList">
+                                            <ul className="list-unstyled">
+                                              <li
+                                                className={`${
+                                                  formData?.stockPosition == 5
+                                                    ? "recomended"
+                                                    : ""
+                                                }`}
+                                              >
+                                                <Button
+                                                  onClick={() =>
+                                                    handleStockPosition(5)
+                                                  }
+                                                >
+                                                  5%
+                                                </Button>
+                                              </li>
+                                              <li
+                                                className={`${
+                                                  formData?.stockPosition == 10
+                                                    ? "recomended"
+                                                    : ""
+                                                }`}
+                                              >
+                                                <Button
+                                                  onClick={() =>
+                                                    handleStockPosition(10)
+                                                  }
+                                                >
+                                                  10%
+                                                </Button>
+                                              </li>
+                                              <li
+                                                className={`${
+                                                  formData?.stockPosition == 15
+                                                    ? "recomended"
+                                                    : ""
+                                                }`}
+                                              >
+                                                <Button
+                                                  onClick={() =>
+                                                    handleStockPosition(15)
+                                                  }
+                                                >
+                                                  15%
+                                                </Button>
+                                              </li>
+                                              <li>
+                                                <input
+                                                  type="text"
+                                                  name="stockPositionVal"
+                                                  className="form-control borderd-purple shadow-sm apperance-none"
+                                                  value={
+                                                    formData?.stockPositionVal ||
+                                                    ""
+                                                  }
+                                                  onChange={(e) =>
+                                                    setFormData({
+                                                      ...formData,
+                                                      stockPositionVal:
+                                                        e.target.value,
+                                                      stockPosition: 0,
+                                                    })
+                                                  }
+                                                />
+                                              </li>
+                                            </ul>
+                                          </div>
+                                        </div>
+                                        {/* <div className="card-footer bg-transparent border-0 px-0 pb-0 mt-5">
+                                  <div className="totalPosition">
+                                    <ul className="list-unstyled mb-0">
+                                      <li>$ 298,739</li>
+                                      <li>28%</li>
+                                    </ul>
+                                  </div>
+                                </div> */}
+                                      </CardContent>
+                                    </Card>
                                   </div>
                                 </div>
                               </CardContent>
@@ -1120,126 +1166,9 @@ export default function ContentManagement() {
                               </CardContent>
                             </Card>
                           </div> */}
-                          <div className="col-md-6 col-12">
-                            <Card
-                              className="cardDesign grayBg "
-                              style={{ height: "calc(100% - 20px)" }}
-                            >
-                              <CardContent className="cardContent">
-                                <div className="cardHeader mb-0">
-                                  <h6 className="fs-7 fw-500 semiGray">
-                                    Existing Position
-                                  </h6>
-                                </div>
-                                <div className="card-body p-0">
-                                  <div className="existingPosition">
-                                    <ul className="list-group">
-                                      <li className="list-group-item">
-                                        Existing Value of{" "}
-                                        {contractInfo?.symbol || "--"}
-                                        <span className="value">
-                                          ${formData?.existingValue || 0}
-                                        </span>
-                                      </li>
-                                      <li className="list-group-item">
-                                        % of Live Account Value
-                                        <span className="value">
-                                          {" "}
-                                          {formData?.liveAccPercentage || 0}%
-                                        </span>
-                                      </li>
-                                    </ul>
-                                  </div>
-                                </div>
-                              </CardContent>
-                            </Card>
-                          </div>
-                          <div className="col-md-6 col-12">
-                            <Card className="cardDesign grayBg ">
-                              <CardContent className="cardContent">
-                                <div className="cardHeader mb-0">
-                                  <h6 className="fs-7 fw-500 semiGray">
-                                    Add to Position
-                                  </h6>
-                                </div>
-                                <div className="card-body p-0">
-                                  <div className="positionList">
-                                    <ul className="list-unstyled">
-                                      <li
-                                        className={`${
-                                          formData?.stockPosition == 5
-                                            ? "recomended"
-                                            : ""
-                                        }`}
-                                      >
-                                        <Button
-                                          onClick={() => handleStockPosition(5)}
-                                        >
-                                          5%
-                                        </Button>
-                                      </li>
-                                      <li
-                                        className={`${
-                                          formData?.stockPosition == 10
-                                            ? "recomended"
-                                            : ""
-                                        }`}
-                                      >
-                                        <Button
-                                          onClick={() =>
-                                            handleStockPosition(10)
-                                          }
-                                        >
-                                          10%
-                                        </Button>
-                                      </li>
-                                      <li
-                                        className={`${
-                                          formData?.stockPosition == 15
-                                            ? "recomended"
-                                            : ""
-                                        }`}
-                                      >
-                                        <Button
-                                          onClick={() =>
-                                            handleStockPosition(15)
-                                          }
-                                        >
-                                          15%
-                                        </Button>
-                                      </li>
-                                      <li>
-                                        <input
-                                          type="text"
-                                          name="stockPositionVal"
-                                          className="form-control borderd-purple shadow-sm apperance-none"
-                                          value={
-                                            formData?.stockPositionVal || ""
-                                          }
-                                          onChange={(e) =>
-                                            setFormData({
-                                              ...formData,
-                                              stockPositionVal: e.target.value,
-                                              stockPosition: 0,
-                                            })
-                                          }
-                                        />
-                                      </li>
-                                    </ul>
-                                  </div>
-                                </div>
-                                {/* <div className="card-footer bg-transparent border-0 px-0 pb-0 mt-5">
-                                  <div className="totalPosition">
-                                    <ul className="list-unstyled mb-0">
-                                      <li>$ 298,739</li>
-                                      <li>28%</li>
-                                    </ul>
-                                  </div>
-                                </div> */}
-                              </CardContent>
-                            </Card>
-                          </div>
-                          <div className="col-12 mt-2">
+                          <div className="col-md-6 col-12"></div>
+                          <div className="col-md-6 col-12"></div>
+                          <div className="col-12 ">
                             <div className="btn-box d-flex align-items-center justify-content-end">
                               <button
                                 className="btn btn-lg rounded-3 btn-purple"
@@ -1390,7 +1319,7 @@ export default function ContentManagement() {
                   </TableContainer>
                 </Card>
               </div>
-              <div className="col-12 mb-3">
+              <div className="col-12 mb-1">
                 <Card className="cardDesign">
                   <Box className="tableHeader">
                     <Grid container spacing={1} p={"0 !important"}>
@@ -1525,6 +1454,172 @@ export default function ContentManagement() {
                       )}
                     </Table>
                   </TableContainer>
+                </Card>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-6 col-12 mb-3">
+                <Card
+                  className="cardDesign"
+                  sx={{ padding: "15px !important" }}
+                >
+                  <CardContent className="cardContent">
+                    <h6 className="fs-6 mb-3">Screen Triggered</h6>
+                    <div className="table-responsive">
+                      <table className="table w-100 simpleTable table-borderless">
+                        <thead>
+                          <tr>
+                            <th> </th>
+                            <th>Time</th>
+                            <th>Symbol</th>
+                            <th>Screen Trig</th>
+                            <th>Delete</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>
+                              <input
+                                type="radio"
+                                name="radio"
+                                className="form-check-input"
+                                id="radio1"
+                              />
+                            </td>
+                            <td>10:55</td>
+                            <td>AAPL</td>
+                            <td>PUBackinUptrnd</td>
+                            <td className="text-center">
+                              <Button className="btn btn-secondary rounded-circle px-2 deleteBtn">
+                                {" "}
+                                <DeleteOutlinedIcon fontSize="12px" />
+                              </Button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <input
+                                type="radio"
+                                name="radio"
+                                className="form-check-input"
+                                id="radio2"
+                              />
+                            </td>
+                            <td>10:55</td>
+                            <td>AAPL</td>
+                            <td>PUBackinUptrnd</td>
+                            <td className="text-center">
+                              <Button className="btn btn-secondary rounded-circle px-2 deleteBtn">
+                                {" "}
+                                <DeleteOutlinedIcon fontSize="12px" />
+                              </Button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <input
+                                type="radio"
+                                name="radio"
+                                className="form-check-input"
+                                id="radio3"
+                              />
+                            </td>
+                            <td>10:55</td>
+                            <td>AAPL</td>
+                            <td>PUBackinUptrnd</td>
+                            <td className="text-center">
+                              <Button className="btn btn-secondary rounded-circle px-2 deleteBtn">
+                                {" "}
+                                <DeleteOutlinedIcon fontSize="12px" />
+                              </Button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <Card
+                  className="cardDesign"
+                  sx={{ padding: "15px !important" }}
+                >
+                  <CardContent className="cardContent">
+                    <h6 className="fs-6 mb-3">Screen Triggered</h6>
+                    <div className="table-responsive">
+                      <table className="table w-100 simpleTable table-borderless">
+                        <thead>
+                          <tr>
+                            <th> </th>
+                            <th>Time</th>
+                            <th>Symbol</th>
+                            <th>Screen Trig</th>
+                            <th>Delete</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>
+                              <input
+                                type="radio"
+                                name="radio"
+                                className="form-check-input"
+                                id="radio1"
+                              />
+                            </td>
+                            <td>10:55</td>
+                            <td>AAPL</td>
+                            <td>PUBackinUptrnd</td>
+                            <td className="text-center">
+                              <Button className="btn btn-secondary rounded-circle px-2 deleteBtn">
+                                {" "}
+                                <DeleteOutlinedIcon fontSize="12px" />
+                              </Button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <input
+                                type="radio"
+                                name="radio"
+                                className="form-check-input"
+                                id="radio2"
+                              />
+                            </td>
+                            <td>10:55</td>
+                            <td>AAPL</td>
+                            <td>PUBackinUptrnd</td>
+                            <td className="text-center">
+                              <Button className="btn btn-secondary rounded-circle px-2 deleteBtn">
+                                {" "}
+                                <DeleteOutlinedIcon fontSize="12px" />
+                              </Button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <input
+                                type="radio"
+                                name="radio"
+                                className="form-check-input"
+                                id="radio3"
+                              />
+                            </td>
+                            <td>10:55</td>
+                            <td>AAPL</td>
+                            <td>PUBackinUptrnd</td>
+                            <td className="text-center">
+                              <Button className="btn btn-secondary rounded-circle px-2 deleteBtn">
+                                {" "}
+                                <DeleteOutlinedIcon fontSize="12px" />
+                              </Button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </CardContent>
                 </Card>
               </div>
             </div>
