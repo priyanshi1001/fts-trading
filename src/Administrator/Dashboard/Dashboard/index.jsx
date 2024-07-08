@@ -197,8 +197,11 @@ export default function ContentManagement() {
         let midPrice = +value || +snapshot.mid || 0;
         if (shares) {
           existingValue = (midPrice * shares);
-          if (accountBal)
+          existingValue = +existingValue.toFixed(3) || 0;
+          if (accountBal) {
             liveAccPercentage = existingValue * 100 / accountBal;
+            liveAccPercentage = +liveAccPercentage.toFixed(3) || 0;
+          }
           setFormData({ ...formData, [name]: value, liveAccPercentage, existingValue });
         } else {
           setFormData({ ...formData, [name]: value });
@@ -211,8 +214,11 @@ export default function ContentManagement() {
         let midPrice = +formData?.limitPrice || +snapshot.mid || 0;
         if (shares) {
           existingValue = (midPrice * shares);
-          if (accountBal)
+          existingValue = +existingValue.toFixed(3) || 0;
+          if (accountBal) {
             liveAccPercentage = (existingValue * 100) / (portfolioSummary?.["availablefunds-s"]?.amount || 0);
+            liveAccPercentage = +liveAccPercentage.toFixed(3) || 0;
+          }
         }
         setFormData({ ...formData, [name]: value, liveAccPercentage, existingValue });
       }
@@ -231,8 +237,11 @@ export default function ContentManagement() {
     let midPrice = +snapshot.mid || 0;
     if (shares) {
       existingValue = (midPrice * shares);
-      if (accountBal)
+      existingValue = +existingValue.toFixed(3) || 0;
+      if (accountBal) {
         liveAccPercentage = (existingValue * 100) / accountBal;
+        liveAccPercentage = +liveAccPercentage.toFixed(3) || 0;
+      }
     }
 
     if (value == "LMT") {
