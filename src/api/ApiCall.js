@@ -205,11 +205,11 @@ export const fetchIBContractInfo = (conid) => {
     });
 }
 
-export const fetchIBOpenOders = () => {
+export const fetchIBOpenOders = (filters) => {
     return new Promise((resolve, reject) => {
         let config = {
             method: 'get',
-            url: `${IBBaseUrl}/api/iserver/account/orders`,
+            url: `${IBBaseUrl}/api/iserver/account/orders${filters || ""}`,
             headers: {
                 "Accept": 'application/json',
             }

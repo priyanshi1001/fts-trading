@@ -163,7 +163,8 @@ export default function ContentManagement() {
   }
 
   function fetchIBOpenOdersFun() {
-    fetchIBOpenOders().then((response) => {
+    let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,filled,pending_cancel,cancelled,warn_state,sort_by_time`;
+    fetchIBOpenOders(filtersVal).then((response) => {
       setOpenOrderList(response?.orders || []);
     }).catch((err) => {
       console.log("Fetch Open Orders:", err);

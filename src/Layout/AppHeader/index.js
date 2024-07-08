@@ -31,7 +31,10 @@ class Header extends React.Component {
   }
   else if (path === "OtherFunctions"){
     return "Other Functions";
-}
+  }
+  else if (path === "Order_History"){
+    return "Order History";
+  }
     return path.charAt(0).toUpperCase() + path.slice(1); // capitalize the first letter
   };
   render() {

@@ -14,6 +14,7 @@ const Accounts = lazy(() => import("../../Administrator/Accounts/Accounts"));
 const Stocks_Details = lazy(() => import("../../Administrator/StockDetails/Stocks"));
 const RealTimeStock = lazy(() => import("../../Administrator/StockDetails/Stocks/realTimeStock"));
 const HistoricalPrice = lazy(() => import("../../Administrator/StockDetails/Stocks/historicalPrice"));
+const OrderHistory = lazy(()=> import("../../Administrator/OrderHistory/index"));
 const Screens = lazy(() => import("../../Administrator/PreBuildScreens/Screens"));
 const Report = lazy(() => import("../../Administrator/Report/Reports"));
 const WatchList = lazy(() => import("../../Administrator/WatchList/WatchLists"));
@@ -235,6 +236,22 @@ const AppMain = () => {
         }
       >
         <Route path="/Stocks_Details" component={isAuth() ? Stocks_Details : login} />
+      </Suspense>
+      <Suspense
+        fallback={
+          <div className="loader-container">
+            <div className="loader-container-inner">
+              <div className="text-center">
+                <Loader type="line-scale" />
+              </div>
+              <h6 className="mt-3">
+                Please wait while we load all orders
+              </h6>
+            </div>
+          </div>
+        }
+      >
+        <Route path="/Order_History" component={isAuth() ? OrderHistory : login} />
       </Suspense>
       <Suspense
         fallback={

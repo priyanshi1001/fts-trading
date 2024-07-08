@@ -16,6 +16,11 @@ export const MainNav = [
     to: "#/Stocks_Details",
   },
   {
+    icon: "pe-7s-browser",
+    label: "Order History",
+    to: "#/Order_History",
+  },
+  {
     icon: "pe-7s-notebook",
     label: "Pre-Build Screens",
     to: "#/Screens",
