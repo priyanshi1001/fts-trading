@@ -10,20 +10,10 @@ import TableRow from "@mui/material/TableRow";
 import ThemeOptions from "../../../Layout/ThemeOptions";
 import EditIcon from "@mui/icons-material/Edit";
 import AppHeader from "../../../Layout/AppHeader";
-import { useDispatch, useSelector } from "react-redux";
-import Transition from "../../../reusables/languagesModal";
 import AppSidebar from "../../../Layout/AppSidebar";
 // import AppFooters from "../../../Layout/AppFooter";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
-import {
-  // exportContent,
-  getAllContentType,
-  getAllLanguages,
-  getContentLanguageById,
-  importContent,
-} from "../../../redux/Actions";
-import { Route, useHistory, useLocation, Link } from "react-router-dom";
-import AppFooter from "../../../Layout/AppFooter";
+import { useHistory, useLocation, Link } from "react-router-dom";
 import "./index.scss";
 import {
   Typography,
@@ -33,7 +23,6 @@ import {
   Button,
   Box,
 } from "@mui/material";
-import DialogTransition from "../../../reusables/deleteDialog";
 import Modal from "../../../reusables/htmlDialog";
 import { toast } from "react-toastify";
 import {
@@ -46,21 +35,9 @@ import {
   fetchIBSnapshotApi,
 } from "../../../api/ApiCall";
 
-const typeIdList = [{ ContentBlock: 1 }, { EasyHelp: 2 }, { Phrases: 3 }];
 export default function ContentManagement() {
-  const dispatch = useDispatch();
   const history = useHistory();
-  const [open, setOpen] = useState(false);
-  const handleClickOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const [rowId, setRowId] = useState({});
-  const [fileData, setFileData] = useState();
   const [open1, setOpen1] = useState(false);
-  const handleClickOpen1 = () => setOpen1(true);
-  const handleClose1 = () => setOpen1(false);
-  const [dropDownData, setDropDownData] = useState([]);
-  const [open2, setOpen2] = useState(false);
-
   const [accountDetail, setAccountDetail] = useState(null);
   const [portfolioSummary, setPortfolioSummary] = useState(null);
   const [contractInfo, setContractInfo] = useState(null);
@@ -76,7 +53,6 @@ export default function ContentManagement() {
     ask: 0,
     lastPrice: 0,
   });
-  const [date, setDate] = useState(new Date());
 
   let searchParams = {};
   const location = useLocation();
@@ -104,10 +80,6 @@ export default function ContentManagement() {
       .catch((err) => {
         console.log("Fetch Contract Info:", err);
       });
-
-    // setInterval(() => {
-    //   setDate(new Date());
-    // }, 1000);
   }, []);
 
   function fetchIBSnapshotFun() {
@@ -129,6 +101,25 @@ export default function ContentManagement() {
             mid: mid,
             ask: ask,
             lastPrice: lastPrice,
+          });
+
+          let accountBal = portfolioSummary?.["availablefunds-s"]?.amount || 0;
+          let shares = 0;
+          let existingValue = 0;
+          let liveAccPercentage = 0;
+          if (+formData?.stockPosition && accountBal && mid) {
+            existingValue = (+formData.stockPosition * accountBal) / 100;
+            existingValue = +existingValue.toFixed(3);
+            shares = existingValue / mid;
+            shares = +shares.toFixed(3);
+            liveAccPercentage = +formData.stockPosition;
+          }
+
+          setFormData({
+            ...formData,
+            shares,
+            existingValue,
+            liveAccPercentage
           });
         })
         .catch((err) => {
@@ -185,12 +176,6 @@ export default function ContentManagement() {
         console.log("Fetch Open Orders:", err);
       });
   }
-
-  const handleClickOpen2 = () => setOpen2(true);
-  const handleClose2 = () => {
-    setOpen2(false);
-    setRowId({});
-  };
 
   function handleNumericInput(e) {
     const name = e.target.name;
@@ -288,9 +273,39 @@ export default function ContentManagement() {
     }
   }
 
-  function handleStockPosition(value) {
+  function handleStockPosition(value, inputType) {
     if (+value || value == "") {
-      setFormData({ ...formData, stockPosition: value, stockPositionVal: "" });
+      let accountBal = portfolioSummary?.["availablefunds-s"]?.amount || 0;
+      let midPrice = +formData?.limitPrice || +snapshot.mid || 0;
+      let shares = 0;
+      let existingValue = 0;
+      let liveAccPercentage = 0;
+      if (+value && accountBal && midPrice) {
+        existingValue = (+value * accountBal) / 100;
+        existingValue = +existingValue.toFixed(3);
+        shares = existingValue / midPrice;
+        shares = +shares.toFixed(3);
+        liveAccPercentage = +value;
+      }
+      if (inputType == "input") {
+        setFormData({
+          ...formData,
+          stockPositionVal: +value,
+          stockPosition: 0,
+          shares,
+          existingValue,
+          liveAccPercentage
+        })
+      } else {
+        setFormData({
+          ...formData,
+          stockPosition: value,
+          stockPositionVal: "",
+          shares,
+          existingValue,
+          liveAccPercentage
+        });
+      }
     }
   }
 
@@ -394,7 +409,7 @@ export default function ContentManagement() {
           listingExchange: contractInfo.exchange,
           isSingleGroup: false,
           outsideRTH: false,
-          price: +formData?.limitPrice || snapshot?.mid || 0,
+          price: formData?.existingValue || 0,
           side: formData.shareType,
           ticker: contractInfo.symbol,
           tif: formData.tif,
@@ -447,8 +462,6 @@ export default function ContentManagement() {
     setOpen1(false);
     toast.success("Order successfully placed.");
   }
-
-  console.log("formData=================", formData);
 
   return (
     <Fragment>
@@ -966,11 +979,10 @@ export default function ContentManagement() {
                                           <div className="positionList">
                                             <ul className="list-unstyled">
                                               <li
-                                                className={`${
-                                                  formData?.stockPosition == 5
-                                                    ? "recomended"
-                                                    : ""
-                                                }`}
+                                                className={`${formData?.stockPosition == 5
+                                                  ? "recomended"
+                                                  : ""
+                                                  }`}
                                               >
                                                 <Button
                                                   onClick={() =>
@@ -981,11 +993,10 @@ export default function ContentManagement() {
                                                 </Button>
                                               </li>
                                               <li
-                                                className={`${
-                                                  formData?.stockPosition == 10
-                                                    ? "recomended"
-                                                    : ""
-                                                }`}
+                                                className={`${formData?.stockPosition == 10
+                                                  ? "recomended"
+                                                  : ""
+                                                  }`}
                                               >
                                                 <Button
                                                   onClick={() =>
@@ -996,11 +1007,10 @@ export default function ContentManagement() {
                                                 </Button>
                                               </li>
                                               <li
-                                                className={`${
-                                                  formData?.stockPosition == 15
-                                                    ? "recomended"
-                                                    : ""
-                                                }`}
+                                                className={`${formData?.stockPosition == 15
+                                                  ? "recomended"
+                                                  : ""
+                                                  }`}
                                               >
                                                 <Button
                                                   onClick={() =>
@@ -1019,14 +1029,7 @@ export default function ContentManagement() {
                                                     formData?.stockPositionVal ||
                                                     ""
                                                   }
-                                                  onChange={(e) =>
-                                                    setFormData({
-                                                      ...formData,
-                                                      stockPositionVal:
-                                                        e.target.value,
-                                                      stockPosition: 0,
-                                                    })
-                                                  }
+                                                  onChange={(e) => handleStockPosition(e.target.value, "input")}
                                                 />
                                               </li>
                                             </ul>
@@ -1270,27 +1273,6 @@ export default function ContentManagement() {
                             >
                               <TableCell className="table_content tableRow1">
                                 {row.name}
-                              </TableCell>
-
-                              <TableCell
-                                align="left"
-                                className="table_content tableRow1"
-                                // onClick={() => getLangById(row.id)}
-                              >
-                                <span
-                                  className="addSubpage "
-                                  onClick={() => {
-                                    setOpen2(true);
-                                    setDropDownData(row?.id);
-                                    dispatch(
-                                      getContentLanguageById(row?.id, (item) =>
-                                        setRowId(item)
-                                      )
-                                    );
-                                  }}
-                                >
-                                  Select Languages
-                                </span>
                               </TableCell>
                               <TableCell
                                 className="table_content tableRow1"
@@ -1626,14 +1608,14 @@ export default function ContentManagement() {
           </div>
         </div>
       </div>
-      <DialogTransition
+      {/* <DialogTransition
         open={open}
         // deleteItems={deleteItems}
         setOpen={setOpen}
         handleClickOpen={handleClickOpen}
         handleClose={handleClose}
-        // deleteApi={deletePAGES}
-        // getAllApi={getAllPages}
+      // deleteApi={deletePAGES}
+      // getAllApi={getAllPages}
       />
 
       <Transition
@@ -1646,20 +1628,20 @@ export default function ContentManagement() {
         setOpen={setOpen2}
         handleClickOpen={handleClickOpen2}
         handleClose={handleClose2}
-      />
+      /> */}
 
       <Modal
         open={open1}
-        // deleteItems={deleteItems}
-        formData={formData}
-        fileData={fileData}
-        setFileData={setFileData}
-        dispatch={dispatch}
         setOpen={setOpen1}
-        handleClickOpen={handleClickOpen1}
-        handleClose={handleClose1}
-        Heading="Confirm Order "
         apiCall={placeOrderFun}
+        Heading="Confirm Order "
+        data={{
+          stockSymbol: contractInfo?.symbol,
+          stockName: contractInfo?.company_name,
+          shares: formData.shares,
+          midPrice: +formData?.limitPrice || snapshot?.mid || 0,
+          existingValue: formData.existingValue
+        }}
       />
     </Fragment>
   );

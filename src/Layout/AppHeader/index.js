@@ -30,13 +30,13 @@ class Header extends React.Component {
       return "Pre Build Screens";
     } else if (path === "WatchList") {
       return "Watch List";
-  }
-  else if (path === "OtherFunctions"){
-    return "Other Functions";
-  }
-  else if (path === "Order_History"){
-    return "Order History";
-  }
+    }
+    else if (path === "OtherFunctions") {
+      return "Other Functions";
+    }
+    else if (path === "Order_History") {
+      return "Order History";
+    }
     return path.charAt(0).toUpperCase() + path.slice(1); // capitalize the first letter
   };
 
@@ -44,6 +44,11 @@ class Header extends React.Component {
     let { headerBackgroundColor, enableMobileMenuSmall, enableHeaderShadow } =
       this.props;
     const { date } = this.state;
+
+    setInterval(() => {
+      // setDate(new Date());
+      this.setState(() => ({ ...this.state, ...{ date: new Date() } }))
+    }, 1000);
     return (
       <Fragment>
         <TransitionGroup>
