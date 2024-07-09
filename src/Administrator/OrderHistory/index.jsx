@@ -25,7 +25,7 @@ export default function Stocks() {
   const [openOrderList, setOpenOrderList] = useState([]);
 
   useEffect(() => {
-    fetchIBOpenOders(`?Filters=submitted`).then((response) => {
+    fetchIBOpenOders(`?Filters=submitted,filled`).then((response) => {
       setOpenOrderList(response?.orders || []);
     }).catch((err) => {
       console.log("Fetch Open Orders:", err);
@@ -143,7 +143,7 @@ export default function Stocks() {
                                   {row?.remainingQuantity}
                                 </TableCell>
                                 <TableCell className="table_content tableRow1">
-                                  {row?.price} ({row?.cashCcy})
+                                  {row?.price || row?.avgPrice} ({row?.cashCcy})
                                 </TableCell>
                                 <TableCell className="table_content tableRow1">
                                   {row?.status}

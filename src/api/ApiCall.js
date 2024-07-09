@@ -225,17 +225,31 @@ export const fetchIBOpenOders = (filters) => {
     });
 }
 
-// https://localhost:5000/v1/api/md/snapshot?conids=522300952&fields=31%2C84%2C86%2C
-
-// 31 : Last Value
-// 84 : Bid
-// 86 : Ask
-
 export const fetchIBSnapshotApi = (conids, fields) => { 
     return new Promise((resolve, reject) => {
         let config = {
             method: 'get',
             url: `${IBBaseUrl}/api/md/snapshot?conids=${conids}&fields=${fields}`,
+            headers: {
+                "Accept": 'application/json',
+            }
+        };
+
+        axios.request(config)
+            .then((response) => {
+                resolve(response?.data || []);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+}
+
+export const fetchIBPnlApi = (conids, fields) => { 
+    return new Promise((resolve, reject) => {
+        let config = {
+            method: 'get',
+            url: `${IBBaseUrl}/api/iserver/account/pnl/partitioned`,
             headers: {
                 "Accept": 'application/json',
             }

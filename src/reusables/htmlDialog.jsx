@@ -18,6 +18,7 @@ const Modal = (props) => {
   const {
     open,
     setOpen,
+    placeOrderBtt,
     apiCall,
     Heading,
     data
@@ -52,7 +53,7 @@ const Modal = (props) => {
             component="h6"
             className="text-center dark-gray fs-6 mb-3"
           >
-            Placing an Order to BUY
+            Placing an Order to {data?.shareType}
           </Typography>
           <Typography
             variant="h6"
@@ -88,6 +89,7 @@ const Modal = (props) => {
             <button
               className="btn btn-lg w-auto btn-purple"
               onClick={handleSubmit}
+              disabled={placeOrderBtt ? "" : "true"}
             >
               Place Order
             </button>

@@ -33,6 +33,7 @@ import {
   fetchIBOpenOders,
   orderConfirmApi,
   fetchIBSnapshotApi,
+  fetchIBPnlApi
 } from "../../../api/ApiCall";
 
 export default function ContentManagement() {
@@ -41,9 +42,11 @@ export default function ContentManagement() {
   const [accountDetail, setAccountDetail] = useState(null);
   const [portfolioSummary, setPortfolioSummary] = useState(null);
   const [contractInfo, setContractInfo] = useState(null);
+  const [pnlInfo, setPnlInfo] = useState(null);
+  const [placeOrderBtt, setPlaceOrderBtt] = useState(true);
   const [formData, setFormData] = useState({
     stockPosition: 10,
-    tif: "DAY",
+    tif: "DAY"
   });
   const [openOrderList, setOpenOrderList] = useState([]);
   const [existingOrder, setExistingOrder] = useState([]);
@@ -83,6 +86,12 @@ export default function ContentManagement() {
       .catch((err) => {
         console.log("Fetch Contract Info:", err);
       });
+
+    fetchIBPnlApi().then((response) => {
+      setPnlInfo(response || null);
+    }).catch((err) => {
+      console.log("Pnl Info Error:", err);
+    })
   }, []);
 
   function fetchIBSnapshotFun(data) {
@@ -132,6 +141,41 @@ export default function ContentManagement() {
         })
         .catch((err) => {
           console.log("IB Snapshot Error", err);
+          let bid = 1010.3;
+          let ask = 1010.3;
+          let lastPrice = 1010.3;
+          let mid = (bid + ask) / 2;
+          mid = +mid.toFixed(2) || 0;
+          setSnapshot({
+            bid: bid,
+            mid: mid,
+            ask: ask,
+            lastPrice: lastPrice,
+          });
+
+          let accountBal = 0;
+          if (data?.["availablefunds-s"]?.amount) {
+            accountBal = data["availablefunds-s"].amount;
+          } else {
+            accountBal = portfolioSummary?.["availablefunds-s"]?.amount || 0;
+          }
+          let shares = 0;
+          let existingValue = 0;
+          let liveAccPercentage = 0;
+          if (+formData?.stockPosition && accountBal && mid) {
+            existingValue = (+formData.stockPosition * accountBal) / 100;
+            existingValue = +existingValue.toFixed(3);
+            shares = existingValue / mid;
+            shares = +shares.toFixed(3);
+            liveAccPercentage = +formData.stockPosition;
+          }
+
+          setFormData({
+            ...formData,
+            shares,
+            existingValue,
+            liveAccPercentage
+          });
         });
     }
   }
@@ -411,6 +455,7 @@ export default function ContentManagement() {
       );
       return 0;
     }
+    setPlaceOrderBtt(false);
     orderPlaceApi(accId, {
       orders: [
         {
@@ -451,19 +496,24 @@ export default function ContentManagement() {
           })
             .then((response2) => {
               orderSuccessPlaceMsg();
+              setPlaceOrderBtt(true);
             })
             .catch((err) => {
               toast.error("Something went wrong. please try again.");
+              setPlaceOrderBtt(true);
             });
         } else if (order_status && order_id) {
           orderSuccessPlaceMsg();
+          setPlaceOrderBtt(true);
         } else {
           toast.error("Something went wrong. please try again");
+          setPlaceOrderBtt(true);
         }
       })
       .catch((err) => {
         console.log("Order Place Error:", err);
         setOpen1(false);
+        setPlaceOrderBtt(true);
         toast.error("Something went wrong. please try again.");
       });
   }
@@ -531,9 +581,7 @@ export default function ContentManagement() {
                       <li>
                         Margin Buying Power
                         <span className="digit">
-                          {portfolioSummary?.[
-                            "fullinitmarginreq-s"
-                          ]?.amount.toFixed(3) || 0}
+                          {portfolioSummary?.["fullinitmarginreq-s"]?.amount.toFixed(3) || 0}
                         </span>
                       </li>
                       <li>
@@ -548,7 +596,7 @@ export default function ContentManagement() {
                       </li>
                       <li>
                         Today’s Trading G/L
-                        <span className="digit text-success">3,535</span>
+                        <span className="digit text-success">{pnlInfo?.["upnl"]?.[`${accountDetail?.selectedAccount}.Core`]?.["dpl"] || 0}</span>
                       </li>
                       <li>
                         YTD Trading Gain
@@ -1434,7 +1482,7 @@ export default function ContentManagement() {
                                 {row?.remainingQuantity}
                               </TableCell>
                               <TableCell className="table_content tableRow1">
-                                {row?.price} ({row?.cashCcy})
+                                {row?.price || row?.avgPrice} ({row?.cashCcy})
                               </TableCell>
                               <TableCell className="table_content tableRow1">
                                 {row?.status}
@@ -1647,6 +1695,7 @@ export default function ContentManagement() {
       {open1 ? <Modal
         open={open1}
         setOpen={setOpen1}
+        placeOrderBtt={placeOrderBtt}
         apiCall={placeOrderFun}
         Heading="Confirm Order "
         data={{
@@ -1654,7 +1703,8 @@ export default function ContentManagement() {
           stockName: contractInfo?.company_name,
           shares: formData.shares,
           midPrice: +formData?.limitPrice || snapshot?.mid || 0,
-          existingValue: formData.existingValue
+          existingValue: formData.existingValue,
+          shareType: formData?.shareType || ""
         }}
       /> : <></>}
     </Fragment>
