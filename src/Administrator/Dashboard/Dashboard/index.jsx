@@ -68,8 +68,11 @@ export default function ContentManagement() {
 
   useEffect(() => {
     fetchIBOpenOdersFun();
-    fetchIBAccountDetailFun();
-    fetchIBSnapshotFun();
+    fetchIBAccountDetailFun().then((response) => {
+      fetchIBSnapshotFun(response);
+    }).catch((err) => {
+      console.log("Account Details Not Fetch.")
+    });
 
     const conid = searchParams.conid || "";
     const symbol = searchParams.symbol || "";
@@ -82,7 +85,7 @@ export default function ContentManagement() {
       });
   }, []);
 
-  function fetchIBSnapshotFun() {
+  function fetchIBSnapshotFun(data) {
     const conid = searchParams.conid || "";
     if (conid) {
       fetchIBSnapshotApi(conid, "31,84,86")
@@ -91,9 +94,9 @@ export default function ContentManagement() {
             fetchIBSnapshotFun();
             return 0;
           }
-          let bid = +response?.[0]?.[84] || 50;
-          let ask = +response?.[0]?.[86] || 51;
-          let lastPrice = +response?.[0]?.[31] || 50.5;
+          let bid = +response?.[0]?.[84] || 1010.3;
+          let ask = +response?.[0]?.[86] || 1010.3;
+          let lastPrice = +response?.[0]?.[31] || 1010.3;
           let mid = (bid + ask) / 2;
           mid = +mid.toFixed(2) || 0;
           setSnapshot({
@@ -103,7 +106,12 @@ export default function ContentManagement() {
             lastPrice: lastPrice,
           });
 
-          let accountBal = portfolioSummary?.["availablefunds-s"]?.amount || 0;
+          let accountBal = 0;
+          if (data?.["availablefunds-s"]?.amount) {
+            accountBal = data["availablefunds-s"].amount;
+          } else {
+            accountBal = portfolioSummary?.["availablefunds-s"]?.amount || 0;
+          }
           let shares = 0;
           let existingValue = 0;
           let liveAccPercentage = 0;
@@ -129,32 +137,37 @@ export default function ContentManagement() {
   }
 
   function fetchIBAccountDetailFun() {
-    fetchIBAccountDetail()
-      .then((response) => {
-        let accId = response?.selectedAccount || "";
-        if (accId) fetchPortfolioSummaryFun(accId);
-        setAccountDetail(response || null);
-      })
-      .catch((err) => {
-        console.log("Account Details Error:", err);
-        toast.error(
-          "Interactive broker account detail not found. please login interactive broker acoount first",
-          {
-            toastId: "interactive-broker-login-error",
-          }
-        );
-      });
+    return new Promise((resolve, reject) => {
+      fetchIBAccountDetail()
+        .then((response) => {
+          let accId = response?.selectedAccount || "";
+          if (accId) fetchPortfolioSummaryFun(accId, resolve, reject);
+          setAccountDetail(response || null);
+        })
+        .catch((err) => {
+          console.log("Account Details Error:", err);
+          toast.error(
+            "Interactive broker account detail not found. please login interactive broker acoount first",
+            {
+              toastId: "interactive-broker-login-error",
+            }
+          );
+          reject();
+        });
+    });
   }
 
-  function fetchPortfolioSummaryFun(accId) {
+  function fetchPortfolioSummaryFun(accId, resolve, reject) {
     if (accId) {
       fetchIBPortfolioSummary(accId)
         .then((response) => {
           setPortfolioSummary(response || null);
+          if (resolve) resolve(response);
         })
         .catch((err) => {
           console.log("Portfolio Summary Error:", err);
           toast.error("Portfolio summary not found. please try again.");
+          if (reject) reject();
         });
     } else {
       toast.error(
@@ -163,6 +176,7 @@ export default function ContentManagement() {
           toastId: "interactive-broker-login-error",
         }
       );
+      if (reject) reject();
     }
   }
 
@@ -409,7 +423,7 @@ export default function ContentManagement() {
           listingExchange: contractInfo.exchange,
           isSingleGroup: false,
           outsideRTH: false,
-          price: formData?.existingValue || 0,
+          price: +formData?.limitPrice || snapshot.mid || 0,
           side: formData.shareType,
           ticker: contractInfo.symbol,
           tif: formData.tif,
@@ -441,7 +455,7 @@ export default function ContentManagement() {
             .catch((err) => {
               toast.error("Something went wrong. please try again.");
             });
-        } else if (order_status == "Submitted" && order_id) {
+        } else if (order_status && order_id) {
           orderSuccessPlaceMsg();
         } else {
           toast.error("Something went wrong. please try again");
@@ -458,7 +472,7 @@ export default function ContentManagement() {
     let accId = accountDetail?.selectedAccount || "";
     if (accId) fetchPortfolioSummaryFun(accId);
     fetchIBOpenOdersFun();
-    setFormData({});
+    // setFormData({});
     setOpen1(false);
     toast.success("Order successfully placed.");
   }
@@ -1630,7 +1644,7 @@ export default function ContentManagement() {
         handleClose={handleClose2}
       /> */}
 
-      <Modal
+      {open1 ? <Modal
         open={open1}
         setOpen={setOpen1}
         apiCall={placeOrderFun}
@@ -1642,7 +1656,7 @@ export default function ContentManagement() {
           midPrice: +formData?.limitPrice || snapshot?.mid || 0,
           existingValue: formData.existingValue
         }}
-      />
+      /> : <></>}
     </Fragment>
   );
 }
