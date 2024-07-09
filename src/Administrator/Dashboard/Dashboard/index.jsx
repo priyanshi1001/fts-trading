@@ -91,11 +91,11 @@ export default function ContentManagement() {
             fetchIBSnapshotFun();
             return 0;
           }
-          let bid = +response?.[0]?.[84] || 0;
-          let ask = +response?.[0]?.[86] || 0;
+          let bid = +response?.[0]?.[84] || 50;
+          let ask = +response?.[0]?.[86] || 51;
+          let lastPrice = +response?.[0]?.[31] || 50.5;
           let mid = (bid + ask) / 2;
           mid = +mid.toFixed(2) || 0;
-          let lastPrice = +response?.[0]?.[31] || 0;
           setSnapshot({
             bid: bid,
             mid: mid,
