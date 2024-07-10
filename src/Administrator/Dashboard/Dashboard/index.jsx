@@ -96,88 +96,58 @@ export default function ContentManagement() {
 
   function fetchIBSnapshotFun(data) {
     const conid = searchParams.conid || "";
-    if (conid) {
-      fetchIBSnapshotApi(conid, "31,84,86")
-        .then((response) => {
-          if (response.length == 0) {
-            fetchIBSnapshotFun();
-            return 0;
-          }
-          let bid = +response?.[0]?.[84] || 1010.3;
-          let ask = +response?.[0]?.[86] || 1010.3;
-          let lastPrice = +response?.[0]?.[31] || 1010.3;
-          let mid = (bid + ask) / 2;
-          mid = +mid.toFixed(2) || 0;
-          setSnapshot({
-            bid: bid,
-            mid: mid,
-            ask: ask,
-            lastPrice: lastPrice,
-          });
-
-          let accountBal = 0;
-          if (data?.["availablefunds-s"]?.amount) {
-            accountBal = data["availablefunds-s"].amount;
-          } else {
-            accountBal = portfolioSummary?.["availablefunds-s"]?.amount || 0;
-          }
-          let shares = 0;
-          let existingValue = 0;
-          let liveAccPercentage = 0;
-          if (+formData?.stockPosition && accountBal && mid) {
-            existingValue = (+formData.stockPosition * accountBal) / 100;
-            existingValue = +existingValue.toFixed(3);
-            shares = existingValue / mid;
-            shares = +shares.toFixed(3);
-            liveAccPercentage = +formData.stockPosition;
-          }
-
-          setFormData({
-            ...formData,
-            shares,
-            existingValue,
-            liveAccPercentage
-          });
-        })
-        .catch((err) => {
-          console.log("IB Snapshot Error", err);
-          let bid = 1010.3;
-          let ask = 1010.3;
-          let lastPrice = 1010.3;
-          let mid = (bid + ask) / 2;
-          mid = +mid.toFixed(2) || 0;
-          setSnapshot({
-            bid: bid,
-            mid: mid,
-            ask: ask,
-            lastPrice: lastPrice,
-          });
-
-          let accountBal = 0;
-          if (data?.["availablefunds-s"]?.amount) {
-            accountBal = data["availablefunds-s"].amount;
-          } else {
-            accountBal = portfolioSummary?.["availablefunds-s"]?.amount || 0;
-          }
-          let shares = 0;
-          let existingValue = 0;
-          let liveAccPercentage = 0;
-          if (+formData?.stockPosition && accountBal && mid) {
-            existingValue = (+formData.stockPosition * accountBal) / 100;
-            existingValue = +existingValue.toFixed(3);
-            shares = existingValue / mid;
-            shares = +shares.toFixed(3);
-            liveAccPercentage = +formData.stockPosition;
-          }
-
-          setFormData({
-            ...formData,
-            shares,
-            existingValue,
-            liveAccPercentage
-          });
-        });
+    if (!conid) {
+      console.log("Contract id missing.")
+      return 0;
     }
+    fetchIBSnapshotApi(conid, "31,84,86")
+      .then((response) => {
+        if (response.length == 0) {
+          fetchIBSnapshotFun(data);
+          return 0;
+        }
+        let bid = +response?.[0]?.[84] || 1010.3;
+        let ask = +response?.[0]?.[86] || 1010.3;
+        let lastPrice = +response?.[0]?.[31] || 1010.3;
+        let mid = (bid + ask) / 2;
+        mid = +mid.toFixed(2) || 0;
+        setSnapshot({
+          bid: bid,
+          mid: mid,
+          ask: ask,
+          lastPrice: lastPrice,
+        });
+
+        let accountBal = 0;
+        if (data?.["availablefunds-s"]?.amount) {
+          accountBal = data["availablefunds-s"].amount;
+        } else {
+          accountBal = portfolioSummary?.["availablefunds-s"]?.amount || 0;
+        }
+        let shares = 0;
+        let existingValue = 0;
+        let liveAccPercentage = 0;
+        if (+formData?.stockPosition && accountBal && mid) {
+          existingValue = (+formData.stockPosition * accountBal) / 100;
+          existingValue = +existingValue.toFixed(2);
+          shares = existingValue / mid;
+          shares = +shares.toFixed(2);
+          liveAccPercentage = +formData.stockPosition;
+        }
+
+        setFormData({
+          ...formData,
+          shares,
+          existingValue,
+          liveAccPercentage,
+          orderType: "LMT",
+          limitPrice: mid
+        });
+      })
+      .catch((err) => {
+        console.log("IB Snapshot Error", err);
+        toast.error("Current prices not fetch. please try after some time.");
+      });
   }
 
   function fetchIBAccountDetailFun() {
@@ -256,10 +226,10 @@ export default function ContentManagement() {
         let midPrice = +value || +snapshot.mid || 0;
         if (shares) {
           existingValue = midPrice * shares;
-          existingValue = +existingValue.toFixed(3) || 0;
+          existingValue = +existingValue.toFixed(2) || 0;
           if (accountBal) {
             liveAccPercentage = (existingValue * 100) / accountBal;
-            liveAccPercentage = +liveAccPercentage.toFixed(3) || 0;
+            liveAccPercentage = +liveAccPercentage.toFixed(2) || 0;
           }
           setFormData({
             ...formData,
@@ -277,12 +247,12 @@ export default function ContentManagement() {
         let midPrice = +formData?.limitPrice || +snapshot.mid || 0;
         if (shares) {
           existingValue = midPrice * shares;
-          existingValue = +existingValue.toFixed(3) || 0;
+          existingValue = +existingValue.toFixed(2) || 0;
           if (accountBal) {
             liveAccPercentage =
               (existingValue * 100) /
               (portfolioSummary?.["availablefunds-s"]?.amount || 0);
-            liveAccPercentage = +liveAccPercentage.toFixed(3) || 0;
+            liveAccPercentage = +liveAccPercentage.toFixed(2) || 0;
           }
         }
         setFormData({
@@ -305,10 +275,10 @@ export default function ContentManagement() {
     let midPrice = +snapshot.mid || 0;
     if (shares) {
       existingValue = midPrice * shares;
-      existingValue = +existingValue.toFixed(3) || 0;
+      existingValue = +existingValue.toFixed(2) || 0;
       if (accountBal) {
         liveAccPercentage = (existingValue * 100) / accountBal;
-        liveAccPercentage = +liveAccPercentage.toFixed(3) || 0;
+        liveAccPercentage = +liveAccPercentage.toFixed(2) || 0;
       }
     }
 
@@ -340,9 +310,9 @@ export default function ContentManagement() {
       let liveAccPercentage = 0;
       if (+value && accountBal && midPrice) {
         existingValue = (+value * accountBal) / 100;
-        existingValue = +existingValue.toFixed(3);
+        existingValue = +existingValue.toFixed(2);
         shares = existingValue / midPrice;
-        shares = +shares.toFixed(3);
+        shares = +shares.toFixed(2);
         liveAccPercentage = +value;
       }
       if (inputType == "input") {
@@ -569,19 +539,19 @@ export default function ContentManagement() {
                       <li>
                         Live Account Values
                         <span className="digit">
-                          {portfolioSummary?.["availablefunds-s"]?.amount || 0}
+                          {portfolioSummary?.["availablefunds-s"]?.amount?.toFixed(2) || 0}
                         </span>
                       </li>
                       <li>
                         Cash Buying Power
                         <span className="digit">
-                          {portfolioSummary?.["buyingpower"]?.amount || 0}
+                          {portfolioSummary?.["buyingpower"]?.amount?.toFixed(2) || 0}
                         </span>
                       </li>
                       <li>
                         Margin Buying Power
                         <span className="digit">
-                          {portfolioSummary?.["fullinitmarginreq-s"]?.amount.toFixed(3) || 0}
+                          {portfolioSummary?.["fullinitmarginreq-s"]?.amount?.toFixed(2) || 0}
                         </span>
                       </li>
                       <li>
@@ -591,7 +561,7 @@ export default function ContentManagement() {
                       <li>
                         Day Trade Excess
                         <span className="digit">
-                          {portfolioSummary?.["excessliquidity-s"]?.amount || 0}
+                          {portfolioSummary?.["excessliquidity-s"]?.amount?.toFixed(2) || 0}
                         </span>
                       </li>
                       <li>
@@ -891,7 +861,6 @@ export default function ContentManagement() {
                                                 onChange={handleOrderTypeChange}
                                                 className="form-select"
                                               >
-                                                <option value="">Select</option>
                                                 <option value="LMT">LMT</option>
                                                 <option value="MKT">MKT</option>
                                                 <option value="STP">STP</option>

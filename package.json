@@ -121,6 +121,7 @@
     "react-validation": "^3.0.7",
     "react-vertical-timeline-component": "^3.5.2",
     "react-visibility-sensor": "^5.1.1",
+    "react-websocket": "^2.1.0",
     "react-widgets": "^5.5.1",
     "react-widgets-globalize": "^6.0.0-beta.9",
     "react-widgets-moment": "^5.0.11",

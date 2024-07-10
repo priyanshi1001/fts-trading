@@ -25,6 +25,7 @@ import { useDispatch, useSelector } from "react-redux";
 import SearchIcon from "@mui/icons-material/Search";
 import { Route, useHistory, Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import Websocket from 'react-websocket';
 import { socket } from "../../../api/socket"
 import { } from "../../../api/ApiCall"
 socket.connect();
@@ -47,12 +48,19 @@ export default function RealTimeStock() {
     });
 
     socket.emit("message", {
-      message:"Hello socket"
-    }, "localhost")
+      message: "Hello socket"
+    })
 
-    socket.on("send_message", (data)=>{
+    socket.on("send_message", (data) => {
       console.log("send_message socket on:", data)
     })
+
+    socket.emit(`smh+265598+{
+        "period": "1d",
+        "bar": "1hour", 
+        "source": "trades", 
+        "format": "%o/%c/%h/%l"
+    }`);
 
     socket.on(`smh+265598+{
         "period": "1d",
@@ -65,6 +73,10 @@ export default function RealTimeStock() {
 
     setIsLoading(false);
   }, []);
+
+  function handleSocket(data) {
+    console.log("handleSocket data:", data)
+  }
 
   return (
     <Card>
