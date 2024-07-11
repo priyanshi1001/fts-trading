@@ -185,6 +185,28 @@ export const fetchIBStockList = (payload) => {
     });
 }
 
+export const saveOrderResponseApi = (payload) => {
+    return new Promise((resolve, reject) => {
+
+        let config = {
+            method: 'post',
+            url: `${NodeServBaseUrl}/order-place`,
+            headers: {
+                'Accept': 'application/json'
+            },
+            data: payload
+        };
+
+        axios.request(config)
+            .then((response) => {
+                resolve(response?.data || {});
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+}
+
 export const fetchIBContractInfo = (conid) => {
     return new Promise((resolve, reject) => {
         let config = {
@@ -225,7 +247,7 @@ export const fetchIBOpenOders = (filters) => {
     });
 }
 
-export const fetchIBSnapshotApi = (conids, fields) => { 
+export const fetchIBSnapshotApi = (conids, fields) => {
     return new Promise((resolve, reject) => {
         let config = {
             method: 'get',
@@ -245,7 +267,7 @@ export const fetchIBSnapshotApi = (conids, fields) => {
     });
 }
 
-export const fetchIBPnlApi = (conids, fields) => { 
+export const fetchIBPnlApi = (conids, fields) => {
     return new Promise((resolve, reject) => {
         let config = {
             method: 'get',

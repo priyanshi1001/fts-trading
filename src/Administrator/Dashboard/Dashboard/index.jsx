@@ -33,7 +33,8 @@ import {
   fetchIBOpenOders,
   orderConfirmApi,
   fetchIBSnapshotApi,
-  fetchIBPnlApi
+  fetchIBPnlApi,
+  saveOrderResponseApi
 } from "../../../api/ApiCall";
 
 export default function ContentManagement() {
@@ -426,7 +427,7 @@ export default function ContentManagement() {
       return 0;
     }
     setPlaceOrderBtt(false);
-    orderPlaceApi(accId, {
+    let orderPayload = {
       orders: [
         {
           acctId: accId,
@@ -454,18 +455,29 @@ export default function ContentManagement() {
           },
         },
       ],
-    })
+    };
+    let orderStoreObj = {
+      accountId: accId,
+      price: +formData?.limitPrice || snapshot.mid || 0,
+      ...formData,
+      ...contractInfo,
+      ...snapshot
+    }
+    orderPlaceApi(accId, orderPayload)
       .then((response) => {
-        let orderId = response?.[0]?.id || "";
-        let order_id = response?.[0]?.order_id || "";
-        let order_status = response?.[0]?.order_status || "";
+        let result = response?.[0] || {};
+        let orderId = result?.id || "";
+        let order_id = result?.order_id || "";
+        let order_status = result?.order_status || "";
 
         if (orderId) {
           orderConfirmApi(orderId, {
             confirmed: true,
           })
             .then((response2) => {
-              orderSuccessPlaceMsg();
+              let result2 = response2?.[0] || {};
+              orderStoreObj = { ...orderStoreObj, ...result2 };
+              orderSuccessPlaceMsg(orderStoreObj);
               setPlaceOrderBtt(true);
             })
             .catch((err) => {
@@ -473,7 +485,8 @@ export default function ContentManagement() {
               setPlaceOrderBtt(true);
             });
         } else if (order_status && order_id) {
-          orderSuccessPlaceMsg();
+          orderStoreObj = { ...orderStoreObj, ...result };
+          orderSuccessPlaceMsg(orderStoreObj);
           setPlaceOrderBtt(true);
         } else {
           toast.error("Something went wrong. please try again");
@@ -488,13 +501,21 @@ export default function ContentManagement() {
       });
   }
 
-  function orderSuccessPlaceMsg() {
+  function orderSuccessPlaceMsg(orderObj) {
     let accId = accountDetail?.selectedAccount || "";
     if (accId) fetchPortfolioSummaryFun(accId);
     fetchIBOpenOdersFun();
-    // setFormData({});
-    setOpen1(false);
-    toast.success("Order successfully placed.");
+    saveOrderResponseApi(orderObj).then((response) => {
+      console.log("Save Order Response:", response);
+      // setFormData({});
+      setOpen1(false);
+      toast.success("Order successfully placed.");
+    }).catch((err) => {
+      console.log("Save Order Api Error:", err.message);
+      // setFormData({});
+      setOpen1(false);
+      toast.success("Order successfully placed.");
+    })
   }
 
   return (
@@ -1454,7 +1475,7 @@ export default function ContentManagement() {
                                 {row?.price || row?.avgPrice} ({row?.cashCcy})
                               </TableCell>
                               <TableCell className="table_content tableRow1">
-                                {row?.status}
+                                {row?.order_ccp_status || row?.status}
                               </TableCell>
                               <TableCell className="table_content tableRow1">
                                 <Button>Delete</Button>

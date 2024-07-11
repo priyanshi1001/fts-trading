@@ -146,7 +146,7 @@ export default function Stocks() {
                                   {row?.price || row?.avgPrice} ({row?.cashCcy})
                                 </TableCell>
                                 <TableCell className="table_content tableRow1">
-                                  {row?.status}
+                                  {row?.order_ccp_status || row?.status}
                                 </TableCell>
                                 <TableCell className="table_content tableRow1">
                                   <Button>Delete</Button>
