@@ -251,7 +251,7 @@ export const fetchIBSnapshotApi = (conids, fields) => {
     return new Promise((resolve, reject) => {
         let config = {
             method: 'get',
-            url: `${IBBaseUrl}/api/md/snapshot?conids=${conids}&fields=${fields}`,
+            url: `${IBBaseUrl}/api/iserver/marketdata/snapshot?conids=${conids}&since=${Date.now()}&fields=${fields}`,
             headers: {
                 "Accept": 'application/json',
             }
@@ -272,6 +272,26 @@ export const fetchIBPnlApi = (conids, fields) => {
         let config = {
             method: 'get',
             url: `${IBBaseUrl}/api/iserver/account/pnl/partitioned`,
+            headers: {
+                "Accept": 'application/json',
+            }
+        };
+
+        axios.request(config)
+            .then((response) => {
+                resolve(response?.data || []);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+}
+
+export const fetchPortfolioPositionApi = (accountId) => {
+    return new Promise((resolve, reject) => {
+        let config = {
+            method: 'get',
+            url: `${IBBaseUrl}/api/portfolio/${accountId}/positions/`,
             headers: {
                 "Accept": 'application/json',
             }

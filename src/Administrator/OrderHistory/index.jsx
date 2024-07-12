@@ -25,7 +25,8 @@ export default function Stocks() {
   const [openOrderList, setOpenOrderList] = useState([]);
 
   useEffect(() => {
-    fetchIBOpenOders(`?Filters=submitted,filled`).then((response) => {
+    // ?Filters=submitted,filled
+    fetchIBOpenOders(``).then((response) => {
       setOpenOrderList(response?.orders || []);
     }).catch((err) => {
       console.log("Fetch Open Orders:", err);

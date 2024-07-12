@@ -34,7 +34,8 @@ import {
   orderConfirmApi,
   fetchIBSnapshotApi,
   fetchIBPnlApi,
-  saveOrderResponseApi
+  saveOrderResponseApi,
+  fetchPortfolioPositionApi
 } from "../../../api/ApiCall";
 
 export default function ContentManagement() {
@@ -79,7 +80,6 @@ export default function ContentManagement() {
     });
 
     const conid = searchParams.conid || "";
-    const symbol = searchParams.symbol || "";
     fetchIBContractInfo(conid)
       .then((response) => {
         setContractInfo(response || null);
@@ -92,7 +92,8 @@ export default function ContentManagement() {
       setPnlInfo(response || null);
     }).catch((err) => {
       console.log("Pnl Info Error:", err);
-    })
+    });
+
   }, []);
 
   function fetchIBSnapshotFun(data) {
@@ -103,13 +104,13 @@ export default function ContentManagement() {
     }
     fetchIBSnapshotApi(conid, "31,84,86")
       .then((response) => {
-        if (response.length == 0) {
+        if (!(+response?.[0]?.[84]) || !(+response?.[0]?.[86])) {
           fetchIBSnapshotFun(data);
           return 0;
         }
-        let bid = +response?.[0]?.[84] || 1010.3;
-        let ask = +response?.[0]?.[86] || 1010.3;
-        let lastPrice = +response?.[0]?.[31] || 1010.3;
+        let bid = +response?.[0]?.[84] || 0;
+        let ask = +response?.[0]?.[86] || 0;
+        let lastPrice = +response?.[0]?.[31] || 0;
         let mid = (bid + ask) / 2;
         mid = +mid.toFixed(2) || 0;
         setSnapshot({
@@ -156,7 +157,10 @@ export default function ContentManagement() {
       fetchIBAccountDetail()
         .then((response) => {
           let accId = response?.selectedAccount || "";
-          if (accId) fetchPortfolioSummaryFun(accId, resolve, reject);
+          if (accId) {
+            fetchPortfolioSummaryFun(accId, resolve, reject);
+            fetchPortfolioPositionFun(accId);
+          }
           setAccountDetail(response || null);
         })
         .catch((err) => {
@@ -169,6 +173,14 @@ export default function ContentManagement() {
           );
           reject();
         });
+    });
+  }
+
+  function fetchPortfolioPositionFun(accId) {
+    fetchPortfolioPositionApi(accId).then((response) => {
+      setExistingOrder(response || []);
+    }).catch((err) => {
+      console.log("Portfolio Position Error:", err.message);
     });
   }
 
@@ -471,19 +483,18 @@ export default function ContentManagement() {
         let order_status = result?.order_status || "";
 
         if (orderId) {
-          orderConfirmApi(orderId, {
-            confirmed: true,
-          })
-            .then((response2) => {
-              let result2 = response2?.[0] || {};
-              orderStoreObj = { ...orderStoreObj, ...result2 };
-              orderSuccessPlaceMsg(orderStoreObj);
-              setPlaceOrderBtt(true);
-            })
-            .catch((err) => {
-              toast.error("Something went wrong. please try again.");
-              setPlaceOrderBtt(true);
-            });
+          orderConfirmationFun(orderId, {
+            confirmed: true
+          }).then((response2) => {
+            let result2 = response2?.[0] || {};
+            orderStoreObj = { ...orderStoreObj, ...result2 };
+            orderSuccessPlaceMsg(orderStoreObj);
+            setPlaceOrderBtt(true);
+          }).catch((err) => {
+            console.log("Order Confirmation Error:", err.message);
+            toast.error("Something went wrong. please try again.");
+            setPlaceOrderBtt(true);
+          });
         } else if (order_status && order_id) {
           orderStoreObj = { ...orderStoreObj, ...result };
           orderSuccessPlaceMsg(orderStoreObj);
@@ -501,9 +512,24 @@ export default function ContentManagement() {
       });
   }
 
+  function orderConfirmationFun(orderId, payload) {
+    return new Promise((resolve, reject) => {
+      orderConfirmApi(orderId, payload).then((response) => {
+        let result = response?.[0] || {};
+        if (result?.order_id && result?.order_status) resolve(response);
+        else orderConfirmationFun(orderId, payload);
+      }).catch((err) => {
+        reject(err);
+      });
+    });
+  }
+
   function orderSuccessPlaceMsg(orderObj) {
     let accId = accountDetail?.selectedAccount || "";
-    if (accId) fetchPortfolioSummaryFun(accId);
+    if (accId) {
+      fetchPortfolioSummaryFun(accId);
+      fetchPortfolioPositionFun(accId);
+    }
     fetchIBOpenOdersFun();
     saveOrderResponseApi(orderObj).then((response) => {
       console.log("Save Order Response:", response);
@@ -575,10 +601,10 @@ export default function ContentManagement() {
                           {portfolioSummary?.["fullinitmarginreq-s"]?.amount?.toFixed(2) || 0}
                         </span>
                       </li>
-                      <li>
+                      {/* <li>
                         Day Trading buying Power
                         <span className="digit">{0}</span>
-                      </li>
+                      </li> */}
                       <li>
                         Day Trade Excess
                         <span className="digit">
@@ -590,8 +616,8 @@ export default function ContentManagement() {
                         <span className="digit text-success">{pnlInfo?.["upnl"]?.[`${accountDetail?.selectedAccount}.Core`]?.["dpl"] || 0}</span>
                       </li>
                       <li>
-                        YTD Trading Gain
-                        <span className="digit text-success">25,625</span>
+                        Unrealized PnL
+                        <span className="digit text-success">{pnlInfo?.["upnl"]?.[`${accountDetail?.selectedAccount}.Core`]?.["upl"] || 0}</span>
                       </li>
                     </ul>
                   </CardContent>
@@ -1250,7 +1276,7 @@ export default function ContentManagement() {
                           Existing Position{" "}
                         </Typography>
                       </Grid>
-                      <Grid item xs={"auto"}>
+                      {/* <Grid item xs={"auto"}>
                         <Box className="btn-box d-flex align-items-center justify-content-end gap-3">
                           <button className="btn btn-sm btn-outline-lightBlue">
                             Today’s UR NetGn/Ls - 900
@@ -1278,7 +1304,7 @@ export default function ContentManagement() {
                             </svg>
                           </button>
                         </Box>
-                      </Grid>
+                      </Grid> */}
                     </Grid>
                   </Box>
                   <TableContainer className="tableDesignFrame">
@@ -1292,31 +1318,71 @@ export default function ContentManagement() {
                             align="left"
                             className="table_head tableRow1"
                           >
-                            Name
+                            Type
                           </TableCell>
-
                           <TableCell
                             align="left"
                             className="table_head tableRow1"
                           >
-                            Translations
+                            Symbol
                           </TableCell>
-
                           <TableCell
-                            align="right"
+                            align="left"
                             className="table_head tableRow1"
                           >
-                            Action
+                            Contract id
+                          </TableCell>
+                          <TableCell
+                            align="left"
+                            className="table_head tableRow1"
+                          >
+                            Position
+                          </TableCell>
+                          <TableCell
+                            align="left"
+                            className="table_head tableRow1"
+                          >
+                            Currency
+                          </TableCell>
+                          <TableCell
+                            align="left"
+                            className="table_head tableRow1"
+                          >
+                            Market Price
+                          </TableCell>
+                          <TableCell
+                            align="left"
+                            className="table_head tableRow1"
+                          >
+                            Market Value
+                          </TableCell>
+                          <TableCell
+                            align="left"
+                            className="table_head tableRow1"
+                          >
+                            Avg Cost
+                          </TableCell>
+                          <TableCell
+                            align="left"
+                            className="table_head tableRow1"
+                          >
+                            Avg Price
+                          </TableCell>
+                          <TableCell
+                            align="left"
+                            className="table_head tableRow1"
+                          >
+                            uPnL
                           </TableCell>
                         </TableRow>
                       </TableHead>
                       {existingOrder ? (
                         <TableBody>
-                          {existingOrder.map((row) => (
+                          {existingOrder.map((row, ind) => (
                             <TableRow
                               align="left"
                               className="tableRow1"
-                              key={row.name}
+                              key={ind}
                               sx={{
                                 "&:last-child td, &:last-child th": {
                                   border: 0,
@@ -1324,24 +1390,34 @@ export default function ContentManagement() {
                               }}
                             >
                               <TableCell className="table_content tableRow1">
-                                {row.name}
+                                {row.assetClass}
                               </TableCell>
-                              <TableCell
-                                className="table_content tableRow1"
-                                align="right"
-                              >
-                                {row.action}
-                                <div className="actionRow">
-                                  <EditIcon
-                                    style={{
-                                      color: "green",
-                                      fontSize: "20px",
-                                    }}
-                                    onClick={() => {
-                                      history.push(`/content_edits/${row.id}`);
-                                    }}
-                                  />
-                                </div>
+                              <TableCell className="table_content tableRow1">
+                                {row.contractDesc}
+                              </TableCell>
+                              <TableCell className="table_content tableRow1">
+                                {row.conid}
+                              </TableCell>
+                              <TableCell className="table_content tableRow1">
+                                {row.position}
+                              </TableCell>
+                              <TableCell className="table_content tableRow1">
+                                {row.currency}
+                              </TableCell>
+                              <TableCell className="table_content tableRow1">
+                                {row?.mktPrice?.toFixed(2)}
+                              </TableCell>
+                              <TableCell className="table_content tableRow1">
+                                {row?.mktValue?.toFixed(2)}
+                              </TableCell>
+                              <TableCell className="table_content tableRow1">
+                                {row?.avgCost?.toFixed(2)}
+                              </TableCell>
+                              <TableCell className="table_content tableRow1">
+                                {row?.avgPrice?.toFixed(2)}
+                              </TableCell>
+                              <TableCell className="table_content tableRow1">
+                                {row?.unrealizedPnl?.toFixed(2)}
                               </TableCell>
                             </TableRow>
                           ))}
@@ -1362,7 +1438,7 @@ export default function ContentManagement() {
                           Open Order
                         </Typography>
                       </Grid>
-                      <Grid item xs={"auto"}>
+                      {/* <Grid item xs={"auto"}>
                         <Box className="btn-box d-flex align-items-center justify-content-end gap-3">
                           <button className="btn btn-sm btn-blue">
                             Preview
@@ -1381,7 +1457,7 @@ export default function ContentManagement() {
                             </svg>
                           </button>
                         </Box>
-                      </Grid>
+                      </Grid> */}
                     </Grid>
                   </Box>
                   <TableContainer className="tableDesignFrame">
