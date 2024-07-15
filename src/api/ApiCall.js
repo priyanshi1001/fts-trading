@@ -163,6 +163,27 @@ export const fetchIBPortfolioSummary = (id) => {
     });
 }
 
+export const fetchOrderReportApi = (query) => {
+    return new Promise((resolve, reject) => {
+
+        let config = {
+            method: 'get',
+            url: `${NodeServBaseUrl}/order-reports${query}`,
+            headers: {
+                'Accept': 'application/json'
+            }
+        };
+
+        axios.request(config)
+            .then((response) => {
+                resolve(response?.data || []);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+}
+
 export const fetchIBStockList = (payload) => {
     return new Promise((resolve, reject) => {
 
