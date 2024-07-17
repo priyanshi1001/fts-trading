@@ -140,30 +140,30 @@ export default function Reports() {
                             >
                               “A” Time lag from FTS to Broker
                             </TableCell>
-                            {/* <TableCell
-                              align="right"
-                              className="table_head tableRow1"
-                            >
-                              “B” Time lag from FTS to Broker to Xchange
-                            </TableCell> */}
                             <TableCell
                               align="right"
                               className="table_head tableRow1"
                             >
                               Order Execution noted on Broker Platform (Not controllable)
                             </TableCell>
-                            {/* <TableCell
+                            <TableCell
                               align="right"
                               className="table_head tableRow1"
                             >
-                              “C” Time lag from FTS to Broker
+                              “B” Time lag from FTS return response
                             </TableCell>
                             <TableCell
                               align="right"
                               className="table_head tableRow1"
                             >
-                              “Controllable” from FTS to FTS A+B+C
-                            </TableCell> */}
+                              Time lag from FTS return response
+                            </TableCell>
+                            <TableCell
+                              align="right"
+                              className="table_head tableRow1"
+                            >
+                              “Controllable” from FTS to FTS A+B
+                            </TableCell>
                           </TableRow>
                         </TableHead>
 
@@ -195,23 +195,23 @@ export default function Reports() {
                                     {row?.order_id}
                                   </TableCell>
                                   <TableCell className="table_content tableRow1">
-                                    {moment(row?.createdAt).format("hh:mm:ss:ms")}
+                                    {moment(row?.startDate).format("hh:mm:ss:ms")}
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    {getTimeDuration(row?.startDate, row?.order_lastExecutionTime)} Sec
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    {moment(row?.order_lastExecutionTime).format("hh:mm:ss:ms")}
                                   </TableCell>
                                   <TableCell className="table_content tableRow1">
                                     {getTimeDuration(row?.order_lastExecutionTime, row?.createdAt)} Sec
                                   </TableCell>
-                                  {/* <TableCell className="table_content tableRow1">
-                                    {}
-                                  </TableCell> */}
                                   <TableCell className="table_content tableRow1">
-                                    {moment(row?.order_lastExecutionTime).format("hh:mm:ss:ms")}
-                                  </TableCell>
-                                  {/* <TableCell className="table_content tableRow1">
-                                    {}
+                                    {moment(row?.createdAt).format("hh:mm:ss:ms")}
                                   </TableCell>
                                   <TableCell className="table_content tableRow1">
-                                    {}
-                                  </TableCell> */}
+                                    {getTimeDurationSum(row?.startDate, row?.order_lastExecutionTime, row?.createdAt)}
+                                  </TableCell>
                                 </TableRow>
                               ))}
                             </TableBody>
@@ -249,5 +249,18 @@ function getTimeDuration(startDate, endDate) {
   let end = moment(endDate);
   let diff = end.diff(start);
   let diffInSec = diff / 1000;
+  return diffInSec.toFixed(2);
+}
+
+function getTimeDurationSum(startDate, midDate, endDate) {
+  let start = moment(startDate);
+  let end = moment(midDate);
+  let diff = end.diff(start);
+
+  let start2 = moment(midDate);
+  let end2 = moment(endDate);
+  let diff2 = end2.diff(start2);
+
+  let diffInSec = (diff2 + diff) / 1000;
   return diffInSec.toFixed(2);
 }

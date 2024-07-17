@@ -9,8 +9,8 @@ import axios from "axios";
 // const alpacaPaperAccPassword = "ps1vadEfOzLnZWyrRFR7lLZK2zfapmAluMAKUvIg";
 
 const IBAccountId = "DU9313757";
-const IBBaseUrl = `http://122.176.139.248:8098/v1`; // http://122.176.139.248:8098/v1 http://localhost/v1
-const NodeServBaseUrl = `http://localhost:4545`; // http://122.176.139.248:9011 http://localhost:4545
+const IBBaseUrl = `http://localhost/v1`; // http://122.176.139.248:8098/v1 http://localhost/v1
+const NodeServBaseUrl = `https://a691-103-71-77-123.ngrok-free.app`; // http://122.176.139.248:9011 http://localhost:4545
 
 // export const fetchAssetsList = () => {
 //     return new Promise((resolve, reject) => {

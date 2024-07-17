@@ -33,7 +33,7 @@ const AppMain = () => {
     if (localStorage.getItem("accessToken") && localStorage.getItem("accessToken") !== "") {
       return true;
     }
-    else return false;
+    else return true;
   }
   return (
 

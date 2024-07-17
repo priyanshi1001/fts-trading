@@ -28,7 +28,10 @@ import { toast } from "react-toastify";
 import Websocket from 'react-websocket';
 import { socket } from "../../../api/socket"
 import { } from "../../../api/ApiCall"
-socket.connect();
+import useWebSocket, { ReadyState } from 'react-use-websocket';
+// import WebSocket from 'ws';
+// const ws = new WebSocket('wss://localhost:5000/v1/api/ws');
+// socket.connect();
 
 export default function RealTimeStock() {
   const dispatch = useDispatch();
@@ -36,47 +39,93 @@ export default function RealTimeStock() {
   const { conid } = useParams();
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { sendMessage, lastMessage, readyState } = useWebSocket(`wss://localhost:5000/v1/api/ws`,{
+    rejectUnauthorized: false
+  });
+
 
   useEffect(() => {
     console.log("RealTimeStock conid============", conid);
 
-    socket.on("connect", () => {
-      console.log("IB socket connect successfully.");
-    })
-    socket.on("disconnect", () => {
-      console.log("IB socket disconnected.");
-    });
+    // ws.on('error', console.error);
 
-    socket.emit("message", {
-      message: "Hello socket"
-    })
+    // ws.on('open', function open() {
+    //   ws.send(`smh+265598+{
+    //       "period": "1d",
+    //       "bar": "1hour", 
+    //       "source": "trades", 
+    //       "format": "%o/%c/%h/%l"
+    //   }`);
+    // });
 
-    socket.on("send_message", (data) => {
-      console.log("send_message socket on:", data)
-    })
+    // ws.on('message', function message(data) {
+    //   console.log('received: %s', data);
+    // });
 
-    socket.emit(`smh+265598+{
-        "period": "1d",
-        "bar": "1hour", 
-        "source": "trades", 
-        "format": "%o/%c/%h/%l"
-    }`);
+    if (lastMessage) {
+      console.log("socket lastMessage================", lastMessage.data);
+    //   sendMessage(`smh+265598+{
+    //     "period": "1d",
+    //     "bar": "1hour", 
+    //     "source": "trades", 
+    //     "format": "%o/%c/%h/%l"
+    // }`);
+    }
 
-    socket.on(`smh+265598+{
-        "period": "1d",
-        "bar": "1hour", 
-        "source": "trades", 
-        "format": "%o/%c/%h/%l"
-    }`, (data) => {
-      console.log("socket.emit data===============", data)
-    });
+
+
+    //   sendMessage(`smh+265598+{
+    //     "period": "1d",
+    //     "bar": "1hour", 
+    //     "source": "trades", 
+    //     "format": "%o/%c/%h/%l"
+    // }`);
+
+    // socket.on("connect", () => {
+    //   console.log("IB socket connect successfully.");
+    // })
+    // socket.on("disconnect", () => {
+    //   console.log("IB socket disconnected.");
+    // });
+
+    // socket.emit("message", {
+    //   message: "Hello socket"
+    // })
+
+    // socket.on("send_message", (data) => {
+    //   console.log("send_message socket on:", data)
+    // })
+
+    // socket.emit(`smh+265598+{
+    //     "period": "1d",
+    //     "bar": "1hour", 
+    //     "source": "trades", 
+    //     "format": "%o/%c/%h/%l"
+    // }`);
+
+    // socket.on(`smh+265598+{
+    //     "period": "1d",
+    //     "bar": "1hour", 
+    //     "source": "trades", 
+    //     "format": "%o/%c/%h/%l"
+    // }`, (data) => {
+    //   console.log("socket.emit data===============", data)
+    // });
 
     setIsLoading(false);
-  }, []);
+  }, [lastMessage]);
 
-  function handleSocket(data) {
-    console.log("handleSocket data:", data)
-  }
+  // useEffect(() => {
+    
+  // }, []);
+
+  const connectionStatus = {
+    [ReadyState.CONNECTING]: 'Connecting',
+    [ReadyState.OPEN]: 'Open',
+    [ReadyState.CLOSING]: 'Closing',
+    [ReadyState.CLOSED]: 'Closed',
+    [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
+  }[readyState];
 
   return (
     <Card>

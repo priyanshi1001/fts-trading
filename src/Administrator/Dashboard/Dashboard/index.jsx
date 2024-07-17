@@ -471,6 +471,7 @@ export default function ContentManagement() {
     let orderStoreObj = {
       accountId: accId,
       price: +formData?.limitPrice || snapshot.mid || 0,
+      startDate: new Date(),
       ...formData,
       ...contractInfo,
       ...snapshot
