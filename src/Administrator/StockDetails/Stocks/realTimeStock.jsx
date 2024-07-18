@@ -3,13 +3,10 @@ import {
   Typography,
   Card,
   Grid,
-  Breadcrumbs,
   Box,
-  Button,
-  TextField,
-  InputAdornment,
 } from "@mui/material";
 import { Fragment } from "react";
+import moment from "moment";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -25,13 +22,9 @@ import { useDispatch, useSelector } from "react-redux";
 import SearchIcon from "@mui/icons-material/Search";
 import { Route, useHistory, Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import Websocket from 'react-websocket';
 import { socket } from "../../../api/socket"
 import { } from "../../../api/ApiCall"
-import useWebSocket, { ReadyState } from 'react-use-websocket';
-// import WebSocket from 'ws';
-// const ws = new WebSocket('wss://localhost:5000/v1/api/ws');
-// socket.connect();
+socket.connect();
 
 export default function RealTimeStock() {
   const dispatch = useDispatch();
@@ -39,93 +32,26 @@ export default function RealTimeStock() {
   const { conid } = useParams();
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { sendMessage, lastMessage, readyState } = useWebSocket(`wss://localhost:5000/v1/api/ws`,{
-    rejectUnauthorized: false
-  });
-
 
   useEffect(() => {
     console.log("RealTimeStock conid============", conid);
 
-    // ws.on('error', console.error);
+    socket.on("connect", () => {
+      console.log("Node socket connect successfully.");
+    })
+    socket.on("disconnect", () => {
+      console.log("Node socket disconnected.");
+    });
 
-    // ws.on('open', function open() {
-    //   ws.send(`smh+265598+{
-    //       "period": "1d",
-    //       "bar": "1hour", 
-    //       "source": "trades", 
-    //       "format": "%o/%c/%h/%l"
-    //   }`);
-    // });
+    socket.on("ib_message", (data) => {
+      console.log("ib_message:", JSON.parse(data));
+    });
+    const fields = ["31", "84", "86"];
 
-    // ws.on('message', function message(data) {
-    //   console.log('received: %s', data);
-    // });
-
-    if (lastMessage) {
-      console.log("socket lastMessage================", lastMessage.data);
-    //   sendMessage(`smh+265598+{
-    //     "period": "1d",
-    //     "bar": "1hour", 
-    //     "source": "trades", 
-    //     "format": "%o/%c/%h/%l"
-    // }`);
-    }
-
-
-
-    //   sendMessage(`smh+265598+{
-    //     "period": "1d",
-    //     "bar": "1hour", 
-    //     "source": "trades", 
-    //     "format": "%o/%c/%h/%l"
-    // }`);
-
-    // socket.on("connect", () => {
-    //   console.log("IB socket connect successfully.");
-    // })
-    // socket.on("disconnect", () => {
-    //   console.log("IB socket disconnected.");
-    // });
-
-    // socket.emit("message", {
-    //   message: "Hello socket"
-    // })
-
-    // socket.on("send_message", (data) => {
-    //   console.log("send_message socket on:", data)
-    // })
-
-    // socket.emit(`smh+265598+{
-    //     "period": "1d",
-    //     "bar": "1hour", 
-    //     "source": "trades", 
-    //     "format": "%o/%c/%h/%l"
-    // }`);
-
-    // socket.on(`smh+265598+{
-    //     "period": "1d",
-    //     "bar": "1hour", 
-    //     "source": "trades", 
-    //     "format": "%o/%c/%h/%l"
-    // }`, (data) => {
-    //   console.log("socket.emit data===============", data)
-    // });
+    socket.emit("req_data", `smd+${conid}+${JSON.stringify({ fields: fields })}`);
 
     setIsLoading(false);
-  }, [lastMessage]);
-
-  // useEffect(() => {
-    
-  // }, []);
-
-  const connectionStatus = {
-    [ReadyState.CONNECTING]: 'Connecting',
-    [ReadyState.OPEN]: 'Open',
-    [ReadyState.CLOSING]: 'Closing',
-    [ReadyState.CLOSED]: 'Closed',
-    [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
-  }[readyState];
+  }, []);
 
   return (
     <Card>
@@ -229,24 +155,21 @@ export default function RealTimeStock() {
 
                         {isLoading ?
                           <div className="notDataDiv">Please wait...</div>
-                          : data?.products?.length ? (
+                          : data ? (
                             <TableBody>
-                              {data.products.map((row, ind) => (
-                                <TableRow
-                                  align="left"
-                                  className="tableRow1"
-                                  key={ind}
-                                  sx={{
-                                    "&:last-child td, &:last-child th": {
-                                      border: 0,
-                                    },
-                                  }}
-                                >
-                                  {/* <TableCell className="table_content tableRow1">
-                                    {row.symbol}
-                                  </TableCell> */}
-                                </TableRow>
-                              ))}
+                              <TableRow
+                                align="left"
+                                className="tableRow1"
+                                sx={{
+                                  "&:last-child td, &:last-child th": {
+                                    border: 0,
+                                  },
+                                }}
+                              >
+                                <TableCell className="table_content tableRow1">
+                                  {""}
+                                </TableCell>
+                              </TableRow>
                             </TableBody>
                           ) : (
                             <div className="notDataDiv">No Data Available</div>

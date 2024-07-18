@@ -26,6 +26,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Route, useHistory, Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { socket } from "../../../api/socket"
+socket.connect();
 
 export default function RealTimeStock() {
   const dispatch = useDispatch();
@@ -33,6 +34,32 @@ export default function RealTimeStock() {
   const { conid } = useParams();
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    console.log("RealTimeStock conid============", conid);
+
+    socket.on("connect", () => {
+      console.log("Node socket connect successfully.");
+    })
+    socket.on("disconnect", () => {
+      console.log("Node socket disconnected.");
+    });
+
+    socket.on("ib_message", (data) => {
+      console.log("ib_message:", JSON.parse(data));
+    });
+
+    let obj = {
+      "period": "1d",
+      "bar": "1hour",
+      "source": "trades",
+      "format": "%o/%c/%h/%l"
+    };
+
+    socket.emit("req_data", `smh+${conid}+${JSON.stringify(obj)}`);
+
+    setIsLoading(false);
+  }, []);
 
   return (
     <Card>
