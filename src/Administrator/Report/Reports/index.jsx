@@ -11,14 +11,13 @@ import {
   TableHead,
   TableCell,
   TableRow,
-  TableBody
+  TableBody,
 } from "@mui/material";
 import ThemeOptions from "../../../Layout/ThemeOptions/";
 import { Fragment } from "react";
 import { toast } from "react-toastify";
 import AppSidebar from "../../../Layout/AppSidebar/";
-import { fetchOrderReportApi } from "../../../api/ApiCall"
-
+import { fetchOrderReportApi } from "../../../api/ApiCall";
 
 export default function Reports() {
   const history = useHistory();
@@ -36,16 +35,18 @@ export default function Reports() {
       else query += `?endDate=${filter.endDate}`;
     }
 
-    fetchOrderReportApi(query).then((response) => {
-      if (response?.status) {
-        setReportList(response?.data || []);
-      }
-      setIsLoading(false);
-    }).catch((err) => {
-      console.log("Order Report Error:", err.message);
-      toast.error("Server not responsded.");
-      setIsLoading(false);
-    });
+    fetchOrderReportApi(query)
+      .then((response) => {
+        if (response?.status) {
+          setReportList(response?.data || []);
+        }
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log("Order Report Error:", err.message);
+        toast.error("Server not responsded.");
+        setIsLoading(false);
+      });
   }, [filter]);
 
   return (
@@ -73,24 +74,76 @@ export default function Reports() {
                         </Grid>
                         <Grid item xs={"auto"}>
                           <Box className="btn-box d-flex align-items-center justify-content-end gap-3">
-                            <div>
-                              <label>From:</label>
+                            <div className="border border-secondary-subtle px-2 py-1 rounded-2 d-flex align-items-center gap-1">
+                              <label
+                                htmlFor="startDate"
+                                className="d-flex align-items-center gap-1"
+                              >
+                                <svg
+                                  width="14"
+                                  height="14"
+                                  viewBox="0 0 14 14"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M5.00004 0.166504V1.49984H9.00004V0.166504H10.3334V1.49984H13C13.3682 1.49984 13.6667 1.79832 13.6667 2.1665V12.8332C13.6667 13.2014 13.3682 13.4998 13 13.4998H1.00004C0.631854 13.4998 0.333374 13.2014 0.333374 12.8332V2.1665C0.333374 1.79832 0.631854 1.49984 1.00004 1.49984H3.66671V0.166504H5.00004ZM12.3334 6.83317H1.66671V12.1665H12.3334V6.83317ZM3.66671 2.83317H1.66671V5.49984H12.3334V2.83317H10.3334V4.1665H9.00004V2.83317H5.00004V4.1665H3.66671V2.83317Z"
+                                    fill="#53545C"
+                                  />
+                                </svg>
+                                From :
+                              </label>
                               <input
+                                style={{
+                                  appearance: "none",
+                                  border: "none",
+                                }}
                                 type="date"
                                 id="startDate"
                                 name="startDate"
                                 value={filter?.startDate || ""}
-                                onChange={(e) => setFilter({ ...filter, startDate: e.target.value })}
+                                onChange={(e) =>
+                                  setFilter({
+                                    ...filter,
+                                    startDate: e.target.value,
+                                  })
+                                }
                               />
                             </div>
-                            <div>
-                              <label>To:</label>
+                            <div className="border border-secondary-subtle px-2 py-1 rounded-2 d-flex align-items-center gap-1">
+                              <label
+                                htmlFor="startDate"
+                                className="d-flex align-items-center gap-1"
+                              >
+                                <svg
+                                  width="14"
+                                  height="14"
+                                  viewBox="0 0 14 14"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M5.00004 0.166504V1.49984H9.00004V0.166504H10.3334V1.49984H13C13.3682 1.49984 13.6667 1.79832 13.6667 2.1665V12.8332C13.6667 13.2014 13.3682 13.4998 13 13.4998H1.00004C0.631854 13.4998 0.333374 13.2014 0.333374 12.8332V2.1665C0.333374 1.79832 0.631854 1.49984 1.00004 1.49984H3.66671V0.166504H5.00004ZM12.3334 6.83317H1.66671V12.1665H12.3334V6.83317ZM3.66671 2.83317H1.66671V5.49984H12.3334V2.83317H10.3334V4.1665H9.00004V2.83317H5.00004V4.1665H3.66671V2.83317Z"
+                                    fill="#53545C"
+                                  />
+                                </svg>
+                                To:
+                              </label>
                               <input
+                                style={{
+                                  appearance: "none",
+                                  border: "none",
+                                }}
                                 type="date"
                                 id="endDate"
                                 name="endDate"
                                 value={filter?.endDate || ""}
-                                onChange={(e) => setFilter({ ...filter, endDate: e.target.value })}
+                                onChange={(e) =>
+                                  setFilter({
+                                    ...filter,
+                                    endDate: e.target.value,
+                                  })
+                                }
                               />
                             </div>
                           </Box>
@@ -144,7 +197,8 @@ export default function Reports() {
                               align="right"
                               className="table_head tableRow1"
                             >
-                              Order Execution noted on Broker Platform (Not controllable)
+                              Order Execution noted on Broker Platform (Not
+                              controllable)
                             </TableCell>
                             <TableCell
                               align="right"
@@ -167,57 +221,71 @@ export default function Reports() {
                           </TableRow>
                         </TableHead>
 
-                        {isLoading ?
+                        {isLoading ? (
                           <div className="notDataDiv">Please wait...</div>
-                          : reportList?.length ? (
-                            <TableBody>
-                              {reportList.map((row, ind) => (
-                                <TableRow
-                                  align="left"
-                                  className="tableRow1"
-                                  key={ind}
-                                  sx={{
-                                    "&:last-child td, &:last-child th": {
-                                      border: 0,
-                                    },
-                                  }}
-                                >
-                                  <TableCell className="table_content tableRow1">
-                                    {moment(row.createdAt).format("DD MMMM YY")}
-                                  </TableCell>
-                                  <TableCell className="table_content tableRow1">
-                                    {row?.stockSymbol}
-                                  </TableCell>
-                                  <TableCell className="table_content tableRow1">
-                                    {"Stock"}
-                                  </TableCell>
-                                  <TableCell className="table_content tableRow1">
-                                    {row?.order_id}
-                                  </TableCell>
-                                  <TableCell className="table_content tableRow1">
-                                    {moment(row?.startDate).format("hh:mm:ss:ms")}
-                                  </TableCell>
-                                  <TableCell className="table_content tableRow1">
-                                    {getTimeDuration(row?.startDate, row?.order_lastExecutionTime)} Sec
-                                  </TableCell>
-                                  <TableCell className="table_content tableRow1">
-                                    {moment(row?.order_lastExecutionTime).format("hh:mm:ss:ms")}
-                                  </TableCell>
-                                  <TableCell className="table_content tableRow1">
-                                    {getTimeDuration(row?.order_lastExecutionTime, row?.createdAt)} Sec
-                                  </TableCell>
-                                  <TableCell className="table_content tableRow1">
-                                    {moment(row?.createdAt).format("hh:mm:ss:ms")}
-                                  </TableCell>
-                                  <TableCell className="table_content tableRow1">
-                                    {getTimeDurationSum(row?.startDate, row?.order_lastExecutionTime, row?.createdAt)}
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          ) : (
-                            <div className="notDataDiv">No Data Available</div>
-                          )}
+                        ) : reportList?.length ? (
+                          <TableBody>
+                            {reportList.map((row, ind) => (
+                              <TableRow
+                                align="left"
+                                className="tableRow1"
+                                key={ind}
+                                sx={{
+                                  "&:last-child td, &:last-child th": {
+                                    border: 0,
+                                  },
+                                }}
+                              >
+                                <TableCell className="table_content tableRow1">
+                                  {moment(row.createdAt).format("DD MMMM YY")}
+                                </TableCell>
+                                <TableCell className="table_content tableRow1">
+                                  {row?.stockSymbol}
+                                </TableCell>
+                                <TableCell className="table_content tableRow1">
+                                  {"Stock"}
+                                </TableCell>
+                                <TableCell className="table_content tableRow1">
+                                  {row?.order_id}
+                                </TableCell>
+                                <TableCell className="table_content tableRow1">
+                                  {moment(row?.startDate).format("hh:mm:ss:ms")}
+                                </TableCell>
+                                <TableCell className="table_content tableRow1">
+                                  {getTimeDuration(
+                                    row?.startDate,
+                                    row?.order_lastExecutionTime
+                                  )}{" "}
+                                  Sec
+                                </TableCell>
+                                <TableCell className="table_content tableRow1">
+                                  {moment(row?.order_lastExecutionTime).format(
+                                    "hh:mm:ss:ms"
+                                  )}
+                                </TableCell>
+                                <TableCell className="table_content tableRow1">
+                                  {getTimeDuration(
+                                    row?.order_lastExecutionTime,
+                                    row?.createdAt
+                                  )}{" "}
+                                  Sec
+                                </TableCell>
+                                <TableCell className="table_content tableRow1">
+                                  {moment(row?.createdAt).format("hh:mm:ss:ms")}
+                                </TableCell>
+                                <TableCell className="table_content tableRow1">
+                                  {getTimeDurationSum(
+                                    row?.startDate,
+                                    row?.order_lastExecutionTime,
+                                    row?.createdAt
+                                  )}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        ) : (
+                          <div className="notDataDiv">No Data Available</div>
+                        )}
                       </Table>
                     </TableContainer>
                     {/* <Box className="tableFooter">
@@ -242,7 +310,6 @@ export default function Reports() {
     </Card>
   );
 }
-
 
 function getTimeDuration(startDate, endDate) {
   let start = moment(startDate);

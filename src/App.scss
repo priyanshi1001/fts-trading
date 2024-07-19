@@ -307,6 +307,15 @@ h6 {
 .tableDesignFrame {
   width: 100%;
   overflow-x: auto;
+  .table thead th,
+  .table thead td {
+    padding: 10px 20px !important;
+    min-width: 240px;
+    line-height: 1.2;
+  }
+  .table thead td {
+    white-space: nowrap;
+  }
 }
 .tableDesign {
   thead {
