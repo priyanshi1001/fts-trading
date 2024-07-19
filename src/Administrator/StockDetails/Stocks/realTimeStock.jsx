@@ -44,7 +44,9 @@ export default function RealTimeStock() {
     });
 
     socket.on("ib_message", (data) => {
-      console.log("ib_message:", JSON.parse(data));
+      let socketResponse = JSON.parse(data);
+
+      console.log("ib_message:", socketResponse);
     });
     const fields = ["31", "84", "86"];
 
