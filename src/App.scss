@@ -304,6 +304,12 @@ h6 {
   font-weight: 500;
   color: rgba(69, 70, 78, 1) !important;
 }
+input.inputApperanceDesign[type="date"]::-webkit-calendar-picker-indicator {
+  color: transparent;
+  background: none;
+  z-index: 1;
+  width: fit-content;
+}
 .tableDesignFrame {
   width: 100%;
   overflow-x: auto;
