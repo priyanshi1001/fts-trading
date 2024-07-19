@@ -45,10 +45,30 @@ export default function RealTimeStock() {
 
     socket.on("ib_message", (data) => {
       let socketResponse = JSON.parse(data);
-
+      if (socketResponse.topic == `smd+${conid}`) {
+        if (data) {
+          setData({ ...data, ...socketResponse });
+        } else {
+          setData(socketResponse);
+        }
+      }
       console.log("ib_message:", socketResponse);
     });
-    const fields = ["31", "84", "86"];
+    const obj = {
+      "31": "Last Price",
+      "55": "Symbol",
+      "58": "Text ?",
+      "6073": "expiration",
+      "7283": "Strike price",
+      "84": "Bid price",
+      "86": "Ask price",
+      "7308": "Delta",
+      "7607": "Today Opt. Volume Change",
+      "7638": "Option Open Interest",
+      "7633": "Implied volatility",
+    }
+    const old_fields = ["31", "84", "86"];
+    const fields = ["31", "55", "58", "6073", "7283", "84", "86", "7308", "7607", "7638", "7633"];
 
     socket.emit("req_data", `smd+${conid}+${JSON.stringify({ fields: fields })}`);
 
