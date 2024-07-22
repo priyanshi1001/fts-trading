@@ -30,12 +30,11 @@ export default function RealTimeStock() {
   const dispatch = useDispatch();
   const history = useHistory();
   const { conid } = useParams();
-  const [data, setData] = useState(null);
+  const [realTimePriceData, setRealTimePriceData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
+  console.log("realTimePriceData===================", realTimePriceData);
   useEffect(() => {
-    console.log("RealTimeStock conid============", conid);
-
     socket.on("connect", () => {
       console.log("Node socket connect successfully.");
     })
@@ -43,16 +42,11 @@ export default function RealTimeStock() {
       console.log("Node socket disconnected.");
     });
 
-    socket.on("ib_message", (data) => {
-      let socketResponse = JSON.parse(data);
+    socket.on("ib_message", (resData) => {
+      let socketResponse = JSON.parse(resData);
       if (socketResponse.topic == `smd+${conid}`) {
-        if (data) {
-          setData({ ...data, ...socketResponse });
-        } else {
-          setData(socketResponse);
-        }
+        setRealTimePriceData((prev)=>({...prev, ...socketResponse}));
       }
-      console.log("ib_message:", socketResponse);
     });
     const obj = {
       "31": "Last Price",
@@ -67,7 +61,6 @@ export default function RealTimeStock() {
       "7638": "Option Open Interest",
       "7633": "Implied volatility",
     }
-    const old_fields = ["31", "84", "86"];
     const fields = ["31", "55", "58", "6073", "7283", "84", "86", "7308", "7607", "7638", "7633"];
 
     socket.emit("req_data", `smd+${conid}+${JSON.stringify({ fields: fields })}`);
@@ -177,7 +170,7 @@ export default function RealTimeStock() {
 
                         {isLoading ?
                           <div className="notDataDiv">Please wait...</div>
-                          : data ? (
+                          : realTimePriceData ? (
                             <TableBody>
                               <TableRow
                                 align="left"

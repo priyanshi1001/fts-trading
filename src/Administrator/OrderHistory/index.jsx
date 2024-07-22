@@ -25,8 +25,8 @@ export default function Stocks() {
   const [openOrderList, setOpenOrderList] = useState([]);
 
   useEffect(() => {
-    // ?Filters=submitted,filled
-    fetchIBOpenOders(``).then((response) => {
+    // ?Filters=filled
+    fetchIBOpenOders(`?Filters=filled`).then((response) => {
       setOpenOrderList(response?.orders || []);
     }).catch((err) => {
       console.log("Fetch Open Orders:", err);
@@ -69,7 +69,25 @@ export default function Stocks() {
                               align="left"
                               className="table_head tableRow1"
                             >
-                              Ticker
+                              Date
+                            </TableCell>
+                            <TableCell
+                              align="left"
+                              className="table_head tableRow1"
+                            >
+                              Order Entry Time
+                            </TableCell>
+                            <TableCell
+                              align="left"
+                              className="table_head tableRow1"
+                            >
+                              Fill Time Range
+                            </TableCell>
+                            <TableCell
+                              align="left"
+                              className="table_head tableRow1"
+                            >
+                              Sym
                             </TableCell>
                             <TableCell
                               align="left"
@@ -81,37 +99,31 @@ export default function Stocks() {
                               align="left"
                               className="table_head tableRow1"
                             >
-                              Execution Time
+                              Stock/Option
                             </TableCell>
                             <TableCell
                               align="left"
                               className="table_head tableRow1"
                             >
-                              Total Size
-                            </TableCell>
-                            <TableCell
-                              align="left"
-                              className="table_head tableRow1"
-                            >
-                              Remaining Quantity
-                            </TableCell>
-                            <TableCell
-                              align="left"
-                              className="table_head tableRow1"
-                            >
-                              Price
-                            </TableCell>
-                            <TableCell
-                              align="left"
-                              className="table_head tableRow1"
-                            >
-                              Status
+                              # of Shares
                             </TableCell>
                             <TableCell
                               align="right"
                               className="table_head tableRow1"
                             >
-                              Action
+                              Order Price
+                            </TableCell>
+                            <TableCell
+                              align="right"
+                              className="table_head tableRow1"
+                            >
+                              Avg Fill Price
+                            </TableCell>
+                            <TableCell
+                              align="right"
+                              className="table_head tableRow1"
+                            >
+                              Extended Amount
                             </TableCell>
                           </TableRow>
                         </TableHead>
@@ -129,28 +141,34 @@ export default function Stocks() {
                                 }}
                               >
                                 <TableCell className="table_content tableRow1">
-                                  {row?.ticker} ({row?.exchange})
+                                  {moment(row?.lastExecutionTime_r).format("MM/DD/YYYY")}
+                                </TableCell>
+                                <TableCell className="table_content tableRow1">
+                                  {moment(row?.lastExecutionTime_r).format("hh:mm A")}
+                                </TableCell>
+                                <TableCell className="table_content tableRow1">
+                                  {/* {moment(row?.lastExecutionTime_r).format("DD-MM-YYYY hh:mm:ss A")} */}
+                                </TableCell>
+                                <TableCell className="table_content tableRow1">
+                                  {row?.ticker}
                                 </TableCell>
                                 <TableCell className="table_content tableRow1">
                                   {row?.side}
                                 </TableCell>
                                 <TableCell className="table_content tableRow1">
-                                  {moment(row?.lastExecutionTime_r).format("DD-MM-YYYY hh:mm:ss A")}
+                                  Stock
                                 </TableCell>
                                 <TableCell className="table_content tableRow1">
                                   {row?.totalSize}
                                 </TableCell>
                                 <TableCell className="table_content tableRow1">
-                                  {row?.remainingQuantity}
+                                  {row?.price}
                                 </TableCell>
                                 <TableCell className="table_content tableRow1">
-                                  {row?.price || row?.avgPrice} ({row?.cashCcy})
+                                  {row?.avgPrice}
                                 </TableCell>
                                 <TableCell className="table_content tableRow1">
-                                  {row?.order_ccp_status || row?.status}
-                                </TableCell>
-                                <TableCell className="table_content tableRow1">
-                                  <Button>Delete</Button>
+                                  {row?.side == "BUY" ? "-" : ""}{((+row?.avgPrice) * (+row?.totalSize)).toFixed(2)}
                                 </TableCell>
                               </TableRow>
                             ))}

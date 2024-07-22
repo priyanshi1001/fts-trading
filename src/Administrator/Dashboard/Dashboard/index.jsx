@@ -208,7 +208,7 @@ export default function ContentManagement() {
   }
 
   function fetchIBOpenOdersFun() {
-    let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,filled,pending_cancel,cancelled,warn_state,sort_by_time`;
+    let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,submitted,pending_cancel,cancelled,warn_state,sort_by_time`;
     fetchIBOpenOders(filtersVal)
       .then((response) => {
         setOpenOrderList(response?.orders || []);
@@ -226,12 +226,16 @@ export default function ContentManagement() {
     if (+value || value == "") {
       if (name == "profit_order")
         setFormData({ ...formData, [name]: value, profit_order_percentage: 0 });
-      else if (name == "profit_order_percentage")
-        setFormData({ ...formData, [name]: value, profit_order: "" });
+      else if (name == "profit_order_percentage") {
+        let tempProfOrder = percentageVal(+value, "profit");
+        setFormData({ ...formData, [name]: value, profit_order: tempProfOrder });
+      }
       else if (name == "stop_loss")
         setFormData({ ...formData, [name]: value, stop_loss_percentage: 0 });
-      else if (name == "stop_loss_percentage")
-        setFormData({ ...formData, [name]: value, stop_loss: "" });
+      else if (name == "stop_loss_percentage") {
+        let tempLossOrder = percentageVal(+value);
+        setFormData({ ...formData, [name]: value, stop_loss: tempLossOrder });
+      }
       else if (name == "limitPrice") {
         let shares = +formData?.shares || 0;
         let existingValue = 0;
@@ -543,6 +547,18 @@ export default function ContentManagement() {
       setOpen1(false);
       toast.success("Order successfully placed.");
     })
+  }
+
+
+  function percentageVal(percentage, type) {
+    let midPrice = +formData?.limitPrice || +snapshot.mid || 0;
+    let result = (midPrice * percentage) / 100;
+    if (type == "profit") {
+      result = midPrice + result;
+    } else {
+      result = midPrice - result;
+    }
+    return +result.toFixed(2);
   }
 
   return (
@@ -996,14 +1012,20 @@ export default function ContentManagement() {
                                           >
                                             <optgroup>
                                               <option value="0">0%</option>
+                                              <option value="0.5">0.5%</option>
                                               <option value="1">1%</option>
+                                              <option value="1.5">1.5%</option>
                                               <option value="2">2%</option>
+                                              <option value="2.5">2.5%</option>
                                               <option value="3">3%</option>
+                                              <option value="3.5">3.5%</option>
                                               <option value="4">4%</option>
+                                              <option value="4.5">4.5%</option>
                                               <option value="5">5%</option>
                                               <option value="6">6%</option>
                                               <option value="7">7%</option>
                                               <option value="8">8%</option>
+                                              <option value="9">9%</option>
                                               <option value="10">10%</option>
                                               <option value="100">100%</option>
                                             </optgroup>
@@ -1032,16 +1054,22 @@ export default function ContentManagement() {
                                           >
                                             <optgroup>
                                               <option value="0">0%</option>
+                                              <option value="0.5">0.5%</option>
                                               <option value="1">1%</option>
+                                              <option value="1.5">1.5%</option>
                                               <option value="2">2%</option>
+                                              <option value="2.5">2.5%</option>
                                               <option value="3">3%</option>
+                                              <option value="3.5">3.5%</option>
                                               <option value="4">4%</option>
+                                              <option value="4.5">4.5%</option>
                                               <option value="5">5%</option>
                                               <option value="6">6%</option>
                                               <option value="7">7%</option>
                                               <option value="8">8%</option>
                                               <option value="9">9%</option>
                                               <option value="10">10%</option>
+                                              {/* <option value="100">100%</option> */}
                                             </optgroup>
                                           </select>
                                         </div>
@@ -1319,37 +1347,43 @@ export default function ContentManagement() {
                             align="left"
                             className="table_head tableRow1"
                           >
-                            Type
+                            Sym
                           </TableCell>
                           <TableCell
                             align="left"
                             className="table_head tableRow1"
                           >
-                            Symbol
+                            Stock/Option
                           </TableCell>
                           <TableCell
                             align="left"
                             className="table_head tableRow1"
                           >
-                            Contract id
+                            Shares
                           </TableCell>
                           <TableCell
                             align="left"
                             className="table_head tableRow1"
                           >
-                            Position
+                            Todays UR Net Gn/Ls
                           </TableCell>
                           <TableCell
                             align="left"
                             className="table_head tableRow1"
                           >
-                            Currency
+                            Total UR Gan/Ls
                           </TableCell>
                           <TableCell
                             align="left"
                             className="table_head tableRow1"
                           >
-                            Market Price
+                            Avg Enter Price
+                          </TableCell>
+                          <TableCell
+                            align="left"
+                            className="table_head tableRow1"
+                          >
+                            Last Trade Price
                           </TableCell>
                           <TableCell
                             align="left"
@@ -1361,19 +1395,19 @@ export default function ContentManagement() {
                             align="left"
                             className="table_head tableRow1"
                           >
-                            Avg Cost
+                            System Exit Yes/No
                           </TableCell>
                           <TableCell
                             align="left"
                             className="table_head tableRow1"
                           >
-                            Avg Price
+                            Type of System Exit
                           </TableCell>
                           <TableCell
                             align="left"
                             className="table_head tableRow1"
                           >
-                            uPnL
+                            Close Position
                           </TableCell>
                         </TableRow>
                       </TableHead>
@@ -1391,34 +1425,37 @@ export default function ContentManagement() {
                               }}
                             >
                               <TableCell className="table_content tableRow1">
-                                {row.assetClass}
-                              </TableCell>
-                              <TableCell className="table_content tableRow1">
                                 {row.contractDesc}
                               </TableCell>
                               <TableCell className="table_content tableRow1">
-                                {row.conid}
+                                Stock
                               </TableCell>
                               <TableCell className="table_content tableRow1">
                                 {row.position}
                               </TableCell>
                               <TableCell className="table_content tableRow1">
-                                {row.currency}
+                                {row.realizedPnl?.toFixed(2)}
                               </TableCell>
                               <TableCell className="table_content tableRow1">
-                                {row?.mktPrice?.toFixed(2)}
-                              </TableCell>
-                              <TableCell className="table_content tableRow1">
-                                {row?.mktValue?.toFixed(2)}
-                              </TableCell>
-                              <TableCell className="table_content tableRow1">
-                                {row?.avgCost?.toFixed(2)}
+                                {row.unrealizedPnl?.toFixed(2)}
                               </TableCell>
                               <TableCell className="table_content tableRow1">
                                 {row?.avgPrice?.toFixed(2)}
                               </TableCell>
                               <TableCell className="table_content tableRow1">
-                                {row?.unrealizedPnl?.toFixed(2)}
+                                {row?.avgCost?.toFixed(2)}
+                              </TableCell>
+                              <TableCell className="table_content tableRow1">
+                                {row?.mktValue?.toFixed(2)}
+                              </TableCell>
+                              <TableCell className="table_content tableRow1">
+                                {/* {row?.avgPrice?.toFixed(2)} */}
+                              </TableCell>
+                              <TableCell className="table_content tableRow1">
+                                {/* {row?.unrealizedPnl?.toFixed(2)} */}
+                              </TableCell>
+                              <TableCell className="table_content tableRow1">
+                                <Button>Close</Button>
                               </TableCell>
                             </TableRow>
                           ))}
@@ -1472,7 +1509,7 @@ export default function ContentManagement() {
                             align="left"
                             className="table_head tableRow1"
                           >
-                            Ticker
+                            Sym
                           </TableCell>
                           <TableCell
                             align="left"
@@ -1484,37 +1521,31 @@ export default function ContentManagement() {
                             align="left"
                             className="table_head tableRow1"
                           >
-                            Execution Time
+                            Order Entry Time
                           </TableCell>
                           <TableCell
                             align="left"
                             className="table_head tableRow1"
                           >
-                            Total Size
+                            # of Shares/Contracts
                           </TableCell>
                           <TableCell
                             align="left"
                             className="table_head tableRow1"
                           >
-                            Remaining Quantity
+                            # Remaining
                           </TableCell>
                           <TableCell
                             align="left"
                             className="table_head tableRow1"
                           >
-                            Price
-                          </TableCell>
-                          <TableCell
-                            align="left"
-                            className="table_head tableRow1"
-                          >
-                            Status
+                            Order Price
                           </TableCell>
                           <TableCell
                             align="right"
                             className="table_head tableRow1"
                           >
-                            Action
+                            Delete or Modify
                           </TableCell>
                         </TableRow>
                       </TableHead>
@@ -1532,14 +1563,14 @@ export default function ContentManagement() {
                               }}
                             >
                               <TableCell className="table_content tableRow1">
-                                {row?.ticker} ({row?.exchange})
+                                {row?.ticker}
                               </TableCell>
                               <TableCell className="table_content tableRow1">
                                 {row?.side}
                               </TableCell>
                               <TableCell className="table_content tableRow1">
                                 {moment(row?.lastExecutionTime_r).format(
-                                  "DD-MM-YYYY hh:mm:ss A"
+                                  "DD-MM-YYYY hh:mm A"
                                 )}
                               </TableCell>
                               <TableCell className="table_content tableRow1">
@@ -1549,13 +1580,11 @@ export default function ContentManagement() {
                                 {row?.remainingQuantity}
                               </TableCell>
                               <TableCell className="table_content tableRow1">
-                                {row?.price || row?.avgPrice} ({row?.cashCcy})
-                              </TableCell>
-                              <TableCell className="table_content tableRow1">
-                                {row?.order_ccp_status || row?.status}
+                                {row?.price || row?.avgPrice}
                               </TableCell>
                               <TableCell className="table_content tableRow1">
                                 <Button>Delete</Button>
+                                <Button>Modify</Button>
                               </TableCell>
                             </TableRow>
                           ))}
@@ -1575,7 +1604,7 @@ export default function ContentManagement() {
                   sx={{ padding: "15px !important" }}
                 >
                   <CardContent className="cardContent">
-                    <h6 className="fs-6 mb-3">Screen Triggered</h6>
+                    <h6 className="fs-6 mb-3">Screen Triggered - Long</h6>
                     <div className="table-responsive">
                       <table className="table w-100 simpleTable table-borderless">
                         <thead>
@@ -1657,7 +1686,7 @@ export default function ContentManagement() {
                   sx={{ padding: "15px !important" }}
                 >
                   <CardContent className="cardContent">
-                    <h6 className="fs-6 mb-3">Screen Triggered</h6>
+                    <h6 className="fs-6 mb-3">Screen Triggered - Short Sell</h6>
                     <div className="table-responsive">
                       <table className="table w-100 simpleTable table-borderless">
                         <thead>
