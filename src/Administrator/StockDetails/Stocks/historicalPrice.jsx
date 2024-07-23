@@ -10,6 +10,7 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { Fragment } from "react";
+import moment from "moment";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -32,7 +33,7 @@ export default function RealTimeStock() {
   const dispatch = useDispatch();
   const history = useHistory();
   const { conid } = useParams();
-  const [data, setData] = useState(null);
+  const [historicalData, setHistoricalData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -45,13 +46,17 @@ export default function RealTimeStock() {
       console.log("Node socket disconnected.");
     });
 
-    socket.on("ib_message", (data) => {
-      console.log("ib_message:", JSON.parse(data));
+    socket.on("ib_message", (resData) => {
+      let socketResponse = JSON.parse(resData);
+      if (socketResponse.topic == `smh+${conid}`) {
+        setHistoricalData(socketResponse);
+      }
+      console.log("ib_message:", socketResponse);
     });
 
     let obj = {
-      "period": "1d",
-      "bar": "1hour",
+      "period": "2h",
+      "bar": "1min",
       "source": "trades",
       "format": "%o/%c/%h/%l"
     };
@@ -169,9 +174,9 @@ export default function RealTimeStock() {
 
                         {isLoading ?
                           <div className="notDataDiv">Please wait...</div>
-                          : data?.products?.length ? (
+                          : Object.keys(historicalData || {}).length ? (
                             <TableBody>
-                              {data.products.map((row, ind) => (
+                              {historicalData?.data?.map((row, ind) => (
                                 <TableRow
                                   align="left"
                                   className="tableRow1"
@@ -183,7 +188,40 @@ export default function RealTimeStock() {
                                   }}
                                 >
                                   <TableCell className="table_content tableRow1">
-                                    {row.symbol}
+                                    {moment(historicalData?.startTime).format("DD MMM YYYY")}
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    {historicalData?.symbol}
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    {moment(historicalData?.startTime).format("hh:mm A")}
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    {row?.o}
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    {row?.h}
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    {row?.l}
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    {row?.c}
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    {historicalData?.volumeFactor}
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+
                                   </TableCell>
                                 </TableRow>
                               ))}

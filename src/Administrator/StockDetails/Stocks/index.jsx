@@ -120,7 +120,7 @@ export default function Stocks() {
                                 }}
                               />
                             </div>
-                            <button className="btn btn-sm btn-outline-gray">
+                            {/* <button className="btn btn-sm btn-outline-gray">
                               <svg
                                 width="16"
                                 height="17"
@@ -152,7 +152,7 @@ export default function Stocks() {
                                 />
                               </svg>
                               Export
-                            </button>
+                            </button> */}
                           </Box>
                         </Grid>
                       </Grid>

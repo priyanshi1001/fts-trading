@@ -45,7 +45,7 @@ export default function RealTimeStock() {
     socket.on("ib_message", (resData) => {
       let socketResponse = JSON.parse(resData);
       if (socketResponse.topic == `smd+${conid}`) {
-        setRealTimePriceData((prev)=>({...prev, ...socketResponse}));
+        setRealTimePriceData((prev) => ({ ...prev, ...socketResponse }));
       }
     });
     const obj = {
@@ -53,7 +53,7 @@ export default function RealTimeStock() {
       "55": "Symbol",
       "58": "Text ?",
       "6073": "expiration",
-      "7283": "Strike price",
+      "7283": "Implied Volatility",
       "84": "Bid price",
       "86": "Ask price",
       "7308": "Delta",
@@ -170,7 +170,7 @@ export default function RealTimeStock() {
 
                         {isLoading ?
                           <div className="notDataDiv">Please wait...</div>
-                          : realTimePriceData ? (
+                          : Object.keys(realTimePriceData || {}).length ? (
                             <TableBody>
                               <TableRow
                                 align="left"
@@ -182,7 +182,37 @@ export default function RealTimeStock() {
                                 }}
                               >
                                 <TableCell className="table_content tableRow1">
-                                  {""}
+                                  {moment(realTimePriceData?._updated).format("DD MMM YYYY")}
+                                </TableCell>
+                                <TableCell className="table_content tableRow1">
+                                  {realTimePriceData?.["55"]}
+                                </TableCell>
+                                <TableCell className="table_content tableRow1">
+
+                                </TableCell>
+                                <TableCell className="table_content tableRow1">
+
+                                </TableCell>
+                                <TableCell className="table_content tableRow1">
+                                  {realTimePriceData?.["84"]}
+                                </TableCell>
+                                <TableCell className="table_content tableRow1">
+                                  {realTimePriceData?.["86"]}
+                                </TableCell>
+                                <TableCell className="table_content tableRow1">
+                                  {realTimePriceData?.["31"]}
+                                </TableCell>
+                                <TableCell className="table_content tableRow1">
+
+                                </TableCell>
+                                <TableCell className="table_content tableRow1">
+
+                                </TableCell>
+                                <TableCell className="table_content tableRow1">
+                                  {realTimePriceData?.["7638"]}
+                                </TableCell>
+                                <TableCell className="table_content tableRow1">
+                                  {realTimePriceData?.["7283"]}
                                 </TableCell>
                               </TableRow>
                             </TableBody>
