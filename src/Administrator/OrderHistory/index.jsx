@@ -23,11 +23,13 @@ import { fetchIBOpenOders } from "../../api/ApiCall"
 export default function Stocks() {
   const history = useHistory();
   const [openOrderList, setOpenOrderList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // ?Filters=filled
     fetchIBOpenOders(`?Filters=filled`).then((response) => {
       setOpenOrderList(response?.orders || []);
+      setIsLoading(false);
     }).catch((err) => {
       console.log("Fetch Open Orders:", err);
       toast.error("Interactive broker panel not login.")
@@ -99,7 +101,7 @@ export default function Stocks() {
                               align="left"
                               className="table_head tableRow1"
                             >
-                              Stock/Option
+                              Stock / Option
                             </TableCell>
                             <TableCell
                               align="left"
@@ -127,55 +129,58 @@ export default function Stocks() {
                             </TableCell>
                           </TableRow>
                         </TableHead>
-                        {openOrderList?.length ? (
-                          <TableBody>
-                            {openOrderList.map((row, ind) => (
-                              <TableRow
-                                align="left"
-                                className="tableRow1"
-                                key={ind}
-                                sx={{
-                                  "&:last-child td, &:last-child th": {
-                                    border: 0,
-                                  },
-                                }}
-                              >
-                                <TableCell className="table_content tableRow1">
-                                  {moment(row?.lastExecutionTime_r).format("MM/DD/YYYY")}
-                                </TableCell>
-                                <TableCell className="table_content tableRow1">
-                                  {moment(row?.lastExecutionTime_r).format("hh:mm A")}
-                                </TableCell>
-                                <TableCell className="table_content tableRow1">
-                                  {/* {moment(row?.lastExecutionTime_r).format("DD-MM-YYYY hh:mm:ss A")} */}
-                                </TableCell>
-                                <TableCell className="table_content tableRow1">
-                                  {row?.ticker}
-                                </TableCell>
-                                <TableCell className="table_content tableRow1">
-                                  {row?.side}
-                                </TableCell>
-                                <TableCell className="table_content tableRow1">
-                                  Stock
-                                </TableCell>
-                                <TableCell className="table_content tableRow1">
-                                  {row?.totalSize}
-                                </TableCell>
-                                <TableCell className="table_content tableRow1">
-                                  {row?.price}
-                                </TableCell>
-                                <TableCell className="table_content tableRow1">
-                                  {row?.avgPrice}
-                                </TableCell>
-                                <TableCell className="table_content tableRow1">
-                                  {row?.side == "BUY" ? "-" : ""}{((+row?.avgPrice) * (+row?.totalSize)).toFixed(2)}
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        ) : (
-                          <div className="notDataDiv">No Data Available</div>
-                        )}
+                        {isLoading ?
+                          <div className="notDataDiv">Please wait...</div>
+                          :
+                          openOrderList?.length ? (
+                            <TableBody>
+                              {openOrderList.map((row, ind) => (
+                                <TableRow
+                                  align="left"
+                                  className="tableRow1"
+                                  key={ind}
+                                  sx={{
+                                    "&:last-child td, &:last-child th": {
+                                      border: 0,
+                                    },
+                                  }}
+                                >
+                                  <TableCell className="table_content tableRow1">
+                                    {moment(row?.lastExecutionTime_r).format("MM/DD/YYYY")}
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    {moment(row?.lastExecutionTime_r).format("hh:mm A")}
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    {/* {moment(row?.lastExecutionTime_r).format("DD-MM-YYYY hh:mm:ss A")} */}
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    {row?.ticker}
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    {row?.side}
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    Stock
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    {row?.totalSize}
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    {row?.price || row?.avgPrice}
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    {row?.avgPrice || row?.price}
+                                  </TableCell>
+                                  <TableCell className="table_content tableRow1">
+                                    {row?.side == "BUY" ? "-" : ""}{((+row?.avgPrice || +row?.price) * (+row?.totalSize)).toFixed(2)}
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          ) : (
+                            <div className="notDataDiv">No Data Available</div>
+                          )}
                       </Table>
                     </TableContainer>
                   </Card>

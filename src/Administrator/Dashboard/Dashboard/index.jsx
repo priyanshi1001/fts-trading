@@ -1353,7 +1353,7 @@ export default function ContentManagement() {
                             align="left"
                             className="table_head tableRow1"
                           >
-                            Stock/Option
+                            Stock / Option
                           </TableCell>
                           <TableCell
                             align="left"

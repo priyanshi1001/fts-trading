@@ -152,7 +152,7 @@ export default function Reports() {
                         </Grid>
                       </Grid>
                     </Box>
-                    <TableContainer className="tableDesignFrame">
+                    <TableContainer className="tableDesignFrame reports-listing-tbl">
                       <Table
                         sx={{ minWidth: 650 }}
                         class="table table-hover table-striped tableDesign"

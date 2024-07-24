@@ -316,12 +316,21 @@ input.inputApperanceDesign[type="date"]::-webkit-calendar-picker-indicator {
   .table thead th,
   .table thead td {
     padding: 10px 20px !important;
-    min-width: 240px;
+    // min-width: 240px;
     line-height: 1.2;
   }
   .table thead td {
     white-space: nowrap;
   }
+  &.reports-listing-tbl{
+    .table{
+        thead{ 
+            th,td{
+                min-width:240px;
+            }
+        }
+    }
+}
 }
 .tableDesign {
   thead {
