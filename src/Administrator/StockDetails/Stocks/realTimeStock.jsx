@@ -33,7 +33,6 @@ export default function RealTimeStock() {
   const [realTimePriceData, setRealTimePriceData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
-  console.log("realTimePriceData===================", realTimePriceData);
   useEffect(() => {
     socket.on("connect", () => {
       console.log("Node socket connect successfully.");
@@ -47,6 +46,7 @@ export default function RealTimeStock() {
       if (socketResponse.topic == `smd+${conid}`) {
         setRealTimePriceData((prev) => ({ ...prev, ...socketResponse }));
       }
+      console.log("ib_message:", socketResponse);
     });
     const obj = {
       "31": "Last Price",

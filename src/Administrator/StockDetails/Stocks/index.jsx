@@ -56,7 +56,9 @@ export default function Stocks() {
   useEffect(() => {
     if (size > 0) payload["pageSize"] = size;
     if (page > 0) payload["pageNumber"] = page;
-    payload["productSymbol"] = (search || "");
+    let tempSearch = "";
+    if (search) tempSearch = search.toUpperCase().trim();
+    payload["productSymbol"] = (tempSearch);
 
     setPayload({ ...payload });
 

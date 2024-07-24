@@ -27,6 +27,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Route, useHistory, Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { socket } from "../../../api/socket"
+import { DateTimeParam } from "use-query-params";
 socket.connect();
 
 export default function RealTimeStock() {
@@ -58,7 +59,8 @@ export default function RealTimeStock() {
       "period": "2h",
       "bar": "1min",
       "source": "trades",
-      "format": "%o/%c/%h/%l"
+      "outsideRTH": true,
+      "format": "%o/%c/%h/%l/%v"
     };
 
     socket.emit("req_data", `smh+${conid}+${JSON.stringify(obj)}`);
@@ -188,13 +190,13 @@ export default function RealTimeStock() {
                                   }}
                                 >
                                   <TableCell className="table_content tableRow1">
-                                    {moment(historicalData?.startTime).format("DD MMM YYYY")}
+                                    {moment(historicalData?.startTime, "YYYYMMDD-HH:mm:ss").format("DD MMM YYYY")}
                                   </TableCell>
                                   <TableCell className="table_content tableRow1">
                                     {historicalData?.symbol}
                                   </TableCell>
                                   <TableCell className="table_content tableRow1">
-                                    {moment(historicalData?.startTime).format("hh:mm A")}
+                                    {moment(historicalData?.startTime, "YYYYMMDD-HH:mm:ss").format("hh:mm A")}
                                   </TableCell>
                                   <TableCell className="table_content tableRow1">
                                     {row?.o}
@@ -209,7 +211,7 @@ export default function RealTimeStock() {
                                     {row?.c}
                                   </TableCell>
                                   <TableCell className="table_content tableRow1">
-                                    {historicalData?.volumeFactor}
+                                    {row?.v}
                                   </TableCell>
                                   <TableCell className="table_content tableRow1">
 
