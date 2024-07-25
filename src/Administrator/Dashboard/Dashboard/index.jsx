@@ -13,6 +13,10 @@ import AppHeader from "../../../Layout/AppHeader";
 import AppSidebar from "../../../Layout/AppSidebar";
 // import AppFooters from "../../../Layout/AppFooter";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
 import { useHistory, useLocation, Link } from "react-router-dom";
 import "./index.scss";
 import {
@@ -35,12 +39,16 @@ import {
   fetchIBSnapshotApi,
   fetchIBPnlApi,
   saveOrderResponseApi,
-  fetchPortfolioPositionApi
+  fetchPortfolioPositionApi,
+  cancelOrderApi,
+  modifyOrderApi
 } from "../../../api/ApiCall";
 
 export default function ContentManagement() {
   const history = useHistory();
   const [open1, setOpen1] = useState(false);
+  const [cnlOdShow, setCnlOdShow] = useState(-1);
+  const [modifyOdShow, setModifyOdShow] = useState(-1);
   const [accountDetail, setAccountDetail] = useState(null);
   const [portfolioSummary, setPortfolioSummary] = useState(null);
   const [contractInfo, setContractInfo] = useState(null);
@@ -48,7 +56,8 @@ export default function ContentManagement() {
   const [placeOrderBtt, setPlaceOrderBtt] = useState(true);
   const [formData, setFormData] = useState({
     stockPosition: 10,
-    tif: "DAY"
+    tif: "DAY",
+    shareType: "BUY"
   });
   const [openOrderList, setOpenOrderList] = useState([]);
   const [existingOrder, setExistingOrder] = useState([]);
@@ -240,7 +249,7 @@ export default function ContentManagement() {
         let shares = +formData?.shares || 0;
         let existingValue = 0;
         let liveAccPercentage = 0;
-        let midPrice = +value || +snapshot.mid || 0;
+        let midPrice = +value || +snapshot.bid || 0;
         if (shares) {
           existingValue = midPrice * shares;
           existingValue = +existingValue.toFixed(2) || 0;
@@ -261,7 +270,7 @@ export default function ContentManagement() {
         let shares = +value;
         let existingValue = 0;
         let liveAccPercentage = 0;
-        let midPrice = +formData?.limitPrice || +snapshot.mid || 0;
+        let midPrice = +formData?.limitPrice || +snapshot.bid || 0;
         if (shares) {
           existingValue = midPrice * shares;
           existingValue = +existingValue.toFixed(2) || 0;
@@ -289,7 +298,7 @@ export default function ContentManagement() {
     let shares = +formData?.shares || 0;
     let existingValue = 0;
     let liveAccPercentage = 0;
-    let midPrice = +snapshot.mid || 0;
+    let midPrice = +snapshot.bid || 0;
     if (shares) {
       existingValue = midPrice * shares;
       existingValue = +existingValue.toFixed(2) || 0;
@@ -303,7 +312,7 @@ export default function ContentManagement() {
       setFormData({
         ...formData,
         orderType: value,
-        limitPrice: snapshot.mid,
+        limitPrice: snapshot.bid,
         liveAccPercentage,
         existingValue,
       });
@@ -321,7 +330,7 @@ export default function ContentManagement() {
   function handleStockPosition(value, inputType) {
     if (+value || value == "") {
       let accountBal = portfolioSummary?.["availablefunds-s"]?.amount || 0;
-      let midPrice = +formData?.limitPrice || +snapshot.mid || 0;
+      let midPrice = +formData?.limitPrice || +snapshot.bid || 0;
       let shares = 0;
       let existingValue = 0;
       let liveAccPercentage = 0;
@@ -455,7 +464,7 @@ export default function ContentManagement() {
           listingExchange: contractInfo.exchange,
           isSingleGroup: false,
           outsideRTH: false,
-          price: +formData?.limitPrice || snapshot.mid || 0,
+          price: +formData?.limitPrice || snapshot.bid || 0,
           side: formData.shareType,
           ticker: contractInfo.symbol,
           tif: formData.tif,
@@ -474,7 +483,7 @@ export default function ContentManagement() {
     };
     let orderStoreObj = {
       accountId: accId,
-      price: +formData?.limitPrice || snapshot.mid || 0,
+      price: +formData?.limitPrice || snapshot.bid || 0,
       startDate: new Date(),
       ...formData,
       ...contractInfo,
@@ -549,9 +558,69 @@ export default function ContentManagement() {
     })
   }
 
+  function cancelOrderFun(odData) {
+    let accId = accountDetail?.selectedAccount || "";
+    if (accId) {
+      cancelOrderApi(accId, odData?.orderId).then((response) => {
+        if (response?.error) {
+          toast.error(response.error);
+        } else {
+          toast.success("order cancelled successfully.");
+          setCnlOdShow(-1);
+
+          fetchPortfolioSummaryFun(accId);
+          fetchPortfolioPositionFun(accId);
+          fetchIBOpenOdersFun();
+        }
+      }).catch((err) => {
+        console.log("Cancel Order Api Error:", err);
+        toast.error("Someting went worng. please try again.");
+      })
+    } else {
+      toast.error("Interactive broker account detail not found. please login interactive broker acoount first", { toastId: "form-error" });
+    }
+  }
+
+  function modifyOrderFun(odData, formData) {
+    let accId = accountDetail?.selectedAccount || "";
+    if (accId) {
+      let modifyPayload = {
+        acctId: accId,
+        conid: odData?.conid,
+        orderType: formData?.orderType,
+        outsideRTH: true,
+        price: +odData?.price || 0,
+        side: odData?.side,
+        ticker: odData?.ticker,
+        tif: formData?.tif,
+        quantity: odData?.totalSize,
+        // auxPrice: 0,
+        // listingExchange: "string", // optional
+        // deactivated: true
+      }
+      console.log("modifyPayload=================", modifyPayload);
+      modifyOrderApi(accId, odData?.orderId, modifyPayload).then((response) => {
+        if (response?.error) {
+          toast.error(response.error);
+        } else {
+          toast.success("order modify successfully.");
+          setModifyOdShow(-1);
+
+          fetchPortfolioSummaryFun(accId);
+          fetchPortfolioPositionFun(accId);
+          fetchIBOpenOdersFun();
+        }
+      }).catch((err) => {
+        console.log("Modify Order Api Error:", err);
+        toast.error("Someting went worng. please try again.");
+      })
+    } else {
+      toast.error("Interactive broker account detail not found. please login interactive broker acoount first", { toastId: "form-error" });
+    }
+  }
 
   function percentageVal(percentage, type) {
-    let midPrice = +formData?.limitPrice || +snapshot.mid || 0;
+    let midPrice = +formData?.limitPrice || +snapshot.bid || 0;
     let result = (midPrice * percentage) / 100;
     if (type == "profit") {
       result = midPrice + result;
@@ -1562,6 +1631,8 @@ export default function ContentManagement() {
                                 },
                               }}
                             >
+                              {cnlOdShow > -1 ? <CancelOrder data={row} index={ind} cnlOdShow={cnlOdShow} setCnlOdShow={setCnlOdShow} cancelOrderFun={cancelOrderFun} /> : <></>}
+                              {modifyOdShow > -1 ? <ModifyOrder data={row} index={ind} modifyOdShow={modifyOdShow} setModifyOdShow={setModifyOdShow} modifyOrderFun={modifyOrderFun} /> : <></>}
                               <TableCell className="table_content tableRow1">
                                 {row?.ticker}
                               </TableCell>
@@ -1583,8 +1654,8 @@ export default function ContentManagement() {
                                 {row?.price || row?.avgPrice}
                               </TableCell>
                               <TableCell className="table_content tableRow1">
-                                <Button>Delete</Button>
-                                <Button>Modify</Button>
+                                <Button onClick={() => setCnlOdShow(ind)}>X</Button>
+                                <Button onClick={() => setModifyOdShow(ind)}>Mod</Button>
                               </TableCell>
                             </TableRow>
                           ))}
@@ -1806,3 +1877,164 @@ export default function ContentManagement() {
     </Fragment>
   );
 }
+
+
+function CancelOrder(props) {
+  const {
+    data,
+    index,
+    cnlOdShow,
+    setCnlOdShow,
+    cancelOrderFun
+  } = props;
+
+  const handleClose = () => {
+    setCnlOdShow(-1);
+  };
+
+  const handleSubmit = () => {
+    cancelOrderFun(data);
+  };
+
+  return (
+    <Fragment>
+      <Dialog
+        fullWidth
+        maxWidth={"sm"}
+        open={index == cnlOdShow}
+        keepMounted
+        // onClose={handleClose}
+        // TransitionComponent={Transition}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle className="modal-header py-4 px-3 text-center">
+          Cancel Order
+        </DialogTitle>
+        <DialogContent>
+          <Typography
+            variant="h6"
+            component="h6"
+            className="text-center text-gray fs-6 mb-3"
+          >
+            Are You sure You want to cancel order of {data?.ticker}
+          </Typography>
+        </DialogContent>
+        <DialogActions className="dialog-actions-dense justify-content-center my-4">
+          <Box className="d-flex align-item-center justify-content-center gap-3 btn-box ">
+            <button
+              className="btn btn-lg w-auto btn-outline-purple"
+              onClick={handleClose}
+            >
+              No
+            </button>
+            <button
+              className="btn btn-lg w-auto btn-purple"
+              onClick={handleSubmit}
+            >
+              Yes
+            </button>
+          </Box>
+        </DialogActions>
+      </Dialog>
+    </Fragment>
+  );
+};
+
+
+function ModifyOrder(props) {
+  const {
+    data,
+    index,
+    modifyOdShow,
+    setModifyOdShow,
+    modifyOrderFun
+  } = props;
+  const [formData, setFormData] = useState({});
+
+  const handleClose = () => {
+    setModifyOdShow(-1);
+  };
+
+  const handleSubmit = () => {
+    if (!formData?.tif) {
+      toast.error("Please select tif", {
+        toastId: "modify-order-form-error"
+      });
+      return 0;
+    }
+    if (!formData?.orderType) {
+      toast.error("Please select order type", {
+        toastId: "modify-order-form-error"
+      });
+      return 0;
+    }
+    modifyOrderFun(data, formData);
+  };
+
+  return (
+    <Fragment>
+      <Dialog
+        fullWidth
+        maxWidth={"sm"}
+        open={index == modifyOdShow}
+        keepMounted
+        // onClose={handleClose}
+        // TransitionComponent={Transition}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle className="modal-header py-4 px-3 text-center">
+          Modify Order
+        </DialogTitle>
+        <DialogContent>
+          <Typography
+            variant="h6"
+            component="h6"
+            className="text-center text-gray fs-6 mb-3"
+          >
+            Are You sure You want to modify order of {data?.ticker}
+          </Typography>
+          <div className="text-center text-gray fs-6 mb-3">
+            <label>TIF</label>
+            <select name="tif" value={formData?.tif} onChange={(e) => setFormData((prev) => ({ ...prev, tif: e.target.value }))}>
+              <option value="">Select</option>
+              <option value="DAY">DAY</option>
+              <option value="GTC">GTC</option>
+              <option value="OPG">OPG</option>
+              <option value="IOC">IOC</option>
+            </select>
+
+            <label>Order Type</label>
+            <select name="orderType" value={formData?.orderType} onChange={(e) => setFormData((prev) => ({ ...prev, orderType: e.target.value }))}>
+              <option value="">Select</option>
+              <option value="LMT">LMT</option>
+              <option value="MKT">MKT</option>
+              <option value="STP">STP</option>
+              <option value="STOP_LIMIT">STOP LIMIT</option>
+              <option value="MIDPRICE">MIDPRICE</option>
+              <option value="TRAIL">TRAIL</option>
+              <option value="TRAILLMT">TRAILLMT</option>
+            </select>
+          </div>
+        </DialogContent>
+        <DialogActions className="dialog-actions-dense justify-content-center my-4">
+          <Box className="d-flex align-item-center justify-content-center gap-3 btn-box ">
+            <button
+              className="btn btn-lg w-auto btn-outline-purple"
+              onClick={handleClose}
+            >
+              Cancel
+            </button>
+            <button
+              className="btn btn-lg w-auto btn-purple"
+              onClick={handleSubmit}
+            >
+              Modify
+            </button>
+          </Box>
+        </DialogActions>
+      </Dialog>
+    </Fragment>
+  );
+};

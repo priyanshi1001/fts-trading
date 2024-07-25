@@ -369,3 +369,44 @@ export const orderConfirmApi = (orderId, payload) => {
             });
     });
 }
+
+export const cancelOrderApi = (accId, orderId) => {
+    return new Promise((resolve, reject) => {
+        let config = {
+            method: 'delete',
+            url: `${IBBaseUrl}/api/iserver/account/${accId}/order/${orderId}`,
+            headers: {
+                'Accept': 'application/json',
+            }
+        };
+
+        axios.request(config)
+            .then((response) => {
+                resolve(response?.data || []);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+}
+
+export const modifyOrderApi = (accId, orderId, payload) => {
+    return new Promise((resolve, reject) => {
+        let config = {
+            method: 'post',
+            url: `${IBBaseUrl}/api/iserver/account/${accId}/order/${orderId}`,
+            headers: {
+                'Accept': 'application/json',
+            },
+            data: payload
+        };
+
+        axios.request(config)
+            .then((response) => {
+                resolve(response?.data || []);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+}
