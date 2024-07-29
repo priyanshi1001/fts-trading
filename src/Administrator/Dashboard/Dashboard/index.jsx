@@ -138,10 +138,10 @@ export default function ContentManagement() {
         let shares = 0;
         let existingValue = 0;
         let liveAccPercentage = 0;
-        if (+formData?.stockPosition && accountBal && mid) {
+        if (+formData?.stockPosition && accountBal && bid) {
           existingValue = (+formData.stockPosition * accountBal) / 100;
           existingValue = +existingValue.toFixed(2);
-          shares = existingValue / mid;
+          shares = existingValue / bid;
           shares = +shares.toFixed(2);
           liveAccPercentage = +formData.stockPosition;
         }
@@ -152,7 +152,7 @@ export default function ContentManagement() {
           existingValue,
           liveAccPercentage,
           orderType: "LMT",
-          limitPrice: mid
+          limitPrice: bid
         });
       })
       .catch((err) => {
@@ -217,7 +217,8 @@ export default function ContentManagement() {
   }
 
   function fetchIBOpenOdersFun() {
-    let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,submitted,pending_cancel,cancelled,warn_state,sort_by_time`;
+    // let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,submitted,pending_cancel,cancelled,warn_state,sort_by_time`;
+    let filtersVal = "";
     fetchIBOpenOders(filtersVal)
       .then((response) => {
         setOpenOrderList(response?.orders || []);
@@ -496,10 +497,21 @@ export default function ContentManagement() {
         let order_id = result?.order_id || "";
         let order_status = result?.order_status || "";
 
+        if (response?.error) {
+          toast.error(response.error);
+          setPlaceOrderBtt(true);
+          return 0;
+        }
+
         if (orderId) {
           orderConfirmationFun(orderId, {
             confirmed: true
           }).then((response2) => {
+            if (response2?.error) {
+              toast.error(response2.error);
+              setPlaceOrderBtt(true);
+              return 0;
+            }
             let result2 = response2?.[0] || {};
             orderStoreObj = { ...orderStoreObj, ...result2 };
             orderSuccessPlaceMsg(orderStoreObj);
@@ -529,6 +541,11 @@ export default function ContentManagement() {
   function orderConfirmationFun(orderId, payload) {
     return new Promise((resolve, reject) => {
       orderConfirmApi(orderId, payload).then((response) => {
+        if (response?.error) {
+          toast.error(response.error);
+          reject(response);
+          return 0;
+        }
         let result = response?.[0] || {};
         if (result?.order_id && result?.order_status) resolve(response);
         else orderConfirmationFun(orderId, payload);
@@ -598,7 +615,7 @@ export default function ContentManagement() {
         // listingExchange: "string", // optional
         // deactivated: true
       }
-      console.log("modifyPayload=================", modifyPayload);
+
       modifyOrderApi(accId, odData?.orderId, modifyPayload).then((response) => {
         if (response?.error) {
           toast.error(response.error);
@@ -1654,8 +1671,8 @@ export default function ContentManagement() {
                                 {row?.price || row?.avgPrice}
                               </TableCell>
                               <TableCell className="table_content tableRow1">
-                                <Button onClick={() => setCnlOdShow(ind)}>X</Button>
-                                <Button onClick={() => setModifyOdShow(ind)}>Mod</Button>
+                                <Button onClick={() => setCnlOdShow(ind)}><DeleteOutlinedIcon /></Button>
+                                <Button onClick={() => setModifyOdShow(ind)}><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="28px" viewBox="0 0 20 20" width="28px" fill="#1976d2"><rect fill="none" height="20" width="20"/><path d="M3,5h9v1.5H3V5z M3,11.25h6v1.5H3V11.25z M3,8.12h9v1.5H3V8.12z M16.78,11.99l0.65-0.65c0.29-0.29,0.29-0.77,0-1.06 l-0.71-0.71c-0.29-0.29-0.77-0.29-1.06,0l-0.65,0.65L16.78,11.99z M16.19,12.58L11.77,17H10v-1.77l4.42-4.42L16.19,12.58z"/></svg></Button>
                               </TableCell>
                             </TableRow>
                           ))}
@@ -1869,7 +1886,7 @@ export default function ContentManagement() {
           stockSymbol: contractInfo?.symbol,
           stockName: contractInfo?.company_name,
           shares: formData.shares,
-          midPrice: +formData?.limitPrice || snapshot?.mid || 0,
+          midPrice: +formData?.limitPrice || snapshot?.bid || 0,
           existingValue: formData.existingValue,
           shareType: formData?.shareType || ""
         }}

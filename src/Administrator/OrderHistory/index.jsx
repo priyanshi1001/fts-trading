@@ -27,7 +27,7 @@ export default function Stocks() {
 
   useEffect(() => {
     // ?Filters=filled
-    fetchIBOpenOders(`?Filters=filled`).then((response) => {
+    fetchIBOpenOders(``).then((response) => {
       setOpenOrderList(response?.orders || []);
       setIsLoading(false);
     }).catch((err) => {

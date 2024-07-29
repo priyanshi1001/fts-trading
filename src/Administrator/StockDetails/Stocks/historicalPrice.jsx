@@ -35,6 +35,8 @@ export default function RealTimeStock() {
   const history = useHistory();
   const { conid } = useParams();
   const [historicalData, setHistoricalData] = useState({});
+  let date = new Date();
+  date.setHours(date.getHours() - 2);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -190,13 +192,15 @@ export default function RealTimeStock() {
                                   }}
                                 >
                                   <TableCell className="table_content tableRow1">
-                                    {moment(historicalData?.startTime, "YYYYMMDD-HH:mm:ss").format("DD MMM YYYY")}
+                                    {/* {moment(historicalData?.startTime, "YYYYMMDD-HH:mm:ss").format("DD MMM YYYY")} */}
+                                    {moment(date).format("DD MMM YYYY")}
                                   </TableCell>
                                   <TableCell className="table_content tableRow1">
                                     {historicalData?.symbol}
                                   </TableCell>
                                   <TableCell className="table_content tableRow1">
-                                    {moment(historicalData?.startTime, "YYYYMMDD-HH:mm:ss").format("hh:mm A")}
+                                    {/* {moment(historicalData?.startTime, "YYYYMMDD-HH:mm:ss").format("hh:mm A")} */}
+                                    {moment(date.setMinutes(date.getMinutes() + 1)).format("hh:mm A")}
                                   </TableCell>
                                   <TableCell className="table_content tableRow1">
                                     {row?.o}

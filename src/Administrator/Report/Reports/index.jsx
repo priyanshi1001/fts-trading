@@ -98,7 +98,6 @@ export default function Reports() {
                                   appearance: "none",
                                   border: "none",
                                 }}
-                                className="inputApperanceDesign"
                                 type="date"
                                 id="startDate"
                                 name="startDate"
@@ -135,7 +134,6 @@ export default function Reports() {
                                   appearance: "none",
                                   border: "none",
                                 }}
-                                className="inputApperanceDesign"
                                 type="date"
                                 id="endDate"
                                 name="endDate"
