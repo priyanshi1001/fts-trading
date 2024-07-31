@@ -26,7 +26,8 @@ import { useDispatch, useSelector } from "react-redux";
 import SearchIcon from "@mui/icons-material/Search";
 import { Route, useHistory, Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { fetchIBStockList } from "../../../api/ApiCall"
+import { fetchIBStockList } from "../../../api/ApiCall";
+import StockListStaticPayload from "../../../api/StockListStaticPayload";
 
 export default function Stocks() {
   const dispatch = useDispatch();
@@ -35,22 +36,7 @@ export default function Stocks() {
   const [size, setSize] = useState(100);
   const [search, setSearch] = useState("");
   const [data, setData] = useState(null);
-  const [payload, setPayload] = useState({
-    "pageNumber": 1,
-    "pageSize": 100,
-    "sortField": "symbol",
-    "sortDirection": "asc",
-    "productCountry": [
-      "US",
-      "IN"
-    ],
-    "productSymbol": "",
-    "newProduct": "all",
-    "productType": [
-      "STK"
-    ],
-    "domain": "com"
-  });
+  const [payload, setPayload] = useState(StockListStaticPayload);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

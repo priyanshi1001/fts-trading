@@ -41,8 +41,10 @@ import {
   saveOrderResponseApi,
   fetchPortfolioPositionApi,
   cancelOrderApi,
-  modifyOrderApi
+  modifyOrderApi,
+  fetchIBStockList
 } from "../../../api/ApiCall";
+import StockListStaticPayload from "../../../api/StockListStaticPayload";
 
 export default function ContentManagement() {
   const history = useHistory();
@@ -52,6 +54,7 @@ export default function ContentManagement() {
   const [accountDetail, setAccountDetail] = useState(null);
   const [portfolioSummary, setPortfolioSummary] = useState(null);
   const [contractInfo, setContractInfo] = useState(null);
+  const [selectedStock, setSelectedStock] = useState(null);
   const [pnlInfo, setPnlInfo] = useState(null);
   const [placeOrderBtt, setPlaceOrderBtt] = useState(true);
   const [formData, setFormData] = useState({
@@ -61,6 +64,11 @@ export default function ContentManagement() {
   });
   const [openOrderList, setOpenOrderList] = useState([]);
   const [existingOrder, setExistingOrder] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
+  const [stockList, setStockList] = useState([]);
+  const [stockPage, setStockPage] = useState(1);
+  const [stockSize, setStockSize] = useState(100);
+  const [stockPayload, setStockPayload] = useState(StockListStaticPayload);
   const [snapshot, setSnapshot] = useState({
     bid: 0,
     mid: 0,
@@ -82,6 +90,20 @@ export default function ContentManagement() {
 
   useEffect(() => {
     fetchIBOpenOdersFun();
+
+    fetchIBPnlApi().then((response) => {
+      setPnlInfo(response || null);
+    }).catch((err) => {
+      console.log("Pnl Info Error:", err);
+    });
+
+  }, []);
+
+  useEffect(() => {
+    updateStockDetails();
+  }, [selectedStock]);
+
+  function updateStockDetails() {
     fetchIBAccountDetailFun().then((response) => {
       fetchIBSnapshotFun(response);
     }).catch((err) => {
@@ -96,14 +118,7 @@ export default function ContentManagement() {
       .catch((err) => {
         console.log("Fetch Contract Info:", err);
       });
-
-    fetchIBPnlApi().then((response) => {
-      setPnlInfo(response || null);
-    }).catch((err) => {
-      console.log("Pnl Info Error:", err);
-    });
-
-  }, []);
+  }
 
   function fetchIBSnapshotFun(data) {
     const conid = searchParams.conid || "";
@@ -636,6 +651,41 @@ export default function ContentManagement() {
     }
   }
 
+  function handleSearchInput(e) {
+    let value = e.target.value;
+    setSearchInput(value);
+
+    if (!value) {
+      setStockList([]);
+      return 0;
+    }
+
+    if (stockSize > 0) stockPayload["pageSize"] = stockSize;
+    if (stockPage > 0) stockPayload["pageNumber"] = stockPage;
+    let tempSearch = "";
+    if (value) tempSearch = value.toUpperCase().trim();
+    stockPayload["productSymbol"] = (tempSearch);
+
+    setStockPayload({ ...stockPayload });
+
+    fetchIBStockList(stockPayload).then((response) => {
+      setStockList(response?.products || []);
+    }).catch((err) => {
+      console.log("Stock List Search Error:", err.message);
+      toast.error("Stock list not fetch. please try again.", {
+        toastId: "stock-list-search-error"
+      });
+    })
+  }
+
+  function handleStockListCLick(stockData) {
+    let { symbol, conid } = stockData;
+    history.push(`/Dashboard?conid=${conid}&symbol=${symbol}`);
+    setSearchInput(symbol);
+    setSelectedStock({ conid, symbol });
+    setStockList([]);
+  }
+
   function percentageVal(percentage, type) {
     let midPrice = +formData?.limitPrice || +snapshot.bid || 0;
     let result = (midPrice * percentage) / 100;
@@ -716,20 +766,47 @@ export default function ContentManagement() {
                       </li>
                       <li>
                         Today’s Trading G/L
-                        <span className="digit text-success">{pnlInfo?.["upnl"]?.[`${accountDetail?.selectedAccount}.Core`]?.["dpl"] || 0}</span>
+                        <span className="digit text-success">{pnlInfo?.["upnl"]?.[`${accountDetail?.selectedAccount}.Core`]?.["dpl"]?.toFixed(2) || 0}</span>
                       </li>
                       <li>
                         Unrealized PnL
-                        <span className="digit text-success">{pnlInfo?.["upnl"]?.[`${accountDetail?.selectedAccount}.Core`]?.["upl"] || 0}</span>
+                        <span className="digit text-success">{pnlInfo?.["upnl"]?.[`${accountDetail?.selectedAccount}.Core`]?.["upl"]?.toFixed(2) || 0}</span>
                       </li>
                     </ul>
                   </CardContent>
                 </Card>
               </div>
               <div className="col-lg-9 col-md-12 col-12 pt-2">
-                <Card className="cardDesign">
+                <Card className="cardDesign" sx={{ paddingBlockStart: "40px" }}>
                   <CardContent className="cardContent">
                     <div className="row">
+                      <div className="dropdown">
+                        <div className="col-auto dropdown-content" id="myDropdown">
+                          <input type="text" placeholder="Search Stocks..." id="searchInput" value={searchInput} onChange={handleSearchInput} />
+
+                        </div>
+                        <div className="position-absolute top-100 start-0 p-2 rounded-2 z-index-2" style={{
+                          background: "#f6f6f6", marginInlineStart: "20px", zIndex: "2",
+                          boxShadow: "0 0 10px #0404047", width: "180px"
+                        }}>
+                          {searchInput && stockList.map((dt, ind) => {
+                            return (
+                              <div key={ind}>
+                                <a style={{
+                                  marginBlockEnd: "3px",
+                                  color: "rgb(51, 51, 51)",
+                                  background: "rgb(229 229 229)",
+                                  padding: "3px 10px",
+                                  width: "100%",
+                                  display: "block",
+                                  lineHeight: "1.5",
+                                }} href="javascript:void(0)" onClick={() => handleStockListCLick(dt)}>{dt?.symbol}</a>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </div>
+
                       {/* <div className="col-lg-3 col-12">
                         <div className="stockInfo">
                           <ul class="list-group mb-2">
@@ -1672,7 +1749,7 @@ export default function ContentManagement() {
                               </TableCell>
                               <TableCell className="table_content tableRow1">
                                 <Button onClick={() => setCnlOdShow(ind)}><DeleteOutlinedIcon /></Button>
-                                <Button onClick={() => setModifyOdShow(ind)}><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="28px" viewBox="0 0 20 20" width="28px" fill="#1976d2"><rect fill="none" height="20" width="20"/><path d="M3,5h9v1.5H3V5z M3,11.25h6v1.5H3V11.25z M3,8.12h9v1.5H3V8.12z M16.78,11.99l0.65-0.65c0.29-0.29,0.29-0.77,0-1.06 l-0.71-0.71c-0.29-0.29-0.77-0.29-1.06,0l-0.65,0.65L16.78,11.99z M16.19,12.58L11.77,17H10v-1.77l4.42-4.42L16.19,12.58z"/></svg></Button>
+                                <Button onClick={() => setModifyOdShow(ind)}><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="28px" viewBox="0 0 20 20" width="28px" fill="#1976d2"><rect fill="none" height="20" width="20" /><path d="M3,5h9v1.5H3V5z M3,11.25h6v1.5H3V11.25z M3,8.12h9v1.5H3V8.12z M16.78,11.99l0.65-0.65c0.29-0.29,0.29-0.77,0-1.06 l-0.71-0.71c-0.29-0.29-0.77-0.29-1.06,0l-0.65,0.65L16.78,11.99z M16.19,12.58L11.77,17H10v-1.77l4.42-4.42L16.19,12.58z" /></svg></Button>
                               </TableCell>
                             </TableRow>
                           ))}
