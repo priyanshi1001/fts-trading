@@ -10,7 +10,7 @@ import axios from "axios";
 
 const IBAccountId = "DU9313757";
 const IBBaseUrl = `http://43.230.64.35:8098/v1`; // http://43.230.64.35:8098/v1 http://localhost/v1
-const NodeServBaseUrl = `http://localhost:4545`; // http://43.230.64.35:9011 http://localhost:4545
+const NodeServBaseUrl = `http://43.230.64.35:9011`; // http://43.230.64.35:9011 http://localhost:4545
 
 // export const fetchAssetsList = () => {
 //     return new Promise((resolve, reject) => {
