@@ -10,7 +10,7 @@ import axios from "axios";
 
 const IBAccountId = "DU9313757";
 const IBBaseUrl = `http://43.230.64.35:8098/v1`; // http://43.230.64.35:8098/v1 http://localhost/v1
-const NodeServBaseUrl = `http://43.230.64.35:9011`; // http://43.230.64.35:9011 http://localhost:4545
+const NodeServBaseUrl = `http://localhost:4545`; // http://43.230.64.35:9011 http://localhost:4545
 
 // export const fetchAssetsList = () => {
 //     return new Promise((resolve, reject) => {
@@ -205,6 +205,157 @@ export const fetchIBStockList = (payload) => {
             });
     });
 }
+
+export const fetchWatchListApi = () => {
+    return new Promise((resolve, reject) => {
+
+        let config = {
+            method: 'get',
+            url: `${NodeServBaseUrl}/wish-list`,
+            headers: {
+                'Accept': 'application/json'
+            }
+        };
+
+        axios.request(config)
+            .then((response) => {
+                resolve(response?.data || []);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+}
+
+export const fetchStockListApi = (id) => {
+    return new Promise((resolve, reject) => {
+
+        let config = {
+            method: 'get',
+            url: `${NodeServBaseUrl}/stock-list/${id}`,
+            headers: {
+                'Accept': 'application/json'
+            }
+        };
+
+        axios.request(config)
+            .then((response) => {
+                resolve(response?.data || []);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+}
+
+export const addStockListAndWatchListApi = (payload) => {
+    return new Promise((resolve, reject) => {
+
+        let config = {
+            method: 'post',
+            url: `${NodeServBaseUrl}/add-stock-list-and-watch-list`,
+            headers: {
+                'Accept': 'application/json'
+            },
+            data: payload
+        };
+
+        axios.request(config)
+            .then((response) => {
+                resolve(response?.data || []);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+}
+
+export const updateStockListAndWatchListApi = (id, payload) => {
+    return new Promise((resolve, reject) => {
+
+        let config = {
+            method: 'post',
+            url: `${NodeServBaseUrl}/update-stock-list-and-watch-list/${id}`,
+            headers: {
+                'Accept': 'application/json'
+            },
+            data: payload
+        };
+
+        axios.request(config)
+            .then((response) => {
+                resolve(response?.data || []);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+}
+
+export const updateWatchListApi = (id, payload) => {
+    return new Promise((resolve, reject) => {
+
+        let config = {
+            method: 'post',
+            url: `${NodeServBaseUrl}/update-wish-list/${id}`,
+            headers: {
+                'Accept': 'application/json'
+            },
+            data: payload
+        };
+
+        axios.request(config)
+            .then((response) => {
+                resolve(response?.data || []);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+}
+
+export const deleteWatchListApi = (id) => {
+    return new Promise((resolve, reject) => {
+
+        let config = {
+            method: 'delete',
+            url: `${NodeServBaseUrl}/wish-list/${id}`,
+            headers: {
+                'Accept': 'application/json'
+            }
+        };
+
+        axios.request(config)
+            .then((response) => {
+                resolve(response?.data || []);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+}
+
+export const deleteStockListApi = (id) => {
+    return new Promise((resolve, reject) => {
+
+        let config = {
+            method: 'delete',
+            url: `${NodeServBaseUrl}/stock-list/${id}`,
+            headers: {
+                'Accept': 'application/json'
+            }
+        };
+
+        axios.request(config)
+            .then((response) => {
+                resolve(response?.data || []);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+}
+
 
 export const saveOrderResponseApi = (payload) => {
     return new Promise((resolve, reject) => {

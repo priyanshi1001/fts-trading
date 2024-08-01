@@ -20,6 +20,8 @@ const Report = lazy(() => import("../../Administrator/Report/Reports"));
 const WatchList = lazy(() => import("../../Administrator/WatchList/WatchLists"));
 const OtherFunctions = lazy(() => import("../../Administrator/OtherFunction/Function"));
 const Dashboard = lazy(() => import("../../Administrator/Dashboard/Dashboard"));
+const AddStockList = lazy(() => import("../../Administrator/WatchList/WatchLists/add-stock-list"));
+const UpdateStockList = lazy(() => import("../../Administrator/WatchList/WatchLists/update-stock-list"));
 
 const Dashboard_details = lazy(() =>
   import("../../Administrator/Dashboard/DashBoard_details")
@@ -185,6 +187,40 @@ const AppMain = () => {
         }
       >
         <Route path="/WatchList" component={isAuth() ? WatchList : login} />
+      </Suspense>
+      <Suspense
+        fallback={
+          <div className="loader-container">
+            <div className="loader-container-inner">
+              <div className="text-center">
+                <Loader type="line-scale" />
+              </div>
+              <h6 className="mt-3">
+                Please wait while we load all Stocks
+                {/* <small>Because this is a demonstration we load at once all the Elements examples. This wouldn't happen in a real live app!</small> */}
+              </h6>
+            </div>
+          </div>
+        }
+      >
+        <Route path="/add-stock-list" component={isAuth() ? AddStockList : login} />
+      </Suspense>
+      <Suspense
+        fallback={
+          <div className="loader-container">
+            <div className="loader-container-inner">
+              <div className="text-center">
+                <Loader type="line-scale" />
+              </div>
+              <h6 className="mt-3">
+                Please wait while we load all Stocks
+                {/* <small>Because this is a demonstration we load at once all the Elements examples. This wouldn't happen in a real live app!</small> */}
+              </h6>
+            </div>
+          </div>
+        }
+      >
+        <Route path="/update-stock-list/:id" component={isAuth() ? UpdateStockList : login} />
       </Suspense>
       <Suspense
         fallback={
