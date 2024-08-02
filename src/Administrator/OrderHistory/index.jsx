@@ -26,8 +26,7 @@ export default function Stocks() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // ?Filters=filled
-    fetchIBOpenOders(``).then((response) => {
+    fetchIBOpenOders(`?Filters=filled`).then((response) => {
       setOpenOrderList(response?.orders || []);
       setIsLoading(false);
     }).catch((err) => {
@@ -164,7 +163,7 @@ export default function Stocks() {
                                     Stock
                                   </TableCell>
                                   <TableCell className="table_content tableRow1">
-                                    {row?.totalSize}
+                                    {showQty(row)}
                                   </TableCell>
                                   <TableCell className="table_content tableRow1">
                                     {row?.price || row?.avgPrice}
@@ -192,4 +191,16 @@ export default function Stocks() {
       </Fragment>
     </Card >
   );
+}
+
+function showQty(data) {
+  let qty = 0;
+  if (data?.status == "Filled") {
+    qty = data?.filledQuantity || 0;
+  } else if (data?.status == "Cancelled") {
+    qty = data?.remainingQuantity || 0;
+  } else {
+    qty = data?.totalSize || 0;
+  }
+  return qty;
 }

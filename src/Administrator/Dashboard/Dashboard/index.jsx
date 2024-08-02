@@ -163,7 +163,7 @@ export default function ContentManagement() {
 
         setFormData({
           ...formData,
-          shares,
+          shares: Math.round(shares),
           existingValue,
           liveAccPercentage,
           orderType: "LMT",
@@ -232,8 +232,8 @@ export default function ContentManagement() {
   }
 
   function fetchIBOpenOdersFun() {
-    // let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,submitted,pending_cancel,cancelled,warn_state,sort_by_time`;
-    let filtersVal = "";
+    // let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,filled,submitted,pending_cancel,cancelled,warn_state,sort_by_time`;
+    let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,submitted,pending_cancel,cancelled,warn_state,sort_by_time`;
     fetchIBOpenOders(filtersVal)
       .then((response) => {
         setOpenOrderList(response?.orders || []);
@@ -431,20 +431,22 @@ export default function ContentManagement() {
         toastId: "form-error",
       });
       checkValidation = false;
-    } else if (
-      formData?.orderType == "LMT" &&
-      formData.limitPrice &&
-      (+formData.limitPrice < snapshot.bid ||
-        +formData.limitPrice > snapshot.ask)
-    ) {
-      toast.error(
-        "Limit price should be greater than bid price and less than ask price.",
-        {
-          toastId: "form-error",
-        }
-      );
-      checkValidation = false;
     }
+    // else if (
+    //   formData?.orderType == "LMT" &&
+    //   formData.limitPrice &&
+    //   (+formData.limitPrice < snapshot.bid ||
+    //     +formData.limitPrice > snapshot.ask)
+    // ) {
+    //   toast.error(
+    //     "Limit price should be greater than bid price and less than ask price.",
+    //     {
+    //       toastId: "form-error",
+    //     }
+    //   );
+    //   checkValidation = false;
+    // }
+
     if (!formData?.tif) {
       toast.error("Please select TIF.", {
         toastId: "form-error",
@@ -521,21 +523,7 @@ export default function ContentManagement() {
         if (orderId) {
           orderConfirmationFun(orderId, {
             confirmed: true
-          }).then((response2) => {
-            if (response2?.error) {
-              toast.error(response2.error);
-              setPlaceOrderBtt(true);
-              return 0;
-            }
-            let result2 = response2?.[0] || {};
-            orderStoreObj = { ...orderStoreObj, ...result2 };
-            orderSuccessPlaceMsg(orderStoreObj);
-            setPlaceOrderBtt(true);
-          }).catch((err) => {
-            console.log("Order Confirmation Error:", err.message);
-            toast.error("Something went wrong. please try again.");
-            setPlaceOrderBtt(true);
-          });
+          }, orderStoreObj);
         } else if (order_status && order_id) {
           orderStoreObj = { ...orderStoreObj, ...result };
           orderSuccessPlaceMsg(orderStoreObj);
@@ -553,20 +541,32 @@ export default function ContentManagement() {
       });
   }
 
-  function orderConfirmationFun(orderId, payload) {
-    return new Promise((resolve, reject) => {
-      orderConfirmApi(orderId, payload).then((response) => {
-        if (response?.error) {
-          toast.error(response.error);
-          reject(response);
-          return 0;
-        }
+  function orderConfirmationFun(orderId, payload, orderStoreObj) {
+    orderConfirmApi(orderId, payload).then((response) => {
+      if (response?.error) {
+        toast.error(response.error);
+      } else {
         let result = response?.[0] || {};
-        if (result?.order_id && result?.order_status) resolve(response);
-        else orderConfirmationFun(orderId, payload);
-      }).catch((err) => {
-        reject(err);
-      });
+        let tempOrderId = result?.id || "";
+        let order_id = result?.order_id || "";
+        let order_status = result?.order_status || "";
+        if (order_id && order_status) {
+          let tempOrderStoreObj = { ...orderStoreObj, ...result };
+          orderSuccessPlaceMsg(tempOrderStoreObj);
+          setPlaceOrderBtt(true);
+        }
+        else if (tempOrderId) {
+          orderConfirmationFun(tempOrderId, payload, orderStoreObj);
+        }
+        else {
+          toast.error("Something went wrong. please try again");
+          setPlaceOrderBtt(true);
+        }
+      }
+    }).catch((err) => {
+      console.log("Order Confirmation Error:", err.message);
+      toast.error("Something went wrong. please try again.");
+      setPlaceOrderBtt(true);
     });
   }
 
@@ -1705,6 +1705,12 @@ export default function ContentManagement() {
                             Order Price
                           </TableCell>
                           <TableCell
+                            align="left"
+                            className="table_head tableRow1"
+                          >
+                            Order Status
+                          </TableCell>
+                          <TableCell
                             align="right"
                             className="table_head tableRow1"
                           >
@@ -1739,13 +1745,16 @@ export default function ContentManagement() {
                                 )}
                               </TableCell>
                               <TableCell className="table_content tableRow1">
-                                {row?.totalSize}
+                                {row?.filledQuantity || row?.totalSize}
                               </TableCell>
                               <TableCell className="table_content tableRow1">
                                 {row?.remainingQuantity}
                               </TableCell>
                               <TableCell className="table_content tableRow1">
                                 {row?.price || row?.avgPrice}
+                              </TableCell>
+                              <TableCell className="table_content tableRow1">
+                                {row?.order_ccp_status}
                               </TableCell>
                               <TableCell className="table_content tableRow1">
                                 <Button onClick={() => setCnlOdShow(ind)}><DeleteOutlinedIcon /></Button>
