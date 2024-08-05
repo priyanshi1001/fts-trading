@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useRef } from "react";
 import moment from "moment";
 import cryptoRandomString from "crypto-random-string";
 import Table from "@mui/material/Table";
@@ -45,9 +45,12 @@ import {
   fetchIBStockList
 } from "../../../api/ApiCall";
 import StockListStaticPayload from "../../../api/StockListStaticPayload";
+import { socket } from "../../../api/socket";
+socket.connect();
 
 export default function ContentManagement() {
   const history = useHistory();
+  const modifyOrderRef = useRef(null);
   const [open1, setOpen1] = useState(false);
   const [cnlOdShow, setCnlOdShow] = useState(-1);
   const [modifyOdShow, setModifyOdShow] = useState(-1);
@@ -100,7 +103,53 @@ export default function ContentManagement() {
   }, []);
 
   useEffect(() => {
-    updateStockDetails();
+    if (!selectedStock?.type)
+      updateStockDetails();
+
+    const conid = searchParams.conid || "";
+    socket.on("connect", () => {
+      console.log("Dashboard Node socket connect successfully.");
+    })
+    socket.on("disconnect", () => {
+      console.log("Dashboard Node socket disconnected.");
+    });
+
+    socket.on("ib_message", (resData) => {
+      let socketResponse = JSON.parse(resData);
+      if (socketResponse.topic == `smd+${conid}`) {
+        let bid = +socketResponse?.["84"] || 0;
+        let ask = +socketResponse?.["86"] || 0;
+        let lastPrice = +socketResponse?.["31"] || 0;
+        if (!bid) {
+          bid = snapshot?.bid;
+        }
+        if (!ask) {
+          ask = snapshot?.ask;
+        }
+        if (lastPrice) {
+          lastPrice = snapshot?.lastPrice;
+        }
+        let mid = (bid + ask) / 2;
+        mid = +mid.toFixed(2) || 0;
+        setSnapshot({
+          bid: bid,
+          mid: mid,
+          ask: ask,
+          lastPrice: lastPrice,
+        });
+      }
+
+      console.log("Dashboard ib_message:", socketResponse);
+    });
+    const obj = {
+      "31": "Last Price",
+      "84": "Bid price",
+      "86": "Ask price"
+    }
+    const fields = ["31", "84", "86"];
+    if (conid) {
+      socket.emit("req_data", `smd+${conid}+${JSON.stringify({ fields: fields })}`);
+    }
   }, [selectedStock]);
 
   function updateStockDetails() {
@@ -160,6 +209,74 @@ export default function ContentManagement() {
           shares = +shares.toFixed(2);
           liveAccPercentage = +formData.stockPosition;
         }
+
+        setFormData({
+          ...formData,
+          shares: Math.round(shares),
+          existingValue,
+          liveAccPercentage,
+          orderType: "LMT",
+          limitPrice: bid
+        });
+      })
+      .catch((err) => {
+        console.log("IB Snapshot Error", err);
+        toast.error("Current prices not fetch. please try after some time.");
+      });
+  }
+
+  function handleModifyOrder(data) {
+    console.log("handleModifyOrder data:", data);
+    let { symbol, conid } = data;
+
+    if (!conid) {
+      toast.error("Shares details not fetch. please try again.");
+      console.log("Contract id missing.")
+      return 0;
+    }
+
+    history.push(`/Dashboard?conid=${conid}&symbol=${symbol}`);
+    setSelectedStock({ conid, symbol, type: "modify_order" });
+
+    fetchIBModifyOrderSnapshotFun(data);
+
+    modifyOrderRef.current.scrollIntoView({
+      behavior: "smooth"
+    });
+
+  }
+
+  function fetchIBModifyOrderSnapshotFun(data) {
+    let { symbol, conid } = data;
+    fetchIBSnapshotApi(conid, "31,84,86")
+      .then((response) => {
+        if (!(+response?.[0]?.[84]) || !(+response?.[0]?.[86])) {
+          fetchIBModifyOrderSnapshotFun(data);
+          return 0;
+        }
+        let bid = +response?.[0]?.[84] || 0;
+        let ask = +response?.[0]?.[86] || 0;
+        let lastPrice = +response?.[0]?.[31] || 0;
+        let mid = (bid + ask) / 2;
+        mid = +mid.toFixed(2) || 0;
+        setSnapshot({
+          bid: bid,
+          mid: mid,
+          ask: ask,
+          lastPrice: lastPrice,
+        });
+
+        // let accountBal = portfolioSummary?.["availablefunds-s"]?.amount || 0;
+        let shares = 0;
+        let existingValue = 0;
+        let liveAccPercentage = 0;
+        // if (+formData?.stockPosition && accountBal && bid) {
+        //   existingValue = (+formData.stockPosition * accountBal) / 100;
+        //   existingValue = +existingValue.toFixed(2);
+        //   shares = existingValue / bid;
+        //   shares = +shares.toFixed(2);
+        //   liveAccPercentage = +formData.stockPosition;
+        // }
 
         setFormData({
           ...formData,
@@ -701,7 +818,7 @@ export default function ContentManagement() {
     <Fragment>
       <ThemeOptions />
       <AppHeader />
-      <div className="app-main">
+      <div className="app-main" ref={modifyOrderRef}>
         <AppSidebar />
         <div className="app-main__outer">
           <div className="app-main__inner">
@@ -1758,7 +1875,8 @@ export default function ContentManagement() {
                               </TableCell>
                               <TableCell className="table_content tableRow1">
                                 <Button onClick={() => setCnlOdShow(ind)}><DeleteOutlinedIcon /></Button>
-                                <Button onClick={() => setModifyOdShow(ind)}><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="28px" viewBox="0 0 20 20" width="28px" fill="#1976d2"><rect fill="none" height="20" width="20" /><path d="M3,5h9v1.5H3V5z M3,11.25h6v1.5H3V11.25z M3,8.12h9v1.5H3V8.12z M16.78,11.99l0.65-0.65c0.29-0.29,0.29-0.77,0-1.06 l-0.71-0.71c-0.29-0.29-0.77-0.29-1.06,0l-0.65,0.65L16.78,11.99z M16.19,12.58L11.77,17H10v-1.77l4.42-4.42L16.19,12.58z" /></svg></Button>
+                                {/* <Button onClick={() => setModifyOdShow(ind)}><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="28px" viewBox="0 0 20 20" width="28px" fill="#1976d2"><rect fill="none" height="20" width="20" /><path d="M3,5h9v1.5H3V5z M3,11.25h6v1.5H3V11.25z M3,8.12h9v1.5H3V8.12z M16.78,11.99l0.65-0.65c0.29-0.29,0.29-0.77,0-1.06 l-0.71-0.71c-0.29-0.29-0.77-0.29-1.06,0l-0.65,0.65L16.78,11.99z M16.19,12.58L11.77,17H10v-1.77l4.42-4.42L16.19,12.58z" /></svg></Button> */}
+                                <Button onClick={() => handleModifyOrder(row)}><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="28px" viewBox="0 0 20 20" width="28px" fill="#1976d2"><rect fill="none" height="20" width="20" /><path d="M3,5h9v1.5H3V5z M3,11.25h6v1.5H3V11.25z M3,8.12h9v1.5H3V8.12z M16.78,11.99l0.65-0.65c0.29-0.29,0.29-0.77,0-1.06 l-0.71-0.71c-0.29-0.29-0.77-0.29-1.06,0l-0.65,0.65L16.78,11.99z M16.19,12.58L11.77,17H10v-1.77l4.42-4.42L16.19,12.58z" /></svg></Button>
                               </TableCell>
                             </TableRow>
                           ))}

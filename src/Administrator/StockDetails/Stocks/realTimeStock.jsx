@@ -22,8 +22,8 @@ import { useDispatch, useSelector } from "react-redux";
 import SearchIcon from "@mui/icons-material/Search";
 import { Route, useHistory, Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { socket } from "../../../api/socket"
-import { } from "../../../api/ApiCall"
+import { } from "../../../api/ApiCall";
+import { socket } from "../../../api/socket";
 socket.connect();
 
 export default function RealTimeStock() {
