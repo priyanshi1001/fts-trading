@@ -54,6 +54,7 @@ export default function ContentManagement() {
   const [open1, setOpen1] = useState(false);
   const [cnlOdShow, setCnlOdShow] = useState(-1);
   const [modifyOdShow, setModifyOdShow] = useState(-1);
+  const [modifyOrderData, setModifyOrderData] = useState(null);
   const [accountDetail, setAccountDetail] = useState(null);
   const [portfolioSummary, setPortfolioSummary] = useState(null);
   const [contractInfo, setContractInfo] = useState(null);
@@ -107,6 +108,15 @@ export default function ContentManagement() {
       updateStockDetails();
 
     const conid = searchParams.conid || "";
+
+    fetchIBContractInfo(conid)
+      .then((response) => {
+        setContractInfo(response || null);
+      })
+      .catch((err) => {
+        console.log("Fetch Contract Info:", err);
+      });
+
     socket.on("connect", () => {
       console.log("Dashboard Node socket connect successfully.");
     })
@@ -120,23 +130,34 @@ export default function ContentManagement() {
         let bid = +socketResponse?.["84"] || 0;
         let ask = +socketResponse?.["86"] || 0;
         let lastPrice = +socketResponse?.["31"] || 0;
-        if (!bid) {
-          bid = snapshot?.bid;
+        console.log("bid, ask, lastPrice==================", bid, ask, lastPrice, snapshot);
+        let tempObj = {};
+        if (bid) {
+          tempObj["bid"] = bid;
         }
-        if (!ask) {
-          ask = snapshot?.ask;
+        if (ask) {
+          tempObj["ask"] = ask;
         }
         if (lastPrice) {
-          lastPrice = snapshot?.lastPrice;
+          tempObj["lastPrice"] = lastPrice;
         }
-        let mid = (bid + ask) / 2;
-        mid = +mid.toFixed(2) || 0;
-        setSnapshot({
-          bid: bid,
-          mid: mid,
-          ask: ask,
-          lastPrice: lastPrice,
-        });
+        if (tempObj.bid && tempObj.ask) {
+          let mid = (bid + ask) / 2;
+          mid = +mid.toFixed(2) || 0;
+          tempObj["mid"] = mid;
+        } else if (tempObj.bid || tempObj.ask) {
+          tempObj["mid"] = tempObj.bid || tempObj.ask;
+        }
+
+        // if (bid && mid && ask) {
+        //   setSnapshot({
+        //     bid: bid,
+        //     mid: mid,
+        //     ask: ask,
+        //     lastPrice: lastPrice,
+        //   });
+        // }
+        setSnapshot((prev) => ({ ...prev, ...tempObj }));
       }
 
       console.log("Dashboard ib_message:", socketResponse);
@@ -158,15 +179,6 @@ export default function ContentManagement() {
     }).catch((err) => {
       console.log("Account Details Not Fetch.")
     });
-
-    const conid = searchParams.conid || "";
-    fetchIBContractInfo(conid)
-      .then((response) => {
-        setContractInfo(response || null);
-      })
-      .catch((err) => {
-        console.log("Fetch Contract Info:", err);
-      });
   }
 
   function fetchIBSnapshotFun(data) {
@@ -226,8 +238,7 @@ export default function ContentManagement() {
   }
 
   function handleModifyOrder(data) {
-    console.log("handleModifyOrder data:", data);
-    let { symbol, conid } = data;
+    let { ticker, conid } = data;
 
     if (!conid) {
       toast.error("Shares details not fetch. please try again.");
@@ -235,10 +246,11 @@ export default function ContentManagement() {
       return 0;
     }
 
-    history.push(`/Dashboard?conid=${conid}&symbol=${symbol}`);
-    setSelectedStock({ conid, symbol, type: "modify_order" });
+    history.push(`/Dashboard?conid=${conid}&symbol=${ticker}`);
+    setSelectedStock({ conid, symbol: ticker, type: "modify_order" });
 
-    fetchIBModifyOrderSnapshotFun(data);
+    modifyIBOrderSnapshotFun(data);
+    setModifyOrderData(data);
 
     modifyOrderRef.current.scrollIntoView({
       behavior: "smooth"
@@ -246,12 +258,12 @@ export default function ContentManagement() {
 
   }
 
-  function fetchIBModifyOrderSnapshotFun(data) {
-    let { symbol, conid } = data;
+  function modifyIBOrderSnapshotFun(data) {
+    let { conid, side, totalSize, remainingQuantity } = data;
     fetchIBSnapshotApi(conid, "31,84,86")
       .then((response) => {
         if (!(+response?.[0]?.[84]) || !(+response?.[0]?.[86])) {
-          fetchIBModifyOrderSnapshotFun(data);
+          modifyIBOrderSnapshotFun(data);
           return 0;
         }
         let bid = +response?.[0]?.[84] || 0;
@@ -267,8 +279,9 @@ export default function ContentManagement() {
         });
 
         // let accountBal = portfolioSummary?.["availablefunds-s"]?.amount || 0;
-        let shares = 0;
-        let existingValue = 0;
+        let shares = Math.round(totalSize || remainingQuantity);
+        let existingValue = shares * bid;
+        existingValue = +existingValue.toFixed(2);
         let liveAccPercentage = 0;
         // if (+formData?.stockPosition && accountBal && bid) {
         //   existingValue = (+formData.stockPosition * accountBal) / 100;
@@ -280,11 +293,87 @@ export default function ContentManagement() {
 
         setFormData({
           ...formData,
-          shares: Math.round(shares),
+          tif: "DAY",
+          shareType: side,
+          orderType: "LMT",
+          shares: shares,
+          limitPrice: bid,
+          stockPosition: 0,
           existingValue,
           liveAccPercentage,
+          submitType: "modify_order"
+        });
+      })
+      .catch((err) => {
+        console.log("IB Snapshot Error", err);
+        toast.error("Current prices not fetch. please try after some time.");
+      });
+  }
+
+  function handleCloseOrder(data) {
+    let { contractDesc, conid } = data;
+
+    if (!conid) {
+      toast.error("Shares details not fetch. please try again.");
+      console.log("Contract id missing.")
+      return 0;
+    }
+
+    history.push(`/Dashboard?conid=${conid}&symbol=${contractDesc}`);
+    setSelectedStock({ conid, symbol: contractDesc, type: "close_order" });
+
+    closeIBOrderSnapshotFun(data);
+
+    modifyOrderRef.current.scrollIntoView({
+      behavior: "smooth"
+    });
+
+  }
+
+  function closeIBOrderSnapshotFun(data) {
+    let { conid, position } = data;
+    fetchIBSnapshotApi(conid, "31,84,86")
+      .then((response) => {
+        if (!(+response?.[0]?.[84]) || !(+response?.[0]?.[86])) {
+          closeIBOrderSnapshotFun(data);
+          return 0;
+        }
+        let bid = +response?.[0]?.[84] || 0;
+        let ask = +response?.[0]?.[86] || 0;
+        let lastPrice = +response?.[0]?.[31] || 0;
+        let mid = (bid + ask) / 2;
+        mid = +mid.toFixed(2) || 0;
+        setSnapshot({
+          bid: bid,
+          mid: mid,
+          ask: ask,
+          lastPrice: lastPrice,
+        });
+
+        // let accountBal = portfolioSummary?.["availablefunds-s"]?.amount || 0;
+        let shares = Math.round(position);
+        let existingValue = shares * bid;
+        existingValue = +existingValue.toFixed(2);
+        let liveAccPercentage = 0;
+        // if (+formData?.stockPosition && accountBal && bid) {
+        //   existingValue = (+formData.stockPosition * accountBal) / 100;
+        //   existingValue = +existingValue.toFixed(2);
+        //   shares = existingValue / bid;
+        //   shares = +shares.toFixed(2);
+        //   liveAccPercentage = +formData.stockPosition;
+        // }
+
+        setFormData({
+          ...formData,
+          tif: "DAY",
+          shareType: "BUY",
           orderType: "LMT",
-          limitPrice: bid
+          shares: shares,
+          limitPrice: bid,
+          stockPosition: 0,
+          existingValue,
+          liveAccPercentage,
+          submitType: ""
         });
       })
       .catch((err) => {
@@ -350,10 +439,14 @@ export default function ContentManagement() {
 
   function fetchIBOpenOdersFun() {
     // let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,filled,submitted,pending_cancel,cancelled,warn_state,sort_by_time`;
-    let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,submitted,pending_cancel,cancelled,warn_state,sort_by_time`;
+    let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,submitted,pending_cancel,warn_state`;
     fetchIBOpenOders(filtersVal)
       .then((response) => {
-        setOpenOrderList(response?.orders || []);
+        if (!response?.snapshot) {
+          fetchIBOpenOdersFun();
+        } else {
+          setOpenOrderList(response?.orders || []);
+        }
       })
       .catch((err) => {
         console.log("Fetch Open Orders:", err);
@@ -472,6 +565,7 @@ export default function ContentManagement() {
         existingValue = +existingValue.toFixed(2);
         shares = existingValue / midPrice;
         shares = +shares.toFixed(2);
+        shares = Math.round(shares);
         liveAccPercentage = +value;
       }
       if (inputType == "input") {
@@ -496,7 +590,7 @@ export default function ContentManagement() {
     }
   }
 
-  function handleSubmitButton(e) {
+  function handleSubmitButton() {
     let checkValidation = true;
     let accId = accountDetail?.selectedAccount || "";
 
@@ -587,6 +681,12 @@ export default function ContentManagement() {
       return 0;
     }
     setPlaceOrderBtt(false);
+
+    if (formData?.submitType == "modify_order") {
+      modifyOrderFun();
+      return 0;
+    }
+
     let orderPayload = {
       orders: [
         {
@@ -730,41 +830,53 @@ export default function ContentManagement() {
     }
   }
 
-  function modifyOrderFun(odData, formData) {
+  function modifyOrderFun() {
+    if (!modifyOrderData?.orderId) {
+      toast.error("Please select modify order first.");
+      setPlaceOrderBtt(true);
+      setOpen1(false);
+      return 0
+    }
     let accId = accountDetail?.selectedAccount || "";
     if (accId) {
       let modifyPayload = {
         acctId: accId,
-        conid: odData?.conid,
-        orderType: formData?.orderType,
+        conid: contractInfo?.con_id,
+        orderType: formData.orderType,
         outsideRTH: true,
-        price: +odData?.price || 0,
-        side: odData?.side,
-        ticker: odData?.ticker,
-        tif: formData?.tif,
-        quantity: odData?.totalSize,
+        price: +formData?.limitPrice || snapshot.bid || 0,
+        side: formData.shareType,
+        ticker: contractInfo.symbol,
+        tif: formData.tif,
+        quantity: +formData.shares || 1,
         // auxPrice: 0,
         // listingExchange: "string", // optional
         // deactivated: true
       }
 
-      modifyOrderApi(accId, odData?.orderId, modifyPayload).then((response) => {
+      modifyOrderApi(accId, modifyOrderData?.orderId, modifyPayload).then((response) => {
+        setPlaceOrderBtt(true);
         if (response?.error) {
           toast.error(response.error);
         } else {
           toast.success("order modify successfully.");
-          setModifyOdShow(-1);
+          // setModifyOdShow(-1);
 
           fetchPortfolioSummaryFun(accId);
           fetchPortfolioPositionFun(accId);
           fetchIBOpenOdersFun();
+          setOpen1(false);
         }
       }).catch((err) => {
         console.log("Modify Order Api Error:", err);
-        toast.error("Someting went worng. please try again.");
+        toast.error(err?.message || "Someting went worng. please try again.");
+        setOpen1(false);
+        setPlaceOrderBtt(true);
       })
     } else {
       toast.error("Interactive broker account detail not found. please login interactive broker acoount first", { toastId: "form-error" });
+      setOpen1(false);
+      setPlaceOrderBtt(true);
     }
   }
 
@@ -800,6 +912,9 @@ export default function ContentManagement() {
     history.push(`/Dashboard?conid=${conid}&symbol=${symbol}`);
     setSearchInput(symbol);
     setSelectedStock({ conid, symbol });
+    setFormData({
+      submitType: ""
+    });
     setStockList([]);
   }
 
@@ -1735,7 +1850,7 @@ export default function ContentManagement() {
                                 {/* {row?.unrealizedPnl?.toFixed(2)} */}
                               </TableCell>
                               <TableCell className="table_content tableRow1">
-                                <Button>Close</Button>
+                                <Button onClick={() => handleCloseOrder(row)}>Close</Button>
                               </TableCell>
                             </TableRow>
                           ))}

@@ -123,6 +123,27 @@ const NodeServBaseUrl = `http://43.230.64.35:9011`; // http://43.230.64.35:9011 
 //     });
 // }
 
+export const callTickleApi = () => {
+    return new Promise((resolve, reject) => {
+        let config = {
+            method: 'post',
+            url: `${IBBaseUrl}/api/tickle`,
+            headers: {
+                "Accept": 'application/json',
+            },
+            data: {}
+        };
+
+        axios.request(config)
+            .then((response) => {
+                resolve(response?.data || []);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+}
+
 export const fetchIBAccountDetail = () => {
     return new Promise((resolve, reject) => {
         let config = {
