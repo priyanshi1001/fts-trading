@@ -439,7 +439,7 @@ export default function ContentManagement() {
 
   function fetchIBOpenOdersFun() {
     // let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,filled,submitted,pending_cancel,cancelled,warn_state,sort_by_time`;
-    let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,submitted,pending_cancel,warn_state`;
+    let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,submitted,pending_cancel,warn_state,sort_by_time`;
     fetchIBOpenOders(filtersVal)
       .then((response) => {
         if (!response?.snapshot) {
@@ -823,7 +823,8 @@ export default function ContentManagement() {
         }
       }).catch((err) => {
         console.log("Cancel Order Api Error:", err);
-        toast.error("Someting went worng. please try again.");
+        toast.error(err?.response?.data?.error || "Someting went worng. please try again.");
+        setCnlOdShow(-1);
       })
     } else {
       toast.error("Interactive broker account detail not found. please login interactive broker acoount first", { toastId: "form-error" });
@@ -854,25 +855,31 @@ export default function ContentManagement() {
         // deactivated: true
       }
 
-      modifyOrderApi(accId, modifyOrderData?.orderId, modifyPayload).then((response) => {
-        setPlaceOrderBtt(true);
-        if (response?.error) {
-          toast.error(response.error);
-        } else {
-          toast.success("order modify successfully.");
-          // setModifyOdShow(-1);
+      fetchIBAccountDetailFun().then((resp) => {
+        modifyOrderApi(accId, modifyOrderData?.orderId, modifyPayload).then((response) => {
+          setPlaceOrderBtt(true);
+          if (response?.error) {
+            toast.error(response.error);
+          } else {
+            toast.success("order modify successfully.");
 
-          fetchPortfolioSummaryFun(accId);
-          fetchPortfolioPositionFun(accId);
-          fetchIBOpenOdersFun();
+            fetchPortfolioSummaryFun(accId);
+            fetchPortfolioPositionFun(accId);
+            fetchIBOpenOdersFun();
+            setOpen1(false);
+          }
+        }).catch((err) => {
+          console.log("Modify Order Api Error:", err);
+          toast.error(err?.message || "Someting went worng. please try again.");
           setOpen1(false);
-        }
+          setPlaceOrderBtt(true);
+        });
       }).catch((err) => {
-        console.log("Modify Order Api Error:", err);
+        console.log("Modify Order Account Details Error:", err.message);
         toast.error(err?.message || "Someting went worng. please try again.");
         setOpen1(false);
         setPlaceOrderBtt(true);
-      })
+      });
     } else {
       toast.error("Interactive broker account detail not found. please login interactive broker acoount first", { toastId: "form-error" });
       setOpen1(false);
@@ -1184,7 +1191,7 @@ export default function ContentManagement() {
                                             }
                                           />
                                         </div>
-                                        <div class="form-check p-0 d-flex align-items-center justify-content-between">
+                                        {/*<div class="form-check p-0 d-flex align-items-center justify-content-between">
                                           <label
                                             class="form-check-label flex-grow-1"
                                             htmlFor="close-checkbox"
@@ -1208,7 +1215,7 @@ export default function ContentManagement() {
                                                 : false
                                             }
                                           />
-                                        </div>
+                                        </div>*/}
                                       </div>
                                     </div>
                                     <div className="bitTable">
@@ -1964,7 +1971,7 @@ export default function ContentManagement() {
                               }}
                             >
                               {cnlOdShow > -1 ? <CancelOrder data={row} index={ind} cnlOdShow={cnlOdShow} setCnlOdShow={setCnlOdShow} cancelOrderFun={cancelOrderFun} /> : <></>}
-                              {modifyOdShow > -1 ? <ModifyOrder data={row} index={ind} modifyOdShow={modifyOdShow} setModifyOdShow={setModifyOdShow} modifyOrderFun={modifyOrderFun} /> : <></>}
+                              {/* {modifyOdShow > -1 ? <ModifyOrder data={row} index={ind} modifyOdShow={modifyOdShow} setModifyOdShow={setModifyOdShow} modifyOrderFun={modifyOrderFun} /> : <></>} */}
                               <TableCell className="table_content tableRow1">
                                 {row?.ticker}
                               </TableCell>

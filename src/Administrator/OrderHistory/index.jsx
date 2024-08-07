@@ -26,14 +26,22 @@ export default function Stocks() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    fetchIBOpenOdersFun();
+  }, []);
+
+  function fetchIBOpenOdersFun() {
     fetchIBOpenOders(`?Filters=filled`).then((response) => {
-      setOpenOrderList(response?.orders || []);
-      setIsLoading(false);
+      if (!response?.snapshot) {
+        fetchIBOpenOdersFun();
+      } else {
+        setOpenOrderList(response?.orders || []);
+        setIsLoading(false);
+      }
     }).catch((err) => {
       console.log("Fetch Open Orders:", err);
       toast.error("Interactive broker panel not login.")
     });
-  }, []);
+  }
 
   return (
     <Card>
