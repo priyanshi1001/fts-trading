@@ -919,9 +919,7 @@ export default function ContentManagement() {
     history.push(`/Dashboard?conid=${conid}&symbol=${symbol}`);
     setSearchInput(symbol);
     setSelectedStock({ conid, symbol });
-    setFormData({
-      submitType: ""
-    });
+    setFormData((prev)=>({...prev, submitType: ""}));
     setStockList([]);
   }
 

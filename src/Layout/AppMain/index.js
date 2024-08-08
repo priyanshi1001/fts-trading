@@ -186,7 +186,7 @@ const AppMain = () => {
           </div>
         }
       >
-        <Route path="/WatchList" component={isAuth() ? WatchList : login} />
+        {/* <Route path="/WatchList" component={isAuth() ? WatchList : login} /> */}
       </Suspense>
       <Suspense
         fallback={
