@@ -130,7 +130,6 @@ export default function ContentManagement() {
         let bid = +socketResponse?.["84"] || 0;
         let ask = +socketResponse?.["86"] || 0;
         let lastPrice = +socketResponse?.["31"] || 0;
-        console.log("bid, ask, lastPrice==================", bid, ask, lastPrice, snapshot);
         let tempObj = {};
         if (bid) {
           tempObj["bid"] = bid;
@@ -439,7 +438,7 @@ export default function ContentManagement() {
 
   function fetchIBOpenOdersFun() {
     // let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,filled,submitted,pending_cancel,cancelled,warn_state,sort_by_time`;
-    let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,submitted,pending_cancel,warn_state,sort_by_time`;
+    let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,submitted,pending_cancel,warn_state,sort_by_time&force=true`;
     fetchIBOpenOders(filtersVal)
       .then((response) => {
         if (!response?.snapshot) {

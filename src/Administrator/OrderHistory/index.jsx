@@ -30,7 +30,7 @@ export default function Stocks() {
   }, []);
 
   function fetchIBOpenOdersFun() {
-    fetchIBOpenOders(`?Filters=filled`).then((response) => {
+    fetchIBOpenOders(`?Filters=filled&force=true`).then((response) => {
       if (!response?.snapshot) {
         fetchIBOpenOdersFun();
       } else {
