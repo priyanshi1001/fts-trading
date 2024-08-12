@@ -56,6 +56,10 @@ export default function Stocks() {
     })
   }, [size, page, search]);
 
+  function handleChange(e) {
+    setSearch(e.target.value)
+  }
+
   return (
     <Card>
       <Fragment>
@@ -96,8 +100,8 @@ export default function Stocks() {
                                 placeholder="Search"
                                 variant="outlined"
                                 size="small"
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
+                                // value={search}
+                                onChange={handleChange}
                                 InputProps={{
                                   className: "searchInput",
                                   startAdornment: (

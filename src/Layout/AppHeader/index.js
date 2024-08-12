@@ -46,7 +46,6 @@ class Header extends React.Component {
     const { date } = this.state;
 
     setInterval(() => {
-      // setDate(new Date());
       this.setState(() => ({ ...this.state, ...{ date: new Date() } }))
     }, 1000);
     return (
@@ -146,8 +145,7 @@ class Header extends React.Component {
                     </Breadcrumbs>
                   )}
                   <div className="dateBox">
-                    {moment(date).format("DD-MMM-YY")} -{" "}
-                    {moment(date).format("hh:mm:ss A")}
+                    {moment(date).format("DD-MMM-YY - hh:mm:ss A")}
                   </div>
                 </div>
               </div>
