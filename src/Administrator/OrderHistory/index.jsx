@@ -30,7 +30,7 @@ export default function Stocks() {
   }, []);
 
   function fetchIBOpenOdersFun() {
-    fetchIBOpenOders(`?Filters=filled&force=true`).then((response) => {
+    fetchIBOpenOders(`?Filters=filled`).then((response) => {
       if (!response?.snapshot) {
         fetchIBOpenOdersFun();
       } else {
@@ -39,6 +39,7 @@ export default function Stocks() {
       }
     }).catch((err) => {
       console.log("Fetch Open Orders:", err);
+      setIsLoading(false);
       toast.error("Interactive broker panel not login.")
     });
   }

@@ -437,8 +437,10 @@ export default function ContentManagement() {
   }
 
   function fetchIBOpenOdersFun() {
-    // let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,filled,submitted,pending_cancel,cancelled,warn_state,sort_by_time`;
-    let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,submitted,pending_cancel,warn_state,sort_by_time&force=true`;
+    // let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,filled,submitted,pending_cancel,cancelled,warn_state,sort_by_time&force=true`;
+
+    // ?Filters=inactive,pending_submit,pre_submitted,submitted,pending_cancel,warn_state,sort_by_time&force=true
+    let filtersVal = ``;
     fetchIBOpenOders(filtersVal)
       .then((response) => {
         if (!response?.snapshot) {
@@ -918,7 +920,7 @@ export default function ContentManagement() {
     history.push(`/Dashboard?conid=${conid}&symbol=${symbol}`);
     setSearchInput(symbol);
     setSelectedStock({ conid, symbol });
-    setFormData((prev)=>({...prev, submitType: ""}));
+    setFormData((prev) => ({ ...prev, submitType: "" }));
     setStockList([]);
   }
 
