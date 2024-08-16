@@ -73,7 +73,7 @@ export default function Stocks() {
     fetchStockListApi(id).then((response) => {
       setIsLoadingAddedStockList(false);
       if (response.status) {
-        let resData = response?.data[0] || {};
+        let resData = response?.data || {};
         setWatchListName(resData?.name || "");
         setAddedStockList(resData?.stockListData || []);
       } else {
