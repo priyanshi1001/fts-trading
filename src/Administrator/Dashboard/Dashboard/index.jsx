@@ -52,6 +52,8 @@ export default function ContentManagement() {
   const history = useHistory();
   const modifyOrderRef = useRef(null);
   const [open1, setOpen1] = useState(false);
+  const [qtyValPopup, setQtyValPopup] = useState(false);
+  const [positionValPopup, setPositionValPopup] = useState(false);
   const [cnlOdShow, setCnlOdShow] = useState(-1);
   const [modifyOdShow, setModifyOdShow] = useState(-1);
   const [modifyOrderData, setModifyOrderData] = useState(null);
@@ -159,7 +161,7 @@ export default function ContentManagement() {
         setSnapshot((prev) => ({ ...prev, ...tempObj }));
       }
 
-      console.log("Dashboard ib_message:", socketResponse);
+      // console.log("Dashboard ib_message:", socketResponse);
     });
     const obj = {
       "31": "Last Price",
@@ -361,11 +363,18 @@ export default function ContentManagement() {
         //   shares = +shares.toFixed(2);
         //   liveAccPercentage = +formData.stockPosition;
         // }
+        let tempShareType = "";
+        if (shares < 0) {
+          shares = shares * -1;
+          tempShareType = "BUY";
+        } else {
+          tempShareType = "SELL";
+        }
 
         setFormData({
           ...formData,
           tif: "DAY",
-          shareType: "BUY",
+          shareType: tempShareType,
           orderType: "LMT",
           shares: shares,
           limitPrice: bid,
@@ -437,9 +446,9 @@ export default function ContentManagement() {
   }
 
   function fetchIBOpenOdersFun() {
-    // let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,filled,submitted,pending_cancel,cancelled,warn_state,sort_by_time&force=true`;
+    // let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,filled,submitted,pending_cancel,cancelled,warn_state,sort_by_time&force=1`;
 
-    // ?Filters=inactive,pending_submit,pre_submitted,submitted,pending_cancel,warn_state,sort_by_time&force=true
+    // ?Filters=inactive,pending_submit,pre_submitted,submitted,pending_cancel,warn_state,sort_by_time
     let filtersVal = ``;
     fetchIBOpenOders(filtersVal)
       .then((response) => {
@@ -666,7 +675,15 @@ export default function ContentManagement() {
       checkValidation = false;
     }
 
-    if (checkValidation) setOpen1(true);
+    if (checkValidation) {
+      if (+formData?.stockPositionVal > 100) {
+        setPositionValPopup(true);
+      } else if (+formData?.liveAccPercentage > 25) {
+        setQtyValPopup(true);
+      } else {
+        setOpen1(true);
+      }
+    }
   }
 
   function placeOrderFun() {
@@ -2216,9 +2233,134 @@ export default function ContentManagement() {
           shareType: formData?.shareType || ""
         }}
       /> : <></>}
+
+      {qtyValPopup ? <QtyValidationPopup qtyValPopup={qtyValPopup} setQtyValPopup={setQtyValPopup} setOpen1={setOpen1} /> : <></>}
+      {positionValPopup ? <PositionValidationPopup positionValPopup={positionValPopup} setPositionValPopup={setPositionValPopup} setOpen1={setOpen1} /> : <></>}
     </Fragment>
   );
 }
+
+function QtyValidationPopup(props) {
+  const {
+    qtyValPopup,
+    setQtyValPopup,
+    setOpen1
+  } = props;
+
+  const handleClose = () => {
+    setQtyValPopup(false);
+  };
+
+  const handleSubmit = () => {
+    setQtyValPopup(false);
+    setOpen1(true);
+  };
+
+  return (
+    <Fragment>
+      <Dialog
+        fullWidth
+        maxWidth={"sm"}
+        open={qtyValPopup}
+        keepMounted
+        // onClose={handleClose}
+        // TransitionComponent={Transition}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle className="modal-header py-4 px-3 text-center">
+          Warning Message
+        </DialogTitle>
+        <DialogContent>
+          <Typography
+            variant="h6"
+            component="h6"
+            className="text-center text-gray fs-6 mb-3"
+          >
+            Are you want to buying more than 25% of cash buying amount.
+          </Typography>
+        </DialogContent>
+        <DialogActions className="dialog-actions-dense justify-content-center my-4">
+          <Box className="d-flex align-item-center justify-content-center gap-3 btn-box ">
+            <button
+              className="btn btn-lg w-auto btn-outline-purple"
+              onClick={handleClose}
+            >
+              No
+            </button>
+            <button
+              className="btn btn-lg w-auto btn-purple"
+              onClick={handleSubmit}
+            >
+              Yes
+            </button>
+          </Box>
+        </DialogActions>
+      </Dialog>
+    </Fragment>
+  );
+};
+
+function PositionValidationPopup(props) {
+  const {
+    positionValPopup,
+    setPositionValPopup,
+    setOpen1
+  } = props;
+
+  const handleClose = () => {
+    setPositionValPopup(false);
+  };
+
+  const handleSubmit = () => {
+    setPositionValPopup(false);
+    setOpen1(true);
+  };
+
+  return (
+    <Fragment>
+      <Dialog
+        fullWidth
+        maxWidth={"sm"}
+        open={positionValPopup}
+        keepMounted
+        // onClose={handleClose}
+        // TransitionComponent={Transition}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle className="modal-header py-4 px-3 text-center">
+          Warning Message
+        </DialogTitle>
+        <DialogContent>
+          <Typography
+            variant="h6"
+            component="h6"
+            className="text-center text-gray fs-6 mb-3"
+          >
+            Are you want to buying more than 100% of cash buying amount.
+          </Typography>
+        </DialogContent>
+        <DialogActions className="dialog-actions-dense justify-content-center my-4">
+          <Box className="d-flex align-item-center justify-content-center gap-3 btn-box ">
+            <button
+              className="btn btn-lg w-auto btn-outline-purple"
+              onClick={handleClose}
+            >
+              No
+            </button>
+            <button
+              className="btn btn-lg w-auto btn-purple"
+              onClick={handleSubmit}
+            >
+              Yes
+            </button>
+          </Box>
+        </DialogActions>
+      </Dialog>
+    </Fragment>
+  );
+};
 
 
 function CancelOrder(props) {
