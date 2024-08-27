@@ -29,18 +29,41 @@ export default function Stocks() {
     fetchIBOpenOdersFun();
   }, []);
 
+  function cacheClearIBOpenOrderFun(filtersVal) {
+    return new Promise((resolve, reject) => {
+      fetchIBOpenOders(filtersVal)
+        .then((response) => {
+          if (!response?.snapshot) {
+            cacheClearIBOpenOrderFun(filtersVal);
+          } else {
+            resolve();
+          }
+        })
+        .catch((err) => {
+          console.log("Cache Open Orders Error:", err);
+          reject();
+        });
+    })
+  }
+
   function fetchIBOpenOdersFun() {
-    fetchIBOpenOders(`?Filters=filled`).then((response) => {
-      if (!response?.snapshot) {
-        fetchIBOpenOdersFun();
-      } else {
-        setOpenOrderList(response?.orders || []);
+    cacheClearIBOpenOrderFun("?Filters=filled&force=1").then(() => {
+      fetchIBOpenOders(`?Filters=filled`).then((response) => {
+        if (!response?.snapshot) {
+          fetchIBOpenOdersFun();
+        } else {
+          setOpenOrderList(response?.orders || []);
+          setIsLoading(false);
+        }
+      }).catch((err) => {
+        console.log("Fetch Open Orders:", err);
         setIsLoading(false);
-      }
+        toast.error("Interactive broker panel not login.");
+      });
     }).catch((err) => {
-      console.log("Fetch Open Orders:", err);
+      console.log("Cache Open Orders Error:");
+      toast.error("Interactive broker panel not login.");
       setIsLoading(false);
-      toast.error("Interactive broker panel not login.")
     });
   }
 
