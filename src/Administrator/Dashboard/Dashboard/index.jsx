@@ -463,11 +463,11 @@ export default function ContentManagement() {
   }
 
   function fetchIBOpenOdersFun() {
-    // let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,filled,submitted,pending_cancel,cancelled,warn_state,sort_by_time&force=1`;
+    // let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,submitted,pending_cancel,warn_state,sort_by_time,filled,cancelled&force=1`;
 
-    // ?Filters=inactive,pending_submit,pre_submitted,submitted,pending_cancel,warn_state,sort_by_time
     let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,submitted,pending_cancel,warn_state,sort_by_time`;
-    cacheClearIBOpenOrderFun(filtersVal + "&force=1").then(() => {
+
+    cacheClearIBOpenOrderFun(`${filtersVal}&force=1`).then(() => {
       fetchIBOpenOders(filtersVal)
         .then((response) => {
           if (!response?.snapshot) {

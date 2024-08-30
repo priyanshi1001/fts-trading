@@ -47,8 +47,10 @@ export default function Stocks() {
   }
 
   function fetchIBOpenOdersFun() {
-    cacheClearIBOpenOrderFun("?Filters=filled&force=1").then(() => {
-      fetchIBOpenOders(`?Filters=filled`).then((response) => {
+    let filtersVal = "?Filters=filled";
+
+    cacheClearIBOpenOrderFun(`${filtersVal}&force=1`).then(() => {
+      fetchIBOpenOders(filtersVal).then((response) => {
         if (!response?.snapshot) {
           fetchIBOpenOdersFun();
         } else {
