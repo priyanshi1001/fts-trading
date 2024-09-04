@@ -314,20 +314,29 @@ export default function Reports() {
 function getTimeDuration(startDate, endDate) {
   let start = moment(startDate);
   let end = moment(endDate);
-  let diff = end.diff(start);
+  let diff = start.diff(end);
   let diffInSec = diff / 1000;
+
+  if(diffInSec<0){
+    diffInSec = diffInSec*-1;
+  }
+
   return diffInSec.toFixed(2);
 }
 
 function getTimeDurationSum(startDate, midDate, endDate) {
   let start = moment(startDate);
   let end = moment(midDate);
-  let diff = end.diff(start);
+  let diff = start.diff(end);
 
   let start2 = moment(midDate);
   let end2 = moment(endDate);
-  let diff2 = end2.diff(start2);
+  let diff2 = start2.diff(end2);
 
   let diffInSec = (diff2 + diff) / 1000;
+
+  if(diffInSec<0){
+    diffInSec = diffInSec*-1;
+  }
   return diffInSec.toFixed(2);
 }

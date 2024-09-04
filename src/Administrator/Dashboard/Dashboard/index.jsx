@@ -74,6 +74,7 @@ export default function ContentManagement() {
   const [stockList, setStockList] = useState([]);
   const [stockPage, setStockPage] = useState(1);
   const [stockSize, setStockSize] = useState(100);
+  const [totalOpenOrder, setTotalOpenOrder] = useState(0);
   const [stockPayload, setStockPayload] = useState(StockListStaticPayload);
   const [snapshot, setSnapshot] = useState({
     bid: 0,
@@ -465,7 +466,9 @@ export default function ContentManagement() {
   function fetchIBOpenOdersFun() {
     // let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,submitted,pending_cancel,warn_state,sort_by_time,filled,cancelled&force=1`;
 
-    let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,submitted,pending_cancel,warn_state,sort_by_time`;
+    // ?Filters=inactive,pending_submit,pre_submitted,submitted,pending_cancel,warn_state,sort_by_time
+
+    let filtersVal = ``;
 
     cacheClearIBOpenOrderFun(`${filtersVal}&force=1`).then(() => {
       fetchIBOpenOders(filtersVal)
@@ -474,6 +477,9 @@ export default function ContentManagement() {
             fetchIBOpenOdersFun();
           } else {
             setOpenOrderList(response?.orders || []);
+            for (let dt of (response?.orders || [])) {
+              setTotalOpenOrder((prev) => prev + (+dt?.price || +dt?.avgPrice || 0));
+            }
           }
         })
         .catch((err) => {
@@ -624,6 +630,7 @@ export default function ContentManagement() {
   function handleSubmitButton() {
     let checkValidation = true;
     let accId = accountDetail?.selectedAccount || "";
+    let merginBuyingPowerPrice = +portfolioSummary?.["fullinitmarginreq-s"]?.amount?.toFixed(2) || 0;
 
     if (!accId) {
       toast.error(
@@ -696,6 +703,13 @@ export default function ContentManagement() {
       checkValidation = false;
     }
 
+    if (totalOpenOrder >= merginBuyingPowerPrice) {
+      toast.error("You are exceeded margin buying power for today.", {
+        toastId: "form-error",
+      });
+      checkValidation = false;
+    }
+
     if (checkValidation) {
       if (+formData?.stockPositionVal > 100) {
         setPositionValPopup(true);
@@ -726,6 +740,13 @@ export default function ContentManagement() {
       return 0;
     }
 
+    let odPrice = 0;
+    if (formData.orderType == "MKT" && formData.shareType == "BUY") {
+      odPrice = snapshot?.ask || 0;
+    } else {
+      odPrice = +formData?.limitPrice || snapshot.bid || 0;
+    }
+
     let orderPayload = {
       orders: [
         {
@@ -738,7 +759,7 @@ export default function ContentManagement() {
           listingExchange: contractInfo.exchange,
           isSingleGroup: false,
           outsideRTH: false,
-          price: +formData?.limitPrice || snapshot.bid || 0,
+          price: odPrice,
           side: formData.shareType,
           ticker: contractInfo.symbol,
           tif: formData.tif,
@@ -879,12 +900,18 @@ export default function ContentManagement() {
     }
     let accId = accountDetail?.selectedAccount || "";
     if (accId) {
+      let odPrice = 0;
+      if (formData.orderType == "MKT" && formData.shareType == "BUY") {
+        odPrice = snapshot?.ask || 0;
+      } else {
+        odPrice = +formData?.limitPrice || snapshot.bid || 0;
+      }
       let modifyPayload = {
         acctId: accId,
         conid: contractInfo?.con_id,
         orderType: formData.orderType,
         outsideRTH: true,
-        price: +formData?.limitPrice || snapshot.bid || 0,
+        price: odPrice,
         side: formData.shareType,
         ticker: contractInfo.symbol,
         tif: formData.tif,
@@ -1042,7 +1069,9 @@ export default function ContentManagement() {
                       </li>
                       <li>
                         Today’s Trading G/L
-                        <span className="digit text-success">{pnlInfo?.["upnl"]?.[`${accountDetail?.selectedAccount}.Core`]?.["dpl"]?.toFixed(2) || 0}</span>
+                        {((pnlInfo?.["upnl"]?.[`${accountDetail?.selectedAccount}.Core`]?.["dpl"]?.toFixed(2) || 0) < 0) ?
+                          <span className="digit text-danger">{pnlInfo?.["upnl"]?.[`${accountDetail?.selectedAccount}.Core`]?.["dpl"]?.toFixed(2) || 0}</span>
+                          : <span className="digit text-success">{pnlInfo?.["upnl"]?.[`${accountDetail?.selectedAccount}.Core`]?.["dpl"]?.toFixed(2) || 0}</span>}
                       </li>
                       <li>
                         Unrealized PnL
@@ -2249,7 +2278,7 @@ export default function ContentManagement() {
           stockSymbol: contractInfo?.symbol,
           stockName: contractInfo?.company_name,
           shares: formData.shares,
-          midPrice: +formData?.limitPrice || snapshot?.bid || 0,
+          midPrice: (formData.orderType == "MKT" && formData.shareType == "BUY") ? snapshot?.ask || 0 : +formData?.limitPrice || snapshot?.bid || 0,
           existingValue: formData.existingValue,
           shareType: formData?.shareType || ""
         }}
