@@ -69,6 +69,7 @@ export default function ContentManagement() {
     shareType: "BUY"
   });
   const [openOrderList, setOpenOrderList] = useState([]);
+  const [allOpenOrderList, setAllOpenOrderList] = useState([]);
   const [existingOrder, setExistingOrder] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [stockList, setStockList] = useState([]);
@@ -468,7 +469,7 @@ export default function ContentManagement() {
 
     // ?Filters=inactive,pending_submit,pre_submitted,submitted,pending_cancel,warn_state,sort_by_time
 
-    let filtersVal = ``;
+    let filtersVal = `?Filters=inactive,pending_submit,pre_submitted,submitted,pending_cancel,warn_state,sort_by_time`;
 
     cacheClearIBOpenOrderFun(`${filtersVal}&force=1`).then(() => {
       fetchIBOpenOders(filtersVal)
@@ -477,6 +478,22 @@ export default function ContentManagement() {
             fetchIBOpenOdersFun();
           } else {
             setOpenOrderList(response?.orders || []);
+          }
+        })
+        .catch((err) => {
+          console.log("Fetch Open Orders Error:", err);
+        });
+    }).catch((err) => {
+      console.log("Cache Open Orders Error:");
+    });
+
+    cacheClearIBOpenOrderFun(`?force=1`).then(() => {
+      fetchIBOpenOders("")
+        .then((response) => {
+          if (!response?.snapshot) {
+            fetchIBOpenOdersFun();
+          } else {
+            setAllOpenOrderList(response?.orders || []);
             for (let dt of (response?.orders || [])) {
               setTotalOpenOrder((prev) => prev + (+dt?.price || +dt?.avgPrice || 0));
             }
