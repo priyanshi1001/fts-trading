@@ -5,7 +5,7 @@ export default {
     "sortDirection": "asc",
     "productCountry": [
         "US",
-        "IN"
+        // "IN"
     ],
     "productSymbol": "",
     "newProduct": "all",

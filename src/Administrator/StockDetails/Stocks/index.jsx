@@ -49,7 +49,20 @@ export default function Stocks() {
     setPayload({ ...payload });
 
     fetchIBStockList(payload).then((response) => {
-      setData(response);
+      // setData(response);
+      let tempProd = response?.products || [];
+      let prodList = [];
+      let exchangeList = ["NASDAQ", "NYSE", "AMEX"];
+      for (let dt of tempProd) {
+        if (exchangeList.indexOf(dt?.exchangeId) != -1) {
+          prodList.push(dt);
+        }
+      }
+      setData({
+        productTypeCount: response?.productTypeCount || [],
+        productCount: response?.productCount || 0,
+        products: prodList
+      });
       setIsLoading(false);
     }).catch((err) => {
       setIsLoading(false);

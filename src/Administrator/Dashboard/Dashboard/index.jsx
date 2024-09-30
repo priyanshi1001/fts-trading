@@ -988,7 +988,15 @@ export default function ContentManagement() {
     setStockPayload({ ...stockPayload });
 
     fetchIBStockList(stockPayload).then((response) => {
-      setStockList(response?.products || []);
+      let tempProd = response?.products || [];
+      let prodList = [];
+      let exchangeList = ["NASDAQ", "NYSE", "AMEX"];
+      for(let dt of tempProd){
+        if(exchangeList.indexOf(dt?.exchangeId) != -1){
+          prodList.push(dt);
+        }
+      }
+      setStockList(prodList);
     }).catch((err) => {
       console.log("Stock List Search Error:", err.message);
       toast.error("Stock list not fetch. please try again.", {
@@ -1109,7 +1117,8 @@ export default function ContentManagement() {
                         </div>
                         <div className="position-absolute top-100 start-0 p-2 rounded-2 z-index-2" style={{
                           background: "#f6f6f6", marginInlineStart: "20px", zIndex: "2",
-                          boxShadow: "0 0 10px #0404047", width: "180px"
+                          boxShadow: "0 0 10px #0404047", width: "180px", maxHeight: "300px",
+                          overflowY: "auto"
                         }}>
                           {searchInput && stockList.map((dt, ind) => {
                             return (
@@ -1122,7 +1131,7 @@ export default function ContentManagement() {
                                   width: "100%",
                                   display: "block",
                                   lineHeight: "1.5",
-                                }} href="javascript:void(0)" onClick={() => handleStockListCLick(dt)}>{dt?.symbol}</a>
+                                }} href="javascript:void(0)" onClick={() => handleStockListCLick(dt)}>{dt?.symbol} ({dt?.exchangeId})</a>
                               </div>
                             )
                           })}
