@@ -33,7 +33,7 @@ export default function Stocks() {
   const dispatch = useDispatch();
   const history = useHistory();
   const [page, setPage] = useState(1);
-  const [size, setSize] = useState(100);
+  const [size, setSize] = useState(500);
   const [search, setSearch] = useState("");
   const [data, setData] = useState(null);
   const [payload, setPayload] = useState(StockListStaticPayload);

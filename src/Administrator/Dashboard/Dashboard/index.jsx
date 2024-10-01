@@ -74,7 +74,7 @@ export default function ContentManagement() {
   const [searchInput, setSearchInput] = useState("");
   const [stockList, setStockList] = useState([]);
   const [stockPage, setStockPage] = useState(1);
-  const [stockSize, setStockSize] = useState(100);
+  const [stockSize, setStockSize] = useState(500);
   const [totalOpenOrder, setTotalOpenOrder] = useState(0);
   const [stockPayload, setStockPayload] = useState(StockListStaticPayload);
   const [snapshot, setSnapshot] = useState({
