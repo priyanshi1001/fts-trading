@@ -720,12 +720,12 @@ export default function ContentManagement() {
       checkValidation = false;
     }
 
-    if (totalOpenOrder >= merginBuyingPowerPrice) {
-      toast.error("You are exceeded margin buying power for today.", {
-        toastId: "form-error",
-      });
-      checkValidation = false;
-    }
+    // if (totalOpenOrder >= merginBuyingPowerPrice) {
+    //   toast.error("You are exceeded margin buying power for today.", {
+    //     toastId: "form-error",
+    //   });
+    //   checkValidation = false;
+    // }
 
     if (checkValidation) {
       if (+formData?.stockPositionVal > 100) {

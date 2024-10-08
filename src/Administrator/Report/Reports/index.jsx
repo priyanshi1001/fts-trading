@@ -317,8 +317,8 @@ function getTimeDuration(startDate, endDate) {
   let diff = start.diff(end);
   let diffInSec = diff / 1000;
 
-  if(diffInSec<0){
-    diffInSec = diffInSec*-1;
+  if (diffInSec < 0) {
+    diffInSec = diffInSec * -1;
   }
 
   return diffInSec.toFixed(2);
@@ -329,14 +329,19 @@ function getTimeDurationSum(startDate, midDate, endDate) {
   let end = moment(midDate);
   let diff = start.diff(end);
 
+  if (diff < 0) {
+    diff = diff * -1;
+  }
+
   let start2 = moment(midDate);
   let end2 = moment(endDate);
   let diff2 = start2.diff(end2);
 
+  if (diff2 < 0) {
+    diff2 = diff2 * -1;
+  }
+
   let diffInSec = (diff2 + diff) / 1000;
 
-  if(diffInSec<0){
-    diffInSec = diffInSec*-1;
-  }
   return diffInSec.toFixed(2);
 }
